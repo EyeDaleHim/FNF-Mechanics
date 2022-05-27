@@ -42,6 +42,8 @@ import lime.utils.Assets;
 import openfl.Lib;
 import openfl.display.BlendMode;
 import openfl.display.StageQuality;
+import openfl.display.BitmapData;
+import openfl.filters.ShaderFilter;
 import openfl.filters.BitmapFilter;
 import openfl.utils.Assets as OpenFlAssets;
 import editors.ChartingState;
@@ -761,6 +763,15 @@ class PlayState extends MusicBeatState
 				if(!ClientPrefs.lowQuality) foregroundSprites.add(new BGSprite('tank4', 1300, 900, 1.5, 1.5, ['fg']));
 				foregroundSprites.add(new BGSprite('tank5', 1620, 700, 1.5, 1.5, ['fg']));
 				if(!ClientPrefs.lowQuality) foregroundSprites.add(new BGSprite('tank3', 1300, 1200, 3.5, 2.5, ['fg']));
+		}
+
+		if (curStage == 'school' || curStage == 'schoolEvil')
+		{
+			var shader = new MosaicEffect().shader;
+			var filter = new ShaderFilter(shader);
+			
+			camGame.setFilters([filter]);
+			camHUD.setFilters([filter]);
 		}
 
 		switch(Paths.formatToSongPath(SONG.song))
@@ -2635,8 +2646,10 @@ class PlayState extends MusicBeatState
 			case 'tank':
 				moveTank(elapsed);
 			case 'schoolEvil':
-				if(!ClientPrefs.lowQuality && bgGhouls.animation.curAnim.finished) {
+				if (!ClientPrefs.lowQuality && bgGhouls.animation.curAnim.finished)
+				{
 					bgGhouls.visible = false;
+					
 				}
 			case 'philly':
 				if (trainMoving)
@@ -2760,15 +2773,27 @@ class PlayState extends MusicBeatState
 				}
 		}
 
-		if(!inCutscene) {
-			var lerpVal:Float = CoolUtil.boundTo(elapsed * 2.4 * cameraSpeed, 0, 1);
-			camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x, lerpVal), FlxMath.lerp(camFollowPos.y, camFollow.y, lerpVal));
-			if(!startingSong && !endingSong && boyfriend.animation.curAnim.name.startsWith('idle')) {
+		if(!inCutscene) 
+		{
+			if (curStage == 'school' || curStage == 'schoolEvil')
+			{
+				var lerpVal:Float = CoolUtil.boundTo(0.04 * 60 * elapsed, 0, 1);
+				camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x, lerpVal), FlxMath.lerp(camFollowPos.y, camFollow.y, lerpVal));
+			}
+			else
+			{
+				var lerpVal:Float = CoolUtil.boundTo(elapsed * 2.4 * cameraSpeed, 0, 1);
+				camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x, lerpVal), FlxMath.lerp(camFollowPos.y, camFollow.y, lerpVal));
+			}
+			if (!startingSong && !endingSong && boyfriend.animation.curAnim.name.startsWith('idle')) 
+			{
 				boyfriendIdleTime += elapsed;
 				if(boyfriendIdleTime >= 0.15) { // Kind of a mercy thing for making the achievement easier to get as it's apparently frustrating to some playerss
 					boyfriendIdled = true;
 				}
-			} else {
+			} 
+			else 
+			{
 				boyfriendIdleTime = 0;
 			}
 		}
