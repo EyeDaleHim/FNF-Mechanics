@@ -2778,7 +2778,10 @@ class PlayState extends MusicBeatState
 			if (curStage == 'school' || curStage == 'schoolEvil')
 			{
 				var lerpVal:Float = CoolUtil.boundTo(0.04 * 60 * elapsed, 0, 1);
-				camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x, lerpVal), FlxMath.lerp(camFollowPos.y, camFollow.y, lerpVal));
+
+				var camX:Float = camFollowPos.x - (camFollowPos.x % 6);
+				var camY:Float = camFollowPos.y - (camFollowPos.y % 6);
+				camFollowPos.setPosition(FlxMath.lerp(camX, camFollow.x, lerpVal), FlxMath.lerp(camY, camFollow.y, lerpVal));
 			}
 			else
 			{
