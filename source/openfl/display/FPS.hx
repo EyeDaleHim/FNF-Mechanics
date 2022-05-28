@@ -46,6 +46,7 @@ class FPS extends TextField
 		currentFPS = 0;
 		selectable = false;
 		mouseEnabled = false;
+		blendMode = INVERT;
 		defaultTextFormat = new TextFormat("_sans", 14, color);
 		autoSize = LEFT;
 		multiline = true;
@@ -86,14 +87,16 @@ class FPS extends TextField
 			var memoryMegas:Float = 0;
 			
 			#if openfl
-			memoryMegas = Math.abs(FlxMath.roundDecimal(System.totalMemory / 1000000, 1));
-			text += "\nMemory: " + memoryMegas + " MB";
+			memoryMegas = System.totalMemory;
+			text += "\nMemory: " + formatBytes(memoryMegas);
 			#end
-
+			
+			blendMode = INVERT;
 			textColor = 0xFFFFFFFF;
-			if (memoryMegas > 3000 || currentFPS <= ClientPrefs.framerate / 2)
+			if (FlxMath.roundDecimal(System.totalMemory / 1000000, 1) > 3000 || currentFPS <= ClientPrefs.framerate / 2)
 			{
 				textColor = 0xFFFF0000;
+				blendMode = NORMAL;
 			}
 
 			#if (gl_stats && !disable_cffi && (!html5 || !canvas))
@@ -106,5 +109,20 @@ class FPS extends TextField
 		}
 
 		cacheCount = currentCount;
+	}
+
+	private function formatBytes(num:Float):String
+	{
+		var size:Float = num;
+		var data = 0;
+		var dataTexts = ["B", "KB", "MB", "GB", "TB", "PB"];
+		while (size > 1024 && data < dataTexts.length - 1)
+		{
+			data++;
+			size = size / 1024;
+		}
+	
+		size = Math.round(size * 100) / 100;
+		return size + " " + dataTexts[data];
 	}
 }
