@@ -1022,8 +1022,7 @@ class PlayState extends MusicBeatState
 		timeTxt = new FlxText(STRUM_X + (FlxG.width / 2) - 248, 19, 400, "", 32);
 		timeTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		timeTxt.scrollFactor.set();
-		if (seenTransition)
-			timeTxt.alpha = 0;
+		timeTxt.alpha = 0;
 		timeTxt.borderSize = 2;
 		timeTxt.visible = showTime;
 		if (ClientPrefs.downScroll)
@@ -1039,8 +1038,7 @@ class PlayState extends MusicBeatState
 		timeBarBG.x = timeTxt.x;
 		timeBarBG.y = timeTxt.y + (timeTxt.height / 4);
 		timeBarBG.scrollFactor.set();
-		if (seenTransition)
-			timeBarBG.alpha = 0;
+		timeBarBG.alpha = 0;
 		timeBarBG.visible = showTime;
 		timeBarBG.color = FlxColor.BLACK;
 		timeBarBG.xAdd = -4;
@@ -1052,8 +1050,7 @@ class PlayState extends MusicBeatState
 		timeBar.scrollFactor.set();
 		timeBar.createFilledBar(0xFF000000, 0xFFFFFFFF);
 		timeBar.numDivisions = FlxG.width; // How much lag this causes?? Should i tone it down to idk, 400 or 200?
-		if (seenTransition)
-			timeBar.alpha = 0;
+		timeBar.alpha = 0;
 		timeBar.visible = showTime;
 		add(timeBar);
 		add(timeTxt);
@@ -2112,6 +2109,9 @@ class PlayState extends MusicBeatState
 				iconP1.alpha = 0;
 				iconP2.alpha = 0;
 				scoreTxt.alpha = 0;
+				timeBarBG.alpha = 0;
+				timeBar.alpha = 0;
+				timeTxt.alpha = 0;
 				if (!ClientPrefs.hideHud)
 				{
 					FlxTween.tween(scoreTxt, {alpha: 1}, (Conductor.stepCrochet * 16 / 1000), {ease: FlxEase.quadInOut});
@@ -2119,6 +2119,9 @@ class PlayState extends MusicBeatState
 					FlxTween.tween(iconP2, {alpha: 1}, (Conductor.stepCrochet * 16 / 1000), {ease: FlxEase.quadInOut});
 					FlxTween.tween(healthBar, {alpha: 1}, (Conductor.stepCrochet * 16 / 1000), {ease: FlxEase.quadInOut});
 					FlxTween.tween(healthBarBG, {alpha: 1}, (Conductor.stepCrochet * 16 / 1000), {ease: FlxEase.quadInOut});
+					FlxTween.tween(timeBar, {alpha: 1}, (Conductor.stepCrochet * 16 / 1000), {ease: FlxEase.quadInOut});
+					FlxTween.tween(timeBarBG, {alpha: 1},(Conductor.stepCrochet * 16 / 1000), {ease: FlxEase.quadInOut});
+					FlxTween.tween(timeTxt, {alpha: 1}, (Conductor.stepCrochet * 16 / 1000), {ease: FlxEase.quadInOut});
 				}
 				playerStrums.forEach(function(spr:StrumNote)
 				{
@@ -2376,6 +2379,7 @@ class PlayState extends MusicBeatState
 		// Song duration in a float, useful for the time left feature
 		songLength = FlxG.sound.music.length;
 		FlxTween.tween(timeBar, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
+		FlxTween.tween(timeBarBG, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
 		FlxTween.tween(timeTxt, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
 
 		switch (curStage)
@@ -3079,6 +3083,7 @@ class PlayState extends MusicBeatState
 					FlxG.sound.music.pause();
 					vocals.pause();
 				}
+				
 				openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 				// }
 
