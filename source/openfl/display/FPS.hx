@@ -2,6 +2,7 @@ package openfl.display;
 
 import haxe.Timer;
 import openfl.events.Event;
+import openfl.Assets;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
 import flixel.math.FlxMath;
@@ -46,7 +47,6 @@ class FPS extends TextField
 		currentFPS = 0;
 		selectable = false;
 		mouseEnabled = false;
-		blendMode = INVERT;
 		defaultTextFormat = new TextFormat("_sans", 14, color);
 		autoSize = LEFT;
 		multiline = true;
@@ -90,13 +90,11 @@ class FPS extends TextField
 			memoryMegas = System.totalMemory;
 			text += "\nMemory: " + formatBytes(memoryMegas);
 			#end
-			
-			blendMode = INVERT;
+
 			textColor = 0xFFFFFFFF;
 			if (FlxMath.roundDecimal(System.totalMemory / 1000000, 1) > 3000 || currentFPS <= ClientPrefs.framerate / 2)
 			{
 				textColor = 0xFFFF0000;
-				blendMode = NORMAL;
 			}
 
 			#if (gl_stats && !disable_cffi && (!html5 || !canvas))
@@ -119,10 +117,10 @@ class FPS extends TextField
 		while (size > 1024 && data < dataTexts.length - 1)
 		{
 			data++;
-			size = size / 1024;
+			size = Math.abs(size / 1024);
 		}
 	
-		size = Math.round(size * 100) / 100;
+		size = Math.abs(Math.round(size * 100) / 100);
 		return size + " " + dataTexts[data];
 	}
 }
