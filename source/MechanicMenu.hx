@@ -473,13 +473,10 @@ class MechanicMenu extends MusicBeatState
 			i++;
 		}
 
-		new FlxTimer().start(0.1, function(_)
+		for (tooltip in stackedTooltips)
 		{
-			for (tooltip in stackedTooltips)
-			{
-				mechanicTooltips.add(tooltip);
-			}
-		});
+			mechanicTooltips.add(tooltip);
+		}
 	}
 
 	var moveBG:Bool = true;
