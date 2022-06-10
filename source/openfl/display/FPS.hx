@@ -111,13 +111,13 @@ class FPS extends TextField
 
 	private function formatBytes(num:Float):String
 	{
-		var size:Float = num;
+		var size:Float = Math.abs(num);
 		var data = 0;
 		var dataTexts = ["B", "KB", "MB", "GB", "TB", "PB"];
 		while (size > 1024 && data < dataTexts.length - 1)
 		{
 			data++;
-			size = Math.abs(size / 1024);
+			size = size / 1024;
 		}
 	
 		size = Math.abs(Math.round(size * 100) / 100);
