@@ -11,6 +11,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxTimer;
 import flixel.util.FlxSort;
+import flixel.ui.FlxBar;
 import flixel.math.FlxMath;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
@@ -41,9 +42,11 @@ class MechanicMenu extends MusicBeatState
 	var setButton:MechanicSprite;
 	var multiplierTxt:FlxText;
 	var multiplierDisplay:FlxText;
+	var multiplierBar:FlxBar;
 
 	static var globalPoints:Int = 0;
 	public static var multiplierPoints:Float = 0;
+	var multiPointsDisplay:Float = 0;
 
 	var gridShader = new ColorSwap();
 
@@ -319,7 +322,7 @@ class MechanicMenu extends MusicBeatState
 			setButton.isSelected = false;
 		});
 
-		multiplierDisplay = new FlxText(0, FlxG.height * 0.4, 0, 'MULTIPLIER:', 32);
+		multiplierDisplay = new FlxText(0, FlxG.height * 0.4, 0, 'MULTIPLIER', 32);
 		multiplierDisplay.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		multiplierDisplay.borderSize = 2;
 		multiplierDisplay.updateHitbox();
@@ -338,6 +341,14 @@ class MechanicMenu extends MusicBeatState
 		multiplierTxt.x = rightBG.getGraphicMidpoint().x - (multiplierTxt.width / 2);
 		multiplierTxt.x += 4;
 		add(multiplierTxt);
+
+		multiplierBar = new FlxBar(multiplierTxt.x, multiplierTxt.y + multiplierTxt.height + 4, LEFT_TO_RIGHT, Std.int(multiplierTxt.width), 4, 
+		this, 'multiPointsDisplay', 1, 3.4);
+		multiplierBar.scrollFactor.set();
+		multiplierBar.antialiasing = true;
+		multiplierBar.numDivisions = FlxG.width * 2;
+		multiplierBar.createFilledBar(FlxColor.TRANSPARENT, FlxColor.WHITE, false, FlxColor.TRANSPARENT);
+		add(multiplierBar);
 
 		smoothY = 800;
 
@@ -534,6 +545,7 @@ class MechanicMenu extends MusicBeatState
 		multiplierInitial /= 2;
 
 		multiplierPoints = 1 + FlxMath.roundDecimal(multiplierInitial / 100, 2);
+		multiPointsDisplay = cast multiplierPoints;
 
 		if (multiplierTxt != null)
 		{
