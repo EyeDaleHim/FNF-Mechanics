@@ -196,6 +196,7 @@ class PlayState extends MusicBeatState
 	public var instakillOnMiss:Bool = false;
 	public var cpuControlled:Bool = false;
 	public var practiceMode:Bool = false;
+	public var playBothMode:Bool = false;
 
 	public var botplaySine:Float = 0;
 	public var botplayTxt:FlxText;
@@ -345,6 +346,7 @@ class PlayState extends MusicBeatState
 		instakillOnMiss = ClientPrefs.getGameplaySetting('instakill', false);
 		practiceMode = ClientPrefs.getGameplaySetting('practice', false);
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
+		playBothMode = ClientPrefs.getGameplaySetting('duetMode', false);
 
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
@@ -2120,7 +2122,7 @@ class PlayState extends MusicBeatState
 					FlxTween.tween(healthBar, {alpha: 1}, (Conductor.stepCrochet * 16 / 1000), {ease: FlxEase.quadInOut});
 					FlxTween.tween(healthBarBG, {alpha: 1}, (Conductor.stepCrochet * 16 / 1000), {ease: FlxEase.quadInOut});
 					FlxTween.tween(timeBar, {alpha: 1}, (Conductor.stepCrochet * 16 / 1000), {ease: FlxEase.quadInOut});
-					FlxTween.tween(timeBarBG, {alpha: 1},(Conductor.stepCrochet * 16 / 1000), {ease: FlxEase.quadInOut});
+					FlxTween.tween(timeBarBG, {alpha: 1}, (Conductor.stepCrochet * 16 / 1000), {ease: FlxEase.quadInOut});
 					FlxTween.tween(timeTxt, {alpha: 1}, (Conductor.stepCrochet * 16 / 1000), {ease: FlxEase.quadInOut});
 				}
 				playerStrums.forEach(function(spr:StrumNote)
@@ -2487,6 +2489,8 @@ class PlayState extends MusicBeatState
 				{
 					gottaHitNote = !section.mustHitSection;
 				}
+				if (playBothMode)
+					gottaHitNote = true;
 				var oldNote:Note;
 
 				if (unspawnNotes.length > 0)
@@ -3083,7 +3087,7 @@ class PlayState extends MusicBeatState
 					FlxG.sound.music.pause();
 					vocals.pause();
 				}
-				
+
 				openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 				// }
 
@@ -4922,6 +4926,8 @@ class PlayState extends MusicBeatState
 				}
 				return;
 			}
+
+			camZooming = true;
 
 			if (!note.isSustainNote)
 			{

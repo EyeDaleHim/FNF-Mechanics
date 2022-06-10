@@ -16,6 +16,7 @@ import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.input.mouse.FlxMouseEventManager;
 import flixel.group.FlxSpriteGroup;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import MechanicPortrait.MechanicSprite;
 
 class MechanicMenu extends MusicBeatState
@@ -27,6 +28,7 @@ class MechanicMenu extends MusicBeatState
 	var randomTxt:FlxText;
 
 	var mechanicGrp:FlxSpriteGroup;
+	var mechanicTooltips:FlxTypedGroup<MechanicTooltip>;
 
 	var camFollow:FlxObject;
 	var smoothY:Float = 0;
@@ -43,15 +45,13 @@ class MechanicMenu extends MusicBeatState
 	static var globalPoints:Int = 0;
 	public static var multiplierPoints:Float = 0;
 
-	var characters:Array<String> = ["abcdefghijklmnopqrstuvwxyz", "1234567890", "|~#$%()*+-:;<=>@[]^_.,'!?"];
-
 	var gridShader = new ColorSwap();
 
 	override public function create()
 	{
 		super.create();
 
-        FlxG.mouse.visible = true;
+		FlxG.mouse.visible = true;
 
 		camFollow = new FlxObject(0, 0, 1, 1);
 		camFollow.scrollFactor.set();
@@ -71,53 +71,13 @@ class MechanicMenu extends MusicBeatState
 		gradient.blend = MULTIPLY;
 		add(gradient);
 
-		randomTxt = new FlxText(2, 2, FlxG.width, "", 12);
-		randomTxt.setFormat(Paths.font("vcr.ttf"), 64, FlxColor.WHITE);
-		randomTxt.scrollFactor.set();
-		randomTxt.alpha = 0.25;
-		add(randomTxt);
-
-		var typing:Bool = true;
-		var tweening:Bool = false;
-
-		new FlxTimer().start(0.1, function(tmr:FlxTimer) // 0.02, use 0.1 because 0.02 is stupidly lag
-		{
-			if (typing)
-			{
-				var value:Int = FlxG.random.int(0, characters.length);
-				var char:Int = FlxG.random.int(0, characters[value].length);
-
-				randomTxt.text += characters[value].charAt(char);
-
-				if (randomTxt.height > FlxG.height * 1.1)
-				{
-					typing = false;
-					tweening = true;
-				}
-			}
-			else if (!typing && tweening)
-			{
-				randomTxt.alpha -= FlxG.elapsed * 2.4;
-				if (randomTxt.alpha <= 0)
-				{
-					randomTxt.text = '';
-					randomTxt.alpha = 0.25;
-					tweening = false;
-					new FlxTimer().start(0.4, function(twn:FlxTimer)
-					{
-						typing = true;
-					});
-				}
-			}
-		}, 0);
-
 		gridBG = new FlxBackdrop(Paths.image('checker'), 0.2, 0.2, true, true);
 		gridBG.scrollFactor.set(0.1, -0.1);
 		gridBG.antialiasing = true;
 		gridBG.useScaleHack = false;
 		gridBG.alpha = 0.2;
 
-        gridShader.hue = FlxG.random.int(-360, 360);
+		gridShader.hue = FlxG.random.int(-360, 360);
 		gridBG.shader = gridShader.shader;
 		add(gridBG);
 
@@ -133,7 +93,11 @@ class MechanicMenu extends MusicBeatState
 		add(rightBG);
 
 		mechanicGrp = new FlxSpriteGroup();
+		mechanicGrp.scrollFactor.set(0, 0.4);
 		add(mechanicGrp);
+
+		mechanicTooltips = new FlxTypedGroup<MechanicTooltip>();
+		add(mechanicTooltips);
 
 		globalPointTxt = new FlxSprite(0, FlxG.height * 0.1).loadGraphic(Paths.image('globalPoints', 'shared'));
 		globalPointTxt.x = rightBG.getGraphicMidpoint().x;
@@ -143,15 +107,15 @@ class MechanicMenu extends MusicBeatState
 		add(globalPointTxt);
 
 		pointTxt = new Alphabet(0, FlxG.height * 0.155, '' + globalPoints, true);
-        pointTxt.x = globalPointTxt.getGraphicMidpoint().x - 14;
-        if (globalPoints >= 10)
-        {
-            pointTxt.x -= 22;
-        }
-        if (globalPoints >= 20)
-        {
-            pointTxt.x -= 10;
-        }
+		pointTxt.x = globalPointTxt.getGraphicMidpoint().x - 14;
+		if (globalPoints >= 10)
+		{
+			pointTxt.x -= 22;
+		}
+		if (globalPoints >= 20)
+		{
+			pointTxt.x -= 10;
+		}
 		pointTxt.scrollFactor.set();
 		pointTxt.antialiasing = true;
 		add(pointTxt);
@@ -260,10 +224,10 @@ class MechanicMenu extends MusicBeatState
 			{
 				pointTxt.x -= 22;
 			}
-            if (globalPoints >= 20)
-            {
-                pointTxt.x -= 6;
-            }
+			if (globalPoints >= 20)
+			{
+				pointTxt.x -= 6;
+			}
 			pointTxt.scrollFactor.set();
 			pointTxt.antialiasing = true;
 			add(pointTxt);
@@ -298,10 +262,10 @@ class MechanicMenu extends MusicBeatState
 			{
 				pointTxt.x -= 22;
 			}
-            if (globalPoints >= 20)
-            {
-                pointTxt.x -= 10;
-            }
+			if (globalPoints >= 20)
+			{
+				pointTxt.x -= 10;
+			}
 			pointTxt.scrollFactor.set();
 			pointTxt.antialiasing = true;
 			add(pointTxt);
@@ -411,6 +375,7 @@ class MechanicMenu extends MusicBeatState
 			i[0] += 2;
 
 		var sortedMechanics:Array<MechanicManager.MechanicData> = [];
+		var stackedTooltips:Array<MechanicTooltip> = [];
 
 		for (mechanic in MechanicManager.mechanics.keys())
 		{
@@ -420,17 +385,18 @@ class MechanicMenu extends MusicBeatState
 		var sortByValue = function(_1, _2)
 		{
 			return FlxSort.byValues(FlxSort.ASCENDING, _1.ID, _2.ID);
-		} 
+		}
 
 		sortedMechanics.sort(sortByValue);
 
 		for (mechanic in sortedMechanics)
 		{
 			var mechanicSpr:MechanicPortrait;
-			mechanicSpr = new MechanicPortrait(mechanicPositions[i][0], mechanicPositions[i][1], mechanic.name, mechanic.image, null);
+			mechanicSpr = new MechanicPortrait(mechanicPositions[i][0], mechanicPositions[i][1], mechanic, null);
 			mechanicSpr.scrollFactor.set(0, 0.4);
 			mechanic.spriteParent = mechanicSpr;
 			mechanicSpr.text.text = '' + mechanic.points;
+			mechanicSpr.tooltip.scrollFactor.set(0, 0.4);
 
 			FlxMouseEventManager.add(mechanicSpr.arrowL, function(spr:MechanicSprite)
 			{
@@ -460,8 +426,7 @@ class MechanicMenu extends MusicBeatState
 					return;
 				}
 
-				if (mechanic.points - 1 != -1
-					|| (mechanic.points + 1 == 1 && mechanic.points == 0))
+				if (mechanic.points - 1 != -1 || (mechanic.points + 1 == 1 && mechanic.points == 0))
 					FlxG.sound.play(Paths.sound('mechanicSel'), 0.6);
 
 				mechanic.points = Std.int(CoolUtil.boundTo(mechanic.points - 1, 0, 20));
@@ -502,10 +467,19 @@ class MechanicMenu extends MusicBeatState
 				FlxG.sound.play(Paths.sound('mechanicSel'), 0.6);
 			};
 
-			add(mechanicSpr);
+			mechanicGrp.add(mechanicSpr);
+			stackedTooltips.push(mechanicSpr.tooltip);
 
 			i++;
 		}
+
+		new FlxTimer().start(0.1, function(_)
+		{
+			for (tooltip in stackedTooltips)
+			{
+				mechanicTooltips.add(tooltip);
+			}
+		});
 	}
 
 	var moveBG:Bool = true;
@@ -533,7 +507,7 @@ class MechanicMenu extends MusicBeatState
 
 			smoothY -= FlxG.mouse.wheel * 120;
 		}
-		
+
 		smoothY = CoolUtil.boundTo(smoothY, 800, 4500);
 
 		camFollow.y = FlxMath.lerp(camFollow.y, smoothY, CoolUtil.boundTo(elapsed * 3.5, 0, 1));
@@ -544,10 +518,10 @@ class MechanicMenu extends MusicBeatState
 		{
 			pointTxt.x -= 22;
 		}
-        if (globalPoints >= 20)
-        {
-            pointTxt.x -= 10;
-        }
+		if (globalPoints >= 20)
+		{
+			pointTxt.x -= 10;
+		}
 
 		var multiplierInitial:Float = 0;
 

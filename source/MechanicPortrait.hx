@@ -18,16 +18,19 @@ class MechanicPortrait extends FlxSpriteGroup
 	public var arrowL:MechanicSprite;
 	public var arrowR:MechanicSprite;
 	public var text:MechanicText;
+	public var tooltip:MechanicTooltip;
+	public var child:MechanicManager.MechanicData;
 
 	public var data:String = '';
 
-	public function new(x:Float, y:Float, data:String, image:String, scrollFactor:FlxPoint = null)
+	public function new(x:Float, y:Float, child:MechanicManager.MechanicData, scrollFactor:FlxPoint = null)
 	{
 		super(0, 0);
 
 		if (scrollFactor == null)
 			scrollFactor = new FlxPoint(0, 0);
 
+		var image:String = child.image;
 		if (!Assets.exists(Paths.getPath('images/portraits/${image}.png', IMAGE, 'shared')))
 			image = 'blank';
 		portrait = new MechanicSprite(x, y);
@@ -71,12 +74,19 @@ class MechanicPortrait extends FlxSpriteGroup
 		formerTextX = text.x;
 		add(text);
 
+		tooltip = new MechanicTooltip(x + portrait.width, portrait.getGraphicMidpoint().y, portrait.width * 1.6, portrait.height * 0.8, child.name,
+			child.description);
+		tooltip.position.y = portrait.y + (portrait.height * 0.2);
+		tooltip.visible = false;
+
 		FlxMouseEventManager.add(portrait, null, null, function(spr:MechanicSprite)
 		{
 			spr.isSelected = true;
+			tooltip.visible = true;
 		}, function(spr:MechanicSprite)
 		{
 			spr.isSelected = false;
+			tooltip.visible = false;
 		}, true);
 	}
 
@@ -113,7 +123,7 @@ class MechanicText extends FlxText
 	override function update(elapsed:Float)
 	{
 		var newColor:FlxColor = cast color;
-		
+
 		newColor.red = Math.floor(FlxMath.lerp(newColor.red, FlxMath.remapToRange(value, 0, 20, 255, 195), elapsed * 24));
 		newColor.blue = Math.floor(FlxMath.lerp(newColor.blue, FlxMath.remapToRange(value, 0, 20, 255, 25), elapsed * 24));
 		newColor.green = Math.floor(FlxMath.lerp(newColor.green, FlxMath.remapToRange(value, 0, 20, 255, 35), elapsed * 24));
@@ -126,7 +136,7 @@ class MechanicText extends FlxText
 	override function set_text(Text:String):String
 	{
 		value = Std.parseInt(Text);
-		
+
 		return super.set_text(Text);
 	}
 }
@@ -195,7 +205,6 @@ class MechanicSprite extends FlxSprite
 							forceStop = true;
 							return;
 						}
-
 
 						holdFunction();
 					}, 0);
