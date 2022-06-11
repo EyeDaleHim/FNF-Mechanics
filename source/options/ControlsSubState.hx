@@ -301,7 +301,9 @@ class ControlsSubState extends MusicBeatSubstate {
 			item.destroy();
 		}
 
+		#if debug
 		trace('Reloaded keys: ' + ClientPrefs.keyBinds);
+		#end
 
 		for (i in 0...grpOptions.length) {
 			if(!unselectableCheck(i, true)) {

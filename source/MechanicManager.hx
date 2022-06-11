@@ -31,7 +31,9 @@ class MechanicManager
         'click_circle' => new MechanicData('Click The Circles', 'Click the circles with your mouse', 'osu', 21),
         'dimension' => new MechanicData('Dimensions', 'There are now dimensions within the notes, press a button to swap to a dimension', 'dimension', 22),
         'karma' => new MechanicData('Karma', 'When losing health, a poison effect is applied', 'karma', 23)
-	];       
+	];
+
+    public static var multiplier:Float = 1;
 }
 
 class MechanicData

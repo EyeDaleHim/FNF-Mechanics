@@ -544,7 +544,7 @@ class MechanicMenu extends MusicBeatState
 
 		multiplierInitial /= 2;
 
-		multiplierPoints = 1 + FlxMath.roundDecimal(multiplierInitial / 100, 2);
+		MechanicManager.multiplier = multiplierPoints = 1 + FlxMath.roundDecimal(multiplierInitial / 100, 2);
 		multiPointsDisplay = cast multiplierPoints;
 
 		if (multiplierTxt != null)

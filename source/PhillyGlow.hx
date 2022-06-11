@@ -1,12 +1,15 @@
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flixel.FlxG;
+import flixel.math.FlxPoint;
 
 class PhillyGlowParticle extends FlxSprite
 {
 	var lifeTime:Float = 0;
 	var decay:Float = 0;
 	var originalScale:Float = 1;
+	var originalVelocity:FlxPoint = FlxPoint.get();
+
 	public function new(x:Float, y:Float, color:FlxColor)
 	{
 		super(x, y);
@@ -21,14 +24,15 @@ class PhillyGlowParticle extends FlxSprite
 		scale.set(originalScale, originalScale);
 
 		scrollFactor.set(FlxG.random.float(0.3, 0.75), FlxG.random.float(0.65, 0.75));
-		velocity.set(FlxG.random.float(-40, 40), FlxG.random.float(-175, -250));
+		originalVelocity.set(FlxG.random.float(-40, 40), FlxG.random.float(-175, -250));
+		velocity.set(originalVelocity.x, originalVelocity.y);
 		acceleration.set(FlxG.random.float(-10, 10), 25);
 	}
 
 	override function update(elapsed:Float)
 	{
 		lifeTime -= elapsed;
-		if(lifeTime < 0)
+		if (lifeTime < 0)
 		{
 			lifeTime = 0;
 			alpha -= decay * elapsed;
@@ -37,7 +41,22 @@ class PhillyGlowParticle extends FlxSprite
 				scale.set(originalScale * alpha, originalScale * alpha);
 			}
 		}
+
+		velocity.set(originalVelocity.x - (velocityBeatOffset * 0.1), originalVelocity.y - (velocityBeatOffset * 2));
+
+		if (velocityBeatOffset < 0)
+			velocityBeatOffset = 0;
+		else
+			velocityBeatOffset -= elapsed * 5;
+
 		super.update(elapsed);
+	}
+
+	var velocityBeatOffset:Float = 0;
+
+	public function beatHit():Void
+	{
+		velocityBeatOffset = CoolUtil.boundTo(velocityBeatOffset + 140, 0, 300);
 	}
 }
 
