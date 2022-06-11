@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="BURSTNOTE_assets.png">
+	<!-- Created with Adobe Animate version 21.0.5.40714 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="blue hold end0000" x="0" y="320" width="51" height="64"/>
+	<SubTexture name="blue hold piece0000" x="57" y="320" width="51" height="44"/>
+	<SubTexture name="blue0000" x="0" y="0" width="158" height="154"/>
+	<SubTexture name="green hold end0000" x="0" y="320" width="51" height="64"/>
+	<SubTexture name="green hold piece0000" x="57" y="320" width="51" height="44"/>
+	<SubTexture name="green0000" x="0" y="160" width="157" height="154"/>
+	<SubTexture name="pruple end hold0000" x="0" y="320" width="51" height="64"/>
+	<SubTexture name="purple hold piece0000" x="57" y="320" width="51" height="44"/>
+	<SubTexture name="purple0000" x="163" y="163" width="154" height="157"/>
+	<SubTexture name="red hold end0000" x="0" y="320" width="51" height="64"/>
+	<SubTexture name="red hold piece0000" x="57" y="320" width="51" height="44"/>
+	<SubTexture name="red0000" x="164" y="0" width="154" height="157"/>
+</TextureAtlas>

@@ -47,7 +47,7 @@ class PhillyGlowParticle extends FlxSprite
 		if (velocityBeatOffset < 0)
 			velocityBeatOffset = 0;
 		else
-			velocityBeatOffset -= elapsed * 5;
+			velocityBeatOffset -= elapsed * 27;
 
 		super.update(elapsed);
 	}

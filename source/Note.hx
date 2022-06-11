@@ -114,6 +114,32 @@ class Note extends FlxSprite
 						missHealth = 0.3;
 					}
 					hitCausesMiss = true;
+				case 'Kill Note':
+					ignoreNote = mustPress;
+					reloadNote('KILL');
+					noteSplashTexture = 'HURTnoteSplashes';
+					colorSwap.hue = 0;
+					colorSwap.saturation = 0;
+					colorSwap.brightness = 0;
+					if(isSustainNote) {
+						missHealth = FlxMath.MAX_VALUE_FLOAT;
+					} else {
+						missHealth = FlxMath.MAX_VALUE_FLOAT;
+					}
+				case 'Burst Note':
+					ignoreNote = mustPress;
+					reloadNote('BURST');
+					noteSplashTexture = null;
+					noteSplashDisabled = true;
+					colorSwap.hue = 0;
+					colorSwap.saturation = 0;
+					colorSwap.brightness = 0;
+					if(isSustainNote) {
+						missHealth = 0.0475 / 2;
+					} else {
+						missHealth = 0.0475;
+					}
+					hitCausesMiss = true;
 				case 'No Animation':
 					noAnimation = true;
 				case 'GF Sing':

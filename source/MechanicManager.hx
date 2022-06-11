@@ -15,7 +15,7 @@ class MechanicManager
         'sleep_note' => new MechanicData('Sleepy Note', 'If you hit too many sleepy notes, you will lose', 'sleepnote', 5),
         'rating_note' => new MechanicData('Rating Note', 'Rarely, a note color will get replaced with the rating, it\'s still possible to get a perfect combo', 'ratingnote', 6),
         'drain_hp' => new MechanicData('HP Drain', 'Your HP drains over time. With a limit', 'healthdr1', 7),
-        'hit_hp' => new MechanicData('HP Killer', 'Your opponent can fight back', 'healthdr2', 8),
+        'hit_hp' => new MechanicData('HP Killer', 'Your opponent can fight back when they hit a note', 'healthdr2', 8),
         'note_speed' => new MechanicData('Random Speed', 'Each note individually will have a random speed', 'notespeed', 9),
         'dodging' => new MechanicData('Dodging', 'You will get attacked at random, you have to react more quickly depending on the points', 'dodge', 10),
         'note_change' => new MechanicData('Note Changer', 'A note will change from it\'s original position. Affects all type of notes', 'random1', 11),
