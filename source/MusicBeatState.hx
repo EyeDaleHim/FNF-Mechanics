@@ -110,14 +110,6 @@ class MusicBeatState extends FlxUIState
 			}
 			else
 			{
-				var text:FlxText = new FlxText(0, 0, 0, "Loading...", 48);
-				text.setFormat(Paths.font("vcr.ttf"), 48, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
-				text.scrollFactor.set();
-				text.cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
-				text.updateHitbox();
-				text.x = FlxG.width - (text.width + 12);
-				text.y = FlxG.height - (text.height + 12);
-				curState.add(text);
 				CustomFadeTransition.finishCallback = function()
 				{
 					FlxG.switchState(nextState);
@@ -125,6 +117,17 @@ class MusicBeatState extends FlxUIState
 				// trace('changed state');
 			}
 			return;
+		}
+		else
+		{
+			var text:FlxText = new FlxText(0, 0, 0, "Loading...", 48);
+			text.setFormat(Paths.font("vcr.ttf"), 48, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+			text.scrollFactor.set();
+			text.cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+			text.updateHitbox();
+			text.x = FlxG.width - (text.width + 12);
+			text.y = FlxG.height - (text.height + 12);
+			curState.add(text);
 		}
 		FlxTransitionableState.skipNextTransIn = false;
 		FlxG.switchState(nextState);
