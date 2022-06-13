@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxG;
+import flixel.util.FlxSave;
 
 using StringTools;
 
@@ -15,7 +16,6 @@ class Highscore
 	public static var songScores:Map<String, Int> = new Map<String, Int>();
 	public static var songRating:Map<String, Float> = new Map<String, Float>();
 	#end
-
 
 	public static function resetSong(song:String, diff:Int = 0):Void
 	{

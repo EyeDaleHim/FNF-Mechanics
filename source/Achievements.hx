@@ -53,7 +53,7 @@ class Achievements {
 		return -1;
 	}
 
-	public static function loadAchievements():Void {
+	public static function loadAchievements():Void {		
 		if(FlxG.save.data != null) {
 			if(FlxG.save.data.achievementsMap != null) {
 				achievementsMap = FlxG.save.data.achievementsMap;
