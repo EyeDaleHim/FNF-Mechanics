@@ -336,13 +336,13 @@ class ClientPrefs
 		}
 
 		// flixel automatically saves your volume!
-		if (defaultSave.data.volume != null)
+		if (FlxG.save.data.volume != null)
 		{
-			FlxG.sound.volume = defaultSave.data.volume;
+			FlxG.sound.volume = FlxG.save.data.volume;
 		}
 		if (defaultSave.data.mute != null)
 		{
-			FlxG.sound.muted = defaultSave.data.mute;
+			FlxG.sound.muted = FlxG.save.data.mute;
 		}
 
 		var save:FlxSave = new FlxSave();

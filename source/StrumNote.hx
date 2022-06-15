@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.math.FlxPoint;
 
 using StringTools;
 
@@ -11,6 +12,8 @@ class StrumNote extends FlxSprite
 	private var colorSwap:ColorSwap;
 	public var resetAnim:Float = 0;
 	private var noteData:Int = 0;
+	public var positionData:Int = 0;
+	public var formerPosition:FlxPoint = FlxPoint.get();
 	public var direction:Float = 90;//plan on doing scroll directions soon -bb
 	public var downScroll:Bool = false;//plan on doing scroll directions soon -bb
 	public var sustainReduce:Bool = true;
@@ -32,6 +35,8 @@ class StrumNote extends FlxSprite
 		noteData = leData;
 		this.player = player;
 		this.noteData = leData;
+
+		positionData = noteData;
 		super(x, y);
 
 		var skin:String = 'NOTE_assets';
@@ -125,6 +130,7 @@ class StrumNote extends FlxSprite
 		x += 50;
 		x += ((FlxG.width / 2) * player);
 		ID = noteData;
+		formerPosition.set(x, y);
 	}
 
 	override function update(elapsed:Float) {
