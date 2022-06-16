@@ -2697,6 +2697,11 @@ class PlayState extends MusicBeatState
 					moveStrumSections[daBeats] = true;
 					weightedChances[7] = 0;
 				}
+				else
+				{
+					moveStrumSections[daBeats] = false;
+					weightedChances[7] += FlxG.random.float(FlxMath.remapToRange(strumSwapPoints, 0, 20, 0, 4)) * 2;
+				}
 			}
 			else
 			{
@@ -2822,6 +2827,10 @@ class PlayState extends MusicBeatState
 		{
 			playerStrums.forEachAlive(function(strum:StrumNote)
 			{
+				@:privateAccess
+				{
+					strum.positionData = strum.noteData;
+				}
 				noteSwapTweens.push(FlxTween.tween(strum, {x: strum.formerPosition.x, y: strum.formerPosition.y}, 0.4, {
 					ease: FlxEase.cubeOut,
 					onComplete: function(twn:FlxTween)
@@ -2830,7 +2839,7 @@ class PlayState extends MusicBeatState
 					}
 				}));
 			});
-			swapCooldown = FlxG.random.int(0, 16);
+			swapCooldown = FlxG.random.int(0, 4);
 			wasSwapped = !wasSwapped;
 			return;
 		}
@@ -2858,7 +2867,7 @@ class PlayState extends MusicBeatState
 				}
 			}));
 
-		swapCooldown = FlxG.random.int(0, 16);
+		swapCooldown = FlxG.random.int(0, 4);
 
 		wasSwapped = !wasSwapped;
 	}
