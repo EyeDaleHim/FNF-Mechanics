@@ -71,6 +71,7 @@ class Note extends FlxSprite
 	public var copyAngle:Bool = true;
 	public var copyAlpha:Bool = true;
 
+	public var parent:Note;
 	public var sustainChilds:Array<Note> = [];
 
 	public var hitHealth:Float = 0.023;
