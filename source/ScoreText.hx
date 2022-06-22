@@ -18,7 +18,7 @@ class ScoreText
     {
         if (rating == '?')
             return '[Rating] ?';
-        return '[Rating] ${rating} (${accuracy}%)';
+        return '[Rating] ${rating} (${CoolUtil.formatAccuracy(accuracy)}%)';
     }
 
     public static function generateRank(rank:Null<String>)
