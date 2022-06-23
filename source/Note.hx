@@ -71,6 +71,8 @@ class Note extends FlxSprite
 	public var copyAngle:Bool = true;
 	public var copyAlpha:Bool = true;
 
+	public var alphaLimit:Float = 1;
+
 	public var parent:Note;
 	public var sustainChilds:Array<Note> = [];
 
@@ -287,6 +289,11 @@ class Note extends FlxSprite
 		else if (!isSustainNote)
 		{
 			earlyHitMult = 1;
+		}
+
+		if (isSustainNote)
+		{
+			alphaLimit = 0.6;
 		}
 		x += offsetX;
 	}

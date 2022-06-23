@@ -80,6 +80,7 @@ class TitleState extends MusicBeatState
 	var titleJSON:TitleData;
 	
 	public static var updateVersion:String = '';
+	public var beatFunctionList:Array<BeatFunction> = [];
 
 	override public function create():Void
 	{
@@ -716,5 +717,23 @@ class TitleState extends MusicBeatState
 			}
 			skippedIntro = true;
 		}
+	}
+}
+
+class BeatFunction
+{
+	public var beat:Int = -1;
+	public var funcCallback:Void->Void = function()
+	{
+	};
+
+	public function new(beat:Int, funcCallback:Void->Void)
+	{
+		this.funcCallback = function()
+		{
+		};
+
+		this.beat = beat;
+		this.funcCallback = funcCallback;
 	}
 }
