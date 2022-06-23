@@ -5445,6 +5445,12 @@ class PlayState extends MusicBeatState
 			}
 		}
 
+		if (MechanicManager.mechanics["hit_hp"].points > 0)
+		{
+			var lossHealth:Float = FlxMath.remapToRange(MechanicManager.mechanics["hit_hp"].points, 0, 20, 0, 0.02);
+			health = Math.max(health - lossHealth, 0.1);
+		}
+
 		if (SONG.needsVoices)
 			vocals.volume = 1;
 

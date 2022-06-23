@@ -39,13 +39,13 @@ class AdvancedSettingsSubState extends BaseOptionsMenu
 			"string", "none", ['None', 'Mods', 'Base Game', 'All']);
 		addOption(option);
 
-		var option:Option = new Option('Debugger Mode', "Lets you enable the keybinds to access debug menus.", 'debugMode', 'bool',
-			#if debug true #else false #end);
+		var option:Option = new Option('Persistent Cache',
+			'If checked, any assets will stay in memory\nuntil the game is closed, this increases memory usage,\nbut basically makes reloading times instant.',
+			'imagesPersist', 'string', 'Base Game', ['None', 'Mods', 'Base Game', 'All']);
 		addOption(option);
 
-		var option:Option = new Option('Persistent Cached Data',
-			'If checked, images loaded will stay in memory\nuntil the game is closed, this increases memory usage,\nbut basically makes reloading times instant.',
-			'imagesPersist', 'string', 'Base Game', ['None', 'Mods', 'Base Game', 'All']);
+		var option:Option = new Option('Debugger Mode', "Lets you enable the keybinds to access debug menus.", 'debugMode', 'bool',
+			#if debug true #else false #end);
 		addOption(option);
 
 		super();
@@ -58,13 +58,13 @@ class AdvancedSettingsSubState extends BaseOptionsMenu
 		grpOptions.add(resetOption);
 	}
 
-    override public function update(elapsed:Float)
-    {
-        if (controls.ACCEPT && grpOptions.members[curSelected].text == "Reset Preferences Data")
-            openSubState(new options.ResetSettingsSubState());
+	override public function update(elapsed:Float)
+	{
+		if (controls.ACCEPT && grpOptions.members[curSelected].text == "Reset Preferences Data")
+			openSubState(new options.ResetSettingsSubState());
 
-        super.update(elapsed);
-    }
+		super.update(elapsed);
+	}
 
 	override function changeSelection(change:Int = 0)
 	{
@@ -76,16 +76,16 @@ class AdvancedSettingsSubState extends BaseOptionsMenu
 
 		if (curSelected != optionsArray.length)
 		{
-            descText.text = optionsArray[curSelected].description;
+			descText.text = optionsArray[curSelected].description;
 			descText.screenCenter(Y);
 			descText.y += 270;
 		}
-        else
-        {
-            descText.text = 'Resets your Preference Data, in the event of broken save files, this cannot be undone.';
+		else
+		{
+			descText.text = 'Resets your Preference Data, in the event of broken save files, this cannot be undone.';
 			descText.screenCenter(Y);
 			descText.y += 270;
-        }
+		}
 
 		var bullShit:Int = 0;
 
