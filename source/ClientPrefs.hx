@@ -336,9 +336,9 @@ class ClientPrefs
 		}
 
 		// flixel automatically saves your volume!
-		if (FlxG.save.data.volume != null)
+		if (defaultSave.data.volume != null)
 		{
-			FlxG.sound.volume = FlxG.save.data.volume;
+			FlxG.sound.volume = defaultSave.data.volume;
 		}
 		if (defaultSave.data.mute != null)
 		{
@@ -390,7 +390,8 @@ class ClientPrefs
 		healthBarAlpha = 1;
 		controllerMode = false;
 		hitsoundVolume = 0;
-		pauseMusic = 'Tea Time';
+		pauseMusic = 'Outpost Alpha';
+		FlxG.save.data.volume = 1;
 	
 		comboOffset = [0, 0, 0, 0];
 		ratingOffset = 0;

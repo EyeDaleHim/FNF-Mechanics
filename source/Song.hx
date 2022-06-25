@@ -34,6 +34,8 @@ typedef SwagSong =
 
 class Song
 {
+	public static var cachedCharts:Map<String, Array<Note>> = [];
+	
 	public var song:String;
 	public var notes:Array<SwagSection>;
 	public var events:Array<Dynamic>;

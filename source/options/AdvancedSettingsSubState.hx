@@ -29,6 +29,8 @@ using StringTools;
 
 class AdvancedSettingsSubState extends BaseOptionsMenu
 {
+	var lastOption:String = '';
+	
 	public function new()
 	{
 		title = 'Advanced Settings';
@@ -36,7 +38,8 @@ class AdvancedSettingsSubState extends BaseOptionsMenu
 
 		var option:Option = new Option('Chart Caching',
 			"Allows you to cache the charts once loaded, caches charts depending on the preference, this may cause conflicts with some mods.", 'chartCache',
-			"string", "none", ['None', 'Mods', 'Base Game', 'All']);
+			"string", "None", ['None', 'Mods', 'Base Game', 'All']);
+		lastOption = option.getValue();
 		addOption(option);
 
 		var option:Option = new Option('Persistent Cache',
@@ -62,6 +65,17 @@ class AdvancedSettingsSubState extends BaseOptionsMenu
 	{
 		if (controls.ACCEPT && grpOptions.members[curSelected].text == "Reset Preferences Data")
 			openSubState(new options.ResetSettingsSubState());
+
+		if (controls.BACK)
+		{
+			if (lastOption != optionsArray[0].getValue())
+			{
+				Paths.clearStoredMemory();
+				Paths.clearUnusedMemory();
+			}
+			close();
+			FlxG.sound.play(Paths.sound('cancelMenu'));
+		}
 
 		super.update(elapsed);
 	}
