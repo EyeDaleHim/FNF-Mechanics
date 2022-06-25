@@ -55,6 +55,15 @@ class Paths
 		// clear non local assets in the tracked assets list
 		for (key in currentTrackedAssets.keys())
 		{
+			switch (ClientPrefs.imagesPersist)
+			{
+				case 'Base Game':
+					if (key.contains('mod'))
+						continue;
+				case 'Mod':
+					if (!key.contains('mod'))
+						continue;
+			}
 			// if it is not currently contained within the used local assets
 			if (!localTrackedAssets.contains(key) && !dumpExclusions.contains(key))
 			{
@@ -86,6 +95,15 @@ class Paths
 		@:privateAccess
 		for (key in FlxG.bitmap._cache.keys())
 		{
+			switch (ClientPrefs.imagesPersist)
+			{
+				case 'Base Game':
+					if (key.contains('mod'))
+						continue;
+				case 'Mod':
+					if (!key.contains('mod'))
+						continue;
+			}
 			var obj = FlxG.bitmap._cache.get(key);
 			if (obj != null && !currentTrackedAssets.exists(key))
 			{
@@ -98,6 +116,16 @@ class Paths
 		// clear all sounds that are cached
 		for (key in currentTrackedSounds.keys())
 		{
+			switch (ClientPrefs.imagesPersist)
+			{
+				case 'Base Game':
+					if (key.contains('mod'))
+						continue;
+				case 'Mod':
+					if (!key.contains('mod'))
+						continue;
+			}
+
 			if (!localTrackedAssets.contains(key) && !dumpExclusions.contains(key) && key != null)
 			{
 				// trace('test: ' + dumpExclusions, key);

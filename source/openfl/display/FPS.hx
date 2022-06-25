@@ -2,10 +2,12 @@ package openfl.display;
 
 import haxe.Timer;
 import openfl.events.Event;
-import openfl.Assets;
-import openfl.text.TextField;
-import openfl.text.TextFormat;
+import flash.text.TextField;
+import flash.text.TextFieldAutoSize;
+import flash.text.TextFormat;
+import openfl.display.FPSSprite;
 import flixel.math.FlxMath;
+import flixel.util.FlxStringUtil;
 #if gl_stats
 import openfl.display._internal.stats.Context3DStats;
 import openfl.display._internal.stats.DrawCallContext;
@@ -13,9 +15,11 @@ import openfl.display._internal.stats.DrawCallContext;
 #if flash
 import openfl.Lib;
 #end
-
-#if openfl
-import openfl.system.System;
+import flixel.FlxGame;
+import flixel.util.FlxColor;
+import openfl.Assets;
+#if (openfl >= "8.0.0")
+import openfl.utils.AssetType;
 #end
 
 /**
@@ -32,6 +36,10 @@ class FPS extends TextField
 		The current frame rate, expressed using frames-per-second
 	**/
 	public var currentFPS(default, null):Int;
+	public var realAlpha:Float = 1;
+	public var lagging:Bool = false;
+
+	public var spriteParent:FPSSprite;
 
 	@:noCompletion private var cacheCount:Int;
 	@:noCompletion private var currentTime:Float;
@@ -47,7 +55,7 @@ class FPS extends TextField
 		currentFPS = 0;
 		selectable = false;
 		mouseEnabled = false;
-		defaultTextFormat = new TextFormat("_sans", 14, color);
+		defaultTextFormat = new TextFormat(getFont(Paths.font("vcr.ttf")), 14, color);
 		autoSize = LEFT;
 		multiline = true;
 		text = "FPS: ";
@@ -65,10 +73,32 @@ class FPS extends TextField
 		#end
 	}
 
+	public function getFont(Font:String):String
+	{
+		embedFonts = true;
+
+		var newFontName:String = Font;
+
+		if (Font != null)
+		{
+			if (Assets.exists(Font, AssetType.FONT))
+			{
+				newFontName = Assets.getFont(Font).fontName;
+			}
+		}
+		return newFontName;
+	}
+
 	// Event Handlers
 	@:noCompletion
 	private #if !flash override #end function __enterFrame(deltaTime:Float):Void
 	{
+		if (spriteParent != null)
+		{
+			// spriteParent.outlineFPS = this;
+			spriteParent.updateFPS(deltaTime);
+		}
+
 		currentTime += deltaTime;
 		times.push(currentTime);
 
@@ -77,50 +107,47 @@ class FPS extends TextField
 			times.shift();
 		}
 
+		if (!lagging)
+			realAlpha = CoolUtil.boundTo(realAlpha - (deltaTime / 1000), 0.5, 1);
+		else
+			realAlpha = CoolUtil.boundTo(realAlpha + (deltaTime / 1000), 0.5, 1);
+
 		var currentCount = times.length;
 		currentFPS = Math.round((currentCount + cacheCount) / 2);
-		if (currentFPS > ClientPrefs.framerate) currentFPS = ClientPrefs.framerate;
+		if (currentFPS > ClientPrefs.framerate)
+			currentFPS = ClientPrefs.framerate;
 
 		if (currentCount != cacheCount /*&& visible*/)
 		{
 			text = "FPS: " + currentFPS;
-			var memoryMegas:Float = 0;
-			
-			#if openfl
-			memoryMegas = System.totalMemory;
-			text += "\nMemory: " + formatBytes(memoryMegas);
+
+			var ms:Float = 1 / currentFPS;
+			ms *= 1000;
+			#if debug
+			text += ' (${FlxMath.roundDecimal(ms, 2)}ms)';
 			#end
 
-			textColor = 0xFFFFFFFF;
-			if (FlxMath.roundDecimal(System.totalMemory / 1000000, 1) > 3000 || currentFPS <= ClientPrefs.framerate / 2)
+			lagging = false;
+
+			textColor = FlxColor.fromRGBFloat(1, 1, 1, realAlpha);
+			if (currentFPS <= ClientPrefs.framerate / 2)
 			{
-				textColor = 0xFFFF0000;
+				textColor = FlxColor.fromRGBFloat(1, 0, 0, realAlpha);
+				lagging = true;
 			}
 
-			#if (gl_stats && !disable_cffi && (!html5 || !canvas))
-			text += "\ntotalDC: " + Context3DStats.totalDrawCalls();
-			text += "\nstageDC: " + Context3DStats.contextDrawCalls(DrawCallContext.STAGE);
-			text += "\nstage3DDC: " + Context3DStats.contextDrawCalls(DrawCallContext.STAGE3D);
-			#end
-
+			text += '\n';
+			#if debug
+			text += 'CPU: ${FlxGame.updateMS}ms\nGPU: ${FlxGame.drawMS}ms';
+			text += '\nRUNTIME: ${FlxStringUtil.formatTime(currentTime / 1000)}';
 			text += "\n";
+			#end
 		}
 
 		cacheCount = currentCount;
+
+		alpha = realAlpha;
 	}
 
-	private function formatBytes(num:Float):String
-	{
-		var size:Float = Math.abs(num);
-		var data = 0;
-		var dataTexts = ["B", "KB", "MB", "GB", "TB", "PB"];
-		while (size > 1024 && data < dataTexts.length - 1)
-		{
-			data++;
-			size = size / 1024;
-		}
-	
-		size = Math.abs(Math.round(size * 100) / 100);
-		return size + " " + dataTexts[data];
-	}
+	public var textAfter:String = '';
 }
