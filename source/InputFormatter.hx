@@ -121,7 +121,7 @@ class InputFormatter
 	{
 		button = button.toLowerCase();
 		if (button == '')
-			return '[?]';
+			return '???';
 		if (dirReg.match(button))
 		{
 			var a = dirReg.matched(1).toUpperCase() + ' ';

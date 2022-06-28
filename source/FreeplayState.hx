@@ -66,7 +66,7 @@ class FreeplayState extends MusicBeatState
 		DiscordClient.changePresence("In the Menus", null);
 		#end
 
-		if (songs != null)
+		if (songs.length == 0)
 		{
 			for (i in 0...WeekData.weeksList.length)
 			{
@@ -458,12 +458,7 @@ class FreeplayState extends MusicBeatState
 		if (playSound)
 			FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
-		curSelected += change;
-
-		if (curSelected < 0)
-			curSelected = songs.length - 1;
-		if (curSelected >= songs.length)
-			curSelected = 0;
+		curSelected = FlxMath.wrap(curSelected + change, 0, songs.length - 1);
 
 		var newColor:Int = songs[curSelected].color;
 		if (newColor != intendedColor)

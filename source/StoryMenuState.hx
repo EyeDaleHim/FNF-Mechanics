@@ -323,12 +323,7 @@ class StoryMenuState extends MusicBeatState
 	var tweenDifficulty:FlxTween;
 	function changeDifficulty(change:Int = 0):Void
 	{
-		curDifficulty += change;
-
-		if (curDifficulty < 0)
-			curDifficulty = CoolUtil.difficulties.length-1;
-		if (curDifficulty >= CoolUtil.difficulties.length)
-			curDifficulty = 0;
+		curDifficulty = FlxMath.wrap(curDifficulty + change, 0,  CoolUtil.difficulties.length - 1);
 
 		WeekData.setDirectoryFromWeek(loadedWeeks[curWeek]);
 
@@ -362,12 +357,7 @@ class StoryMenuState extends MusicBeatState
 
 	function changeWeek(change:Int = 0):Void
 	{
-		curWeek += change;
-
-		if (curWeek >= loadedWeeks.length)
-			curWeek = 0;
-		if (curWeek < 0)
-			curWeek = loadedWeeks.length - 1;
+		curWeek = FlxMath.wrap(curWeek + change, 0, loadedWeeks.length - 1);
 
 		var leWeek:WeekData = loadedWeeks[curWeek];
 		WeekData.setDirectoryFromWeek(leWeek);

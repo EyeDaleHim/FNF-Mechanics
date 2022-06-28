@@ -92,11 +92,8 @@ class AchievementsMenuState extends MusicBeatState
 	}
 
 	function changeSelection(change:Int = 0) {
-		curSelected += change;
-		if (curSelected < 0)
-			curSelected = options.length - 1;
-		if (curSelected >= options.length)
-			curSelected = 0;
+
+		curSelected = FlxMath.wrap(curSelected + change, 0, options.length - 1);
 
 		var bullShit:Int = 0;
 

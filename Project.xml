@@ -9,6 +9,7 @@
 
 	<!-- NOTE TO SELF: DISABLE THIS IF ISSUES ARE FOUND -->
 	<haxedef name="LINC_LUA_RELATIVE_DYNAMIC_LIB"/> <!-- stable luas PUT AFTER FIRST LINE WITH APP NAME AND ETC -->
+	<haxedef name="HXCPP_GC_BIG_BLOCKS"/>
 	<haxedef name="no-deprecation-warnings" />
 	<haxedef name="TRACE_LUA_ERRORS" /> <!-- Disable traces -->
 

@@ -33,6 +33,7 @@ class ClientPrefs
 	public static var controllerMode:Bool = false;
 	public static var hitsoundVolume:Float = 0;
 	public static var pauseMusic:String = 'Tea Time';
+	public static var safeScript:String = 'Off';
 	public static var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
 		'scrolltype' => 'multiplicative',
@@ -120,6 +121,7 @@ class ClientPrefs
 		defaultSave.data.noReset = noReset;
 		defaultSave.data.healthBarAlpha = healthBarAlpha;
 		defaultSave.data.comboOffset = comboOffset;
+		defaultSave.data.safeScript = safeScript;
 		FlxG.save.data.achievementsMap = Achievements.achievementsMap;
 		FlxG.save.data.henchmenDeath = Achievements.henchmenDeath;
 
@@ -293,7 +295,10 @@ class ClientPrefs
 		{
 			comboOffset = defaultSave.data.comboOffset;
 		}
-
+		if (defaultSave.data.safeScript != null)
+		{
+			safeScript = defaultSave.data.safeScript;
+		}
 		if (defaultSave.data.ratingOffset != null)
 		{
 			ratingOffset = defaultSave.data.ratingOffset;

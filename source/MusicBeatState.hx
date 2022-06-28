@@ -12,6 +12,7 @@ import flixel.text.FlxText;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flixel.util.FlxGradient;
+import flixel.system.FlxSound;
 import flixel.FlxState;
 import flixel.FlxBasic;
 
@@ -97,6 +98,7 @@ class MusicBeatState extends FlxUIState
 		// Custom made Trans in
 		var curState:Dynamic = FlxG.state;
 		var leState:MusicBeatState = curState;
+
 		if (!FlxTransitionableState.skipNextTransIn)
 		{
 			leState.openSubState(new CustomFadeTransition(0.6, false));
@@ -119,7 +121,7 @@ class MusicBeatState extends FlxUIState
 			return;
 		}
 		else
-		{
+		{			
 			var text:FlxText = new FlxText(0, 0, 0, "Loading...", 48);
 			text.setFormat(Paths.font("vcr.ttf"), 48, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
 			text.scrollFactor.set();

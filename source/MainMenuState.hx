@@ -273,7 +273,7 @@ class MainMenuState extends MusicBeatState
 
 	function changeItem(huh:Int = 0)
 	{
-		curSelected += huh;
+		curSelected = FlxMath.wrap(curSelected + huh, 0, menuItems.length - 1);
 
 		if (curSelected >= menuItems.length)
 			curSelected = 0;

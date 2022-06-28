@@ -30,7 +30,7 @@ using StringTools;
 class AdvancedSettingsSubState extends BaseOptionsMenu
 {
 	var lastOption:String = '';
-	
+
 	public function new()
 	{
 		title = 'Advanced Settings';
@@ -45,6 +45,11 @@ class AdvancedSettingsSubState extends BaseOptionsMenu
 		var option:Option = new Option('Persistent Cache',
 			'If checked, any assets will stay in memory\nuntil the game is closed, this increases memory usage,\nbut basically makes reloading times instant.',
 			'imagesPersist', 'string', 'Base Game', ['None', 'Mods', 'Base Game', 'All']);
+		addOption(option);
+
+		var option:Option = new Option('Safe Scripts',
+			'Any scripts containing malicious functions will not be triggered, change this option if you know what you\'re doing!', 'safeScript', 'string',
+			'on', ['Off', 'Warn First', 'On']);
 		addOption(option);
 
 		var option:Option = new Option('Debugger Mode', "Lets you enable the keybinds to access debug menus.", 'debugMode', 'bool',

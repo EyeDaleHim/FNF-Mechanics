@@ -65,7 +65,7 @@ class CustomFadeTransition extends MusicBeatSubstate
 				onComplete: function(twn:FlxTween)
 				{
 					if (finishCallback != null)
-					{
+					{						
 						var text:FlxText = new FlxText(0, 0, 0, "Loading...", 48);
 						text.setFormat(Paths.font("vcr.ttf"), 48, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
 						text.scrollFactor.set();
