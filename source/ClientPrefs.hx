@@ -10,7 +10,9 @@ class ClientPrefs
 {
 	public static var downScroll:Bool = false;
 	public static var middleScroll:Bool = false;
+	public static var timeHit:Bool = false;
 	public static var showFPS:Bool = true;
+	public static var performanceCounter:String = 'fps-mem-peak';
 	public static var flashing:Bool = true;
 	public static var globalAntialiasing:Bool = true;
 	public static var noteSplashes:Bool = true;
@@ -21,6 +23,7 @@ class ClientPrefs
 	public static var camZooms:Bool = true;
 	public static var hideHud:Bool = false;
 	public static var noteOffset:Int = 0;
+	public static var channel:String = 'Stereo';
 	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
 	public static var imagesPersist:String = 'None';
 	public static var chartCache:String = 'None';
@@ -95,12 +98,14 @@ class ClientPrefs
 	public static var defaultSave:FlxSave = new FlxSave();
 
 	public static function saveSettings()
-	{		
+	{
 		defaultSave.bind('ultimatemechanics-settings', 'eyedalehim');
-		
+
 		defaultSave.data.downScroll = downScroll;
 		defaultSave.data.middleScroll = middleScroll;
 		defaultSave.data.showFPS = showFPS;
+		defaultSave.data.performanceCounter = performanceCounter;
+		defaultSave.data.timeHit = timeHit;
 		defaultSave.data.flashing = flashing;
 		defaultSave.data.globalAntialiasing = globalAntialiasing;
 		defaultSave.data.noteSplashes = noteSplashes;
@@ -122,6 +127,7 @@ class ClientPrefs
 		defaultSave.data.healthBarAlpha = healthBarAlpha;
 		defaultSave.data.comboOffset = comboOffset;
 		defaultSave.data.safeScript = safeScript;
+		defaultSave.data.channel = channel;
 		FlxG.save.data.achievementsMap = Achievements.achievementsMap;
 		FlxG.save.data.henchmenDeath = Achievements.henchmenDeath;
 
@@ -147,7 +153,7 @@ class ClientPrefs
 	public static function loadPrefs()
 	{
 		defaultSave.bind('ultimatemechanics-settings', 'eyedalehim');
-		
+
 		var lastTime = openfl.Lib.getTimer();
 		if (defaultSave.data.firstTime == null)
 		{
@@ -176,7 +182,7 @@ class ClientPrefs
 			defaultSave.data.noReset = FlxG.save.data.noReset;
 			defaultSave.data.healthBarAlpha = FlxG.save.data.healthBarAlpha;
 			defaultSave.data.comboOffset = FlxG.save.data.comboOffset;
-	
+
 			defaultSave.data.ratingOffset = FlxG.save.data.ratingOffset;
 			defaultSave.data.sickWindow = FlxG.save.data.sickWindow;
 			defaultSave.data.goodWindow = FlxG.save.data.goodWindow;
@@ -190,7 +196,7 @@ class ClientPrefs
 			trace('finished transferring data in ${openfl.Lib.getTimer() - lastTime}ms');
 			return loadPrefs();
 		}
-		
+
 		if (defaultSave.data.downScroll != null)
 		{
 			downScroll = defaultSave.data.downScroll;
@@ -199,6 +205,10 @@ class ClientPrefs
 		{
 			middleScroll = defaultSave.data.middleScroll;
 		}
+		if (defaultSave.data.timeHit != null)
+		{
+			timeHit = defaultSave.data.timeHit;
+		}
 		if (defaultSave.data.showFPS != null)
 		{
 			showFPS = defaultSave.data.showFPS;
@@ -206,6 +216,10 @@ class ClientPrefs
 			{
 				Main.fpsVar.visible = showFPS;
 			}
+		}
+		if (defaultSave.data.performanceCounter != null)
+		{
+			performanceCounter = defaultSave.data.performanceCounter;
 		}
 		if (defaultSave.data.flashing != null)
 		{
@@ -243,6 +257,10 @@ class ClientPrefs
 			if(defaultSave.data.violence != null) {
 				violence = defaultSave.data.violence;
 		}*/
+		if (defaultSave.data.channel != null)
+		{
+			channel = defaultSave.data.channel;
+		}
 		if (defaultSave.data.imagesPersist != null)
 		{
 			imagesPersist = defaultSave.data.imagesPersist;
@@ -373,6 +391,7 @@ class ClientPrefs
 
 		downScroll = false;
 		middleScroll = false;
+		timeHit = false;
 		showFPS = true;
 		flashing = true;
 		globalAntialiasing = true;
@@ -396,8 +415,10 @@ class ClientPrefs
 		controllerMode = false;
 		hitsoundVolume = 0;
 		pauseMusic = 'Outpost Alpha';
+		performanceCounter = 'fps-mem-peak';
+		channel = 'Stereo';
 		FlxG.save.data.volume = 1;
-	
+
 		comboOffset = [0, 0, 0, 0];
 		ratingOffset = 0;
 		sickWindow = 45;

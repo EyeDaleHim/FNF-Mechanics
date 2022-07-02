@@ -1,12 +1,13 @@
 package;
 
 import flixel.math.FlxMath;
+import flixel.util.FlxStringUtil;
 
 class ScoreText
 {
     public static function generateScore(score:Int)
     {
-        return '[Score] ${score}';
+        return '[Score] ${FlxStringUtil.formatMoney(score, false)}';
     }
 
     public static function generateMiss(miss:Int)

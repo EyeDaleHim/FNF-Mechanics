@@ -12,7 +12,10 @@ import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
+import flixel.util.FlxTimer;
 import flixel.util.FlxColor;
+import flixel.util.FlxStringUtil;
+import flixel.util.FlxGradient;
 import flixel.tweens.FlxTween;
 import lime.utils.Assets;
 import flixel.system.FlxSound;
@@ -27,7 +30,10 @@ using StringTools;
 class FreeplayState extends MusicBeatState
 {
 	static var songs:Array<SongMetadata> = [];
+	public static var cachedEvents:Map<String, Dynamic> = [];
+
 	var selector:FlxText;
+
 	public static var curBPM:Float = 100;
 	private static var curSelected:Int = 0;
 
@@ -43,6 +49,8 @@ class FreeplayState extends MusicBeatState
 	var intendedScore:Int = 0;
 	var intendedRating:Float = 0;
 
+	var gradientSprite:FlxSprite;
+
 	private var grpSongs:FlxTypedGroup<Alphabet>;
 	private var curPlaying:Bool = false;
 
@@ -54,9 +62,6 @@ class FreeplayState extends MusicBeatState
 
 	override function create()
 	{
-		Paths.clearStoredMemory();
-		// Paths.clearUnusedMemory();
-
 		persistentUpdate = true;
 		PlayState.isStoryMode = false;
 		WeekData.reloadWeekFiles(false);
@@ -112,6 +117,16 @@ class FreeplayState extends MusicBeatState
 		bg.antialiasing = ClientPrefs.globalAntialiasing;
 		add(bg);
 		bg.screenCenter();
+
+		gradientSprite = FlxGradient.createGradientFlxSprite(Math.floor(bg.width), Math.floor(bg.height / 1.5), [FlxColor.WHITE, FlxColor.TRANSPARENT], 1,
+			270);
+		gradientSprite.antialiasing = ClientPrefs.globalAntialiasing;
+		gradientSprite.scrollFactor.set();
+		gradientSprite.y = FlxG.height - gradientSprite.height;
+		gradientSprite.scale.y = 0;
+		gradientSprite.updateHitbox();
+		gradientSprite.screenCenter();
+		add(gradientSprite);
 
 		grpSongs = new FlxTypedGroup<Alphabet>();
 		add(grpSongs);
@@ -201,17 +216,26 @@ class FreeplayState extends MusicBeatState
 		add(textBG);
 
 		#if PRELOAD_ALL
-		var leText:String = "[SPACE] Listen to the Song / [CTRL] Open the Gameplay Changers Menu / [RESET] Reset your Score and Accuracy.";
+		var leText:String = "[SPACE] Listen Song / [CTRL] Gameplay Changers Menu / [RESET] Reset Progress on Song";
 		var size:Int = 16;
 		#else
-		var leText:String = "[CTRL] Open the Gameplay Changers Menu / [RESET] Reset your Score and Accuracy..";
+		var leText:String = "[CTRL] Gameplay Changers Menu / [RESET] Reset Progress on Song";
 		var size:Int = 18;
 		#end
 		var text:FlxText = new FlxText(textBG.x, textBG.y + 4, FlxG.width, leText, size);
 		text.setFormat(Paths.font("vcr.ttf"), size, FlxColor.WHITE, RIGHT);
 		text.scrollFactor.set();
 		add(text);
+
 		super.create();
+
+		if (events != null && events.length > 0)
+		{
+			while (Conductor.songPosition > events[0].position)
+			{
+				events.shift();
+			}
+		}
 	}
 
 	override function closeSubState()
@@ -269,7 +293,11 @@ class FreeplayState extends MusicBeatState
 		if (Math.abs(lerpRating - intendedRating) <= 0.01)
 			lerpRating = intendedRating;
 
-		scoreText.text = 'PERSONAL BEST: ' + lerpScore + ' (' + CoolUtil.formatAccuracy(Highscore.floorDecimal(lerpRating * 100, 2)) + '%)';
+		scoreText.text = 'PERSONAL BEST: '
+			+ FlxStringUtil.formatMoney(lerpScore, false)
+			+ ' ('
+			+ CoolUtil.formatAccuracy(Highscore.floorDecimal(lerpRating * 100, 2))
+			+ '%)';
 		positionHighscore();
 
 		var upP = controls.UI_UP_P;
@@ -338,12 +366,43 @@ class FreeplayState extends MusicBeatState
 			{
 				#if PRELOAD_ALL
 				destroyFreeplayVocals();
+				events = [];
 				FlxG.sound.music.volume = 0;
 				Paths.currentModDirectory = songs[curSelected].folder;
-				var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
-				PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
-				curBPM = PlayState.SONG.bpm;
-				Conductor.changeBPM(PlayState.SONG.bpm);
+				var name:String = songs[curSelected].songName.toLowerCase();
+				var poop:String = Highscore.formatSong(name, curDifficulty);
+				PlayState.SONG = Song.loadFromJson(poop, name);
+				Conductor.mapBPMChanges(PlayState.SONG);
+				Conductor.changeBPM(curBPM = PlayState.SONG.bpm);
+
+				camBeat = 1;
+
+				var exists:Bool = false;
+				#if sys
+				exists = (FileSystem.exists(Paths.modsJson(name + '/events')) || FileSystem.exists(Paths.json(name + '/events')));
+				#else
+				exists = OpenFlAssets.exists(Paths.json(name + '/events'));
+				#end
+				nextEventIndex = 0;
+				if (exists)
+				{
+					var eventsData:Array<Dynamic> = Song.loadFromJson('events', name).events;
+					for (event in eventsData) // Event Notes
+					{
+						for (i in 0...event[1].length)
+						{
+							var newEventNote:Array<Dynamic> = [event[0], event[1][i][0], event[1][i][1], event[1][i][2]];
+							var subEvent = {
+								position: newEventNote[0],
+								event: newEventNote[1],
+								value1: newEventNote[2],
+								value2: newEventNote[3]
+							};
+							events.push(subEvent);
+						}
+					}
+				}
+
 				if (PlayState.SONG.needsVoices)
 					vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
 				else
@@ -351,11 +410,17 @@ class FreeplayState extends MusicBeatState
 
 				FlxG.sound.list.add(vocals);
 				FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 0.7);
+				FlxG.sound.music.onComplete = function()
+				{
+					nextEventIndex = 0;
+				}
 				vocals.play();
 				vocals.persist = true;
 				vocals.looped = true;
 				vocals.volume = 0.7;
 				instPlaying = curSelected;
+
+				gradientSprite.color = CoolUtil.dominantColor(iconArray[curSelected], [FlxColor.WHITE]);
 				#end
 			}
 		}
@@ -375,6 +440,8 @@ class FreeplayState extends MusicBeatState
 			}*/
 			trace(poop);
 
+			camBeat = 1;
+
 			PlayState.SONG = Song.loadFromJson(poop, songLowercase);
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;
@@ -384,6 +451,8 @@ class FreeplayState extends MusicBeatState
 			{
 				colorTween.cancel();
 			}
+
+			events = [];
 
 			if (FlxG.keys.pressed.SHIFT)
 			{
@@ -409,8 +478,35 @@ class FreeplayState extends MusicBeatState
 
 		Conductor.songPosition = FlxG.sound.music.time;
 
+		if (events[nextEventIndex] != null)
+		{
+			if (Conductor.songPosition >= events[nextEventIndex].position)
+			{
+				triggerEvent(events[nextEventIndex]);
+				nextEventIndex++;
+			}
+		}
+
 		FlxG.camera.zoom = FlxMath.lerp(FlxG.camera.zoom, 1, CoolUtil.boundTo(elapsed * 4 * (curBPM / 100), 0, 1));
+
+		scaleLerp = FlxMath.lerp(scaleLerp, 0, CoolUtil.boundTo(elapsed * 4.85 * (curBPM / 100), 0, 1));
+		gradientSprite.scale.y = scaleLerp;
+		if (gradientSprite.scale.y < 0)
+			gradientSprite.scale.y = 0;
+		gradientSprite.updateHitbox();
+		gradientSprite.y = FlxG.height - gradientSprite.height;
 	}
+
+	public var scaleLerp:Float = 0;
+
+	public static var events:Array<
+		{
+			event:String,
+			position:Float,
+			value1:String,
+			value2:String
+		}> = [];
+	public static var nextEventIndex:Int = 0;
 
 	override public function beatHit():Void
 	{
@@ -418,7 +514,57 @@ class FreeplayState extends MusicBeatState
 
 		if (vocals != null)
 		{
-			FlxG.camera.zoom += 0.015;
+			if (PlayState.SONG.notes[Math.floor(curStep / 16)] != null)
+			{
+				if (PlayState.SONG.notes[Math.floor(curStep / 16)].changeBPM)
+				{
+					Conductor.changeBPM(PlayState.SONG.notes[Math.floor(curStep / 16)].bpm);
+					curBPM = PlayState.SONG.notes[Math.floor(curStep / 16)].bpm;
+				}
+			}
+
+			if (curBeat % camBeat == 0)
+				FlxG.camera.zoom += 0.015;
+		}
+	}
+
+	override function destroy():Void
+	{
+		camBeat = 1;
+		super.destroy();
+	}
+
+	static private var camBeat:Int = 1;
+
+	override public function stepHit():Void
+	{
+		super.stepHit();
+	}
+
+	public function triggerEvent(event:
+		{
+			event:String,
+			position:Float,
+			value1:String,
+			value2:String
+		})
+	{
+		switch (event.event)
+		{
+			case 'Add Camera Zoom':
+				{
+					scaleLerp = 1;
+					gradientSprite.scale.y = 1;
+					gradientSprite.updateHitbox();
+					gradientSprite.y = FlxG.height - gradientSprite.height;
+				}
+			case 'Set GF Speed':
+				{
+					if (Math.isNaN(Std.parseInt(event.value1)))
+						event.value1 = '1';
+
+					camBeat = Std.parseInt(event.value1);
+				}
 		}
 	}
 

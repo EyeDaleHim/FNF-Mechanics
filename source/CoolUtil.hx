@@ -49,6 +49,22 @@ class CoolUtil
 		return Math.max(min, Math.min(max, value));
 	}
 
+	public static function formatMemory(num:UInt):String
+	{
+		var size:Float = num;
+		var data = 0;
+		var dataTexts = ["B", "KB", "MB", "GB", "TB", "PB"];
+		while (size > 1024 && data < dataTexts.length - 1)
+		{
+			data++;
+			size = size / 1024;
+		}
+
+		size = Math.round(size * 100) / 100;
+		var formatSize:String = formatAccuracy(size);
+		return formatSize + " " + dataTexts[data];
+	}
+
 	public static function coolTextFile(path:String):Array<String>
 	{
 		var daList:Array<String> = [];
@@ -81,7 +97,7 @@ class CoolUtil
 		return daList;
 	}
 
-	public static function dominantColor(sprite:flixel.FlxSprite):Int
+	public static function dominantColor(sprite:flixel.FlxSprite, ?ignoreColors:Array<Int>):Int
 	{
 		var countByColor:Map<Int, Int> = [];
 		for (col in 0...sprite.frameWidth)
@@ -105,6 +121,13 @@ class CoolUtil
 		var maxCount = 0;
 		var maxKey:Int = 0; // after the loop this will store the max color
 		countByColor[flixel.util.FlxColor.BLACK] = 0;
+		if (ignoreColors != null && ignoreColors.length > 0)
+		{
+			for (color in ignoreColors)
+			{
+				countByColor[color] = 0;
+			}
+		}
 		for (key in countByColor.keys())
 		{
 			if (countByColor[key] >= maxCount)
@@ -117,41 +140,43 @@ class CoolUtil
 	}
 
 	public static function formatAccuracy(value:Float)
+	{
+		var conversion:Map<String, String> = [
+			'0' => '0.00',
+			'0.0' => '0.00',
+			'0.00' => '0.00',
+			'00' => '00.00',
+			'00.0' => '00.00',
+			'00.00' => '00.00', // gotta do these as well because lazy
+			'000' => '000.00'
+		]; // these are to ensure you're getting the right values, instead of using complex if statements depending on string length
+
+		var stringVal:String = Std.string(value);
+		var converVal:String = '';
+		for (i in 0...stringVal.length)
 		{
-			var conversion:Map<String, String> = 
-			[
-				'0' => '0.00',
-				'0.0' => '0.00',
-				'0.00' => '0.00',
-				'00' => '00.00',
-				'00.0' => '00.00',
-				'00.00' => '00.00', // gotta do these as well because lazy
-				'000' => '000.00'
-			]; // these are to ensure you're getting the right values, instead of using complex if statements depending on string length
-	
-			var stringVal:String = Std.string(value);
-			var converVal:String = '';
-			for (i in 0...stringVal.length)
-			{
-				if (stringVal.charAt(i) == '.')
-					converVal += '.';
-				else
-					converVal += '0';
-			}
-	
-			var wantedConversion:String = conversion.get(converVal);
-			var convertedValue:String = '';
-	
-			for (i in 0...wantedConversion.length)
-			{
-				if (stringVal.charAt(i) == '')
-					convertedValue += wantedConversion.charAt(i);
-				else
-					convertedValue += stringVal.charAt(i);
-			}
-			
-			return convertedValue;
+			if (stringVal.charAt(i) == '.')
+				converVal += '.';
+			else
+				converVal += '0';
 		}
+
+		var wantedConversion:String = conversion.get(converVal);
+		var convertedValue:String = '';
+
+		for (i in 0...wantedConversion.length)
+		{
+			if (stringVal.charAt(i) == '')
+				convertedValue += wantedConversion.charAt(i);
+			else
+				convertedValue += stringVal.charAt(i);
+		}
+
+		if (convertedValue.length == 0)
+			return '$value';
+
+		return convertedValue;
+	}
 
 	public static function numberArray(max:Int, ?min = 0):Array<Int>
 	{

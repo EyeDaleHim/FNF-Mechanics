@@ -28,6 +28,8 @@ class Paths
 	inline public static var SOUND_EXT = #if web "mp3" #else "ogg" #end;
 	inline public static var VIDEO_EXT = "mp4";
 
+	public static var defaultFont = Paths.font("vcr.ttf");
+
 	#if MODS_ALLOWED
 	public static var ignoreModFolders:Array<String> = [
 		'characters', 'custom_events', 'custom_notetypes', 'data', 'songs', 'music', 'sounds', 'shaders', 'videos', 'images', 'stages', 'weeks', 'fonts',
@@ -50,8 +52,6 @@ class Paths
 	/// haya I love you for the base cache dump I took to the max
 	public static function clearUnusedMemory()
 	{
-		if (ClientPrefs.imagesPersist == 'All')
-			return;
 		// clear non local assets in the tracked assets list
 		for (key in currentTrackedAssets.keys())
 		{

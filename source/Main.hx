@@ -81,7 +81,7 @@ class Main extends Sprite
 		Lib.current.stage.align = "tl";
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
 		if(fpsVar.fps != null) {
-			fpsVar.fps.visible = ClientPrefs.showFPS;
+			fpsVar.fps.visible = (ClientPrefs.performanceCounter != 'hide');
 		}
 		#end
 

@@ -130,10 +130,12 @@ class MainMenuState extends MusicBeatState
 		var versionShit:FlxText = new FlxText(12, FlxG.height - 44, 0, "Psych Engine v" + psychEngineVersion, 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(versionShit);
-		var versionShit:FlxText = new FlxText(12, FlxG.height - 24, 0, "Friday Night Funkin' v" + Application.current.meta.get('version'), 12);
-		versionShit.scrollFactor.set();
-		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		versionShit.text += '\nFriday Night Funkin\' v' + Application.current.meta.get('version');
+		versionShit.text += '\nMechanics Mod v' + '1.0.0';
+		versionShit.updateHitbox();
+		versionShit.text += '\n';
+		versionShit.y = FlxG.height - versionShit.height + 28;
+
 		add(versionShit);
 
 		// NG.core.calls.event.logEvent('swag').send();
