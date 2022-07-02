@@ -83,7 +83,6 @@ class MechanicPortrait extends FlxSpriteGroup
 		{
 			spr.isSelected = true;
 			tooltip.visible = true;
-			
 		}, function(spr:MechanicSprite)
 		{
 			spr.isSelected = false;

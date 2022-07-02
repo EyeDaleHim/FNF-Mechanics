@@ -36,7 +36,7 @@ class MechanicTooltip extends FlxTypedGroup<FlxSprite>
 		var RHeight:Int = Math.ceil(height);
 		var SColor:Int = FlxColor.fromRGBFloat(255, 255, 255, 0.4);
 
-        // stupid references
+		// stupid references
 		baseBG = new TooltipSprite(x, y - 20);
 		baseBG.makeGraphic(RWidth, RHeight, SColor);
 		baseBG.scrollFactor.set(0, 0.4);
@@ -58,8 +58,8 @@ class MechanicTooltip extends FlxTypedGroup<FlxSprite>
 		descriptionText.antialiasing = true;
 		add(descriptionText);
 
-        titleText.y -= 140;
-        descriptionText.y -= 140;
+		titleText.y -= 140;
+		descriptionText.y -= 140;
 	}
 
 	public override function update(elapsed:Float)

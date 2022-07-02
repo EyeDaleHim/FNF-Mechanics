@@ -7,6 +7,8 @@ import Song.SwagSong;
  * @author
  */
 
+using StringTools;
+
 typedef BPMChangeEvent =
 {
 	var stepTime:Int;
@@ -72,7 +74,35 @@ class Conductor
 			totalSteps += deltaSteps;
 			totalPos += ((60 / curBPM) * 1000 / 4) * deltaSteps;
 		}
-		trace("new BPM map BUDDY " + bpmChangeMap);
+		#if debug
+		var traceString:String = 'SONG: ${song.song}, BPM MAP: (FIRST: ${curBPM})';
+		if (bpmChangeMap.length > 0)
+		{
+			traceString += '\n${formatMap(bpmChangeMap)}';
+		}
+		trace(traceString);
+		#end
+	}
+
+	public static function formatMap(events:Array<BPMChangeEvent>):String
+	{
+		if (events.length == 0)
+			return '';
+
+		var format:String = '';
+
+		for (event in events)
+		{
+			var stepFormat:String = 'Step: ${event.stepTime}';
+			var timeFormat:String = 'Time: ${'${Math.ceil(event.songTime)}'.split('.')[0]}';
+			var bpmFormat:String = 'BPM: ${event.bpm}';
+
+			format += '($stepFormat, $timeFormat, $bpmFormat)';
+			if (events.indexOf(event) != events.length - 1)
+				format += ', ';
+		}
+
+		return format;
 	}
 
 	public static function changeBPM(newBpm:Float)

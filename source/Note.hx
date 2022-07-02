@@ -170,22 +170,32 @@ class Note extends FlxSprite
 						missHealth = 0.0475;
 					}
 					hitCausesMiss = true;
-					case 'Fake Note':
-						ignoreNote = mustPress;
-						reloadNote('FAKE');
-						noteSplashTexture = 'HURTnoteSplashes';
-						colorSwap.hue = 0;
-						colorSwap.saturation = 0;
-						colorSwap.brightness = 0;
-						if (isSustainNote)
-						{
-							missHealth = 0.0475 / 2;
-						}
-						else
-						{
-							missHealth = 0.0475;
-						}
-						hitCausesMiss = true;
+				case 'Restore Note':
+					reloadNote('RESTORE');
+					if (isSustainNote)
+					{
+						missHealth = 0.0475 / 2;
+					}
+					else
+					{
+						missHealth = 0.0475;
+					}
+				case 'Fake Note':
+					ignoreNote = mustPress;
+					reloadNote('FAKE');
+					noteSplashTexture = 'HURTnoteSplashes';
+					colorSwap.hue = 0;
+					colorSwap.saturation = 0;
+					colorSwap.brightness = 0;
+					if (isSustainNote)
+					{
+						missHealth = 0.0475 / 2;
+					}
+					else
+					{
+						missHealth = 0.0475;
+					}
+					hitCausesMiss = true;
 				case 'No Animation':
 					noAnimation = true;
 				case 'GF Sing':

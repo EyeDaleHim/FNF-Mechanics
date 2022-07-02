@@ -126,6 +126,15 @@ class BaseOptionsMenu extends MusicBeatSubstate
 			updateTextFrom(optionsArray[i]);
 		}
 
+		for (text in grpOptions)
+		{
+			for (letter in text.members)
+			{
+				letter.blend = DIFFERENCE;
+				letter.color = FlxColor.WHITE;
+			}
+		}
+
 		changeSelection();
 		reloadCheckboxes();
 	}

@@ -2,6 +2,7 @@ import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flixel.FlxG;
 import flixel.math.FlxPoint;
+import flixel.math.FlxMath;
 
 class PhillyGlowParticle extends FlxSprite
 {
@@ -36,7 +37,7 @@ class PhillyGlowParticle extends FlxSprite
 		{
 			lifeTime = 0;
 			alpha -= decay * elapsed;
-			if(alpha > 0)
+			if (alpha > 0)
 			{
 				scale.set(originalScale * alpha, originalScale * alpha);
 			}
@@ -64,6 +65,7 @@ class PhillyGlowGradient extends FlxSprite
 {
 	public var originalY:Float;
 	public var originalHeight:Int = 400;
+
 	public function new(x:Float, y:Float)
 	{
 		super(x, y);
@@ -79,18 +81,18 @@ class PhillyGlowGradient extends FlxSprite
 	override function update(elapsed:Float)
 	{
 		var newHeight:Int = Math.round(height - 1000 * elapsed);
-		if(newHeight > 0)
+		if (newHeight > 0)
 		{
-			alpha = 1;
 			setGraphicSize(2000, newHeight);
 			updateHitbox();
 			y = originalY + (originalHeight - height);
 		}
 		else
 		{
-			alpha = 0;
 			y = -5000;
 		}
+
+		alpha = FlxMath.remapToRange(y, originalY + (originalHeight - height), -5000, 1, 0);
 
 		super.update(elapsed);
 	}

@@ -29,27 +29,83 @@ using StringTools;
 
 class AdvancedSettingsSubState extends BaseOptionsMenu
 {
-	var lastOption:String = '';
+	var lastOption:Array<String> = ['', ''];
 
 	public function new()
 	{
 		title = 'Advanced Settings';
 		rpcTitle = 'Advanced Settings Menu'; // for Discord Rich Presence
 
+		#if !mobile
+		var option:Option = new Option('Performance Counter', 'Toggle through the options for your performance counter', 'performanceCounter', 'string',
+			'fps-mem-peak', ['hide', 'fps', 'fps-mem', 'fps-mem-peak']);
+		addOption(option);
+		option.onChange = function()
+		{
+			onChangePerformanceCounter();
+			switch (ClientPrefs.performanceCounter)
+			{
+				case 'hide':
+					{
+						option.text = 'Hide FPS';
+					}
+				case 'fps':
+					{
+						option.text = 'FPS Only';
+					}
+				case 'fps-mem':
+					{
+						option.text = 'FPS With Memory';
+						@:privateAccess
+						{
+							for (i in 0...option.text.length)
+							{
+								if (i >= 7)
+								{
+									option.child.members[i].y += 40;
+									option.child.members[i].x -= 280;
+								}
+								else
+									option.child.members[i].y -= 15;
+							}
+						}
+					}
+				case 'fps-mem-peak':
+					{
+						option.text = 'FPS With Memory Peak';
+						@:privateAccess
+						{
+							for (i in 0...option.text.length)
+							{
+								if (i >= 7)
+								{
+									option.child.members[i].y += 40;
+									option.child.members[i].x -= 360;
+								}
+								else
+									option.child.members[i].y -= 15;
+							}
+						}
+					}
+			}
+		};
+		#end
+
 		var option:Option = new Option('Chart Caching',
 			"Allows you to cache the charts once loaded, caches charts depending on the preference, this may cause conflicts with some mods.", 'chartCache',
 			"string", "None", ['None', 'Mods', 'Base Game', 'All']);
-		lastOption = option.getValue();
+		lastOption[0] = option.getValue();
 		addOption(option);
 
 		var option:Option = new Option('Persistent Cache',
 			'If checked, any assets will stay in memory\nuntil the game is closed, this increases memory usage,\nbut basically makes reloading times instant.',
 			'imagesPersist', 'string', 'Base Game', ['None', 'Mods', 'Base Game', 'All']);
+		lastOption[1] = option.getValue();
 		addOption(option);
 
 		var option:Option = new Option('Safe Scripts',
-			'Any scripts containing malicious functions will not be triggered, change this option if you know what you\'re doing!', 'safeScript', 'string',
-			'on', ['Off', 'Warn First', 'On']);
+			'Any scripts containing malicious functions will be dealt with based on this option, change this option if you know what you\'re doing!',
+			'safeScript', 'string', 'on', ['Off', 'Warn First', 'On']);
 		addOption(option);
 
 		var option:Option = new Option('Debugger Mode', "Lets you enable the keybinds to access debug menus.", 'debugMode', 'bool',
@@ -64,7 +120,70 @@ class AdvancedSettingsSubState extends BaseOptionsMenu
 		resetOption.xAdd = 200;
 		resetOption.targetY = grpOptions.members.length + 1;
 		grpOptions.add(resetOption);
+
+		switch (ClientPrefs.performanceCounter)
+		{
+			case 'hide':
+				{
+					option.text = 'Hide FPS';
+				}
+			case 'fps':
+				{
+					option.text = 'FPS Only';
+				}
+			case 'fps-mem':
+				{
+					option.text = 'FPS With Memory';
+					@:privateAccess
+					{
+						for (i in 0...option.text.length)
+						{
+							if (i >= 7)
+							{
+								option.child.members[i].y += 40;
+								option.child.members[i].x -= 280;
+							}
+							else
+								option.child.members[i].y -= 15;
+						}
+					}
+				}
+			case 'fps-mem-peak':
+				{
+					option.text = 'FPS With Memory Peak';
+					@:privateAccess
+					{
+						for (i in 0...option.text.length)
+						{
+							if (i >= 7)
+							{
+								option.child.members[i].y += 40;
+								option.child.members[i].x -= 360;
+							}
+							else
+								option.child.members[i].y -= 15;
+						}
+					}
+				}
+			Main.fpsVar.fps.forceUpdateText = true;
+		}
 	}
+
+	#if !mobile
+	function onChangePerformanceCounter()
+	{
+		if (Main.fpsVar != null)
+		{
+			Main.fpsVar.visible = true;
+			switch (ClientPrefs.performanceCounter)
+			{
+				case 'hide':
+					Main.fpsVar.visible = false;
+			}
+			Main.fpsVar.fps.forceUpdateText = true;
+		}
+	}
+	#end
 
 	override public function update(elapsed:Float)
 	{
@@ -73,10 +192,13 @@ class AdvancedSettingsSubState extends BaseOptionsMenu
 
 		if (controls.BACK)
 		{
-			if (lastOption != optionsArray[0].getValue())
+			if (lastOption[1] != optionsArray[2].getValue())
 			{
-				Paths.clearStoredMemory();
 				Paths.clearUnusedMemory();
+			}
+			if (lastOption[0] != optionsArray[1].getValue())
+			{
+				Song.cleanCache();
 			}
 			close();
 			FlxG.sound.play(Paths.sound('cancelMenu'));

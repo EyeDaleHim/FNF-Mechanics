@@ -63,6 +63,20 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			true);
 		addOption(option);
 
+		var option:Option = new Option('Time Rating',
+			"If checked, hitting a note will display how late or early your hit was.",
+			'timeHit',
+			'bool',
+			false);
+		addOption(option);
+		
+		var option:Option = new Option('Music Channel',
+		"If the music should be playing on different forms of channels, depending on the option.",
+		'channel',
+		'string',
+		'Stereo',
+		['Mono', 'Stereo']);
+	addOption(option);
 		var option:Option = new Option('Disable Reset Button',
 			"If checked, pressing Reset won't do anything.",
 			'noReset',

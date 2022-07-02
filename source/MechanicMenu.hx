@@ -72,7 +72,12 @@ class MechanicMenu extends MusicBeatState
 		gradient.scrollFactor.set();
 		gradient.antialiasing = true;
 		gradient.blend = MULTIPLY;
+		var gradientShader = new ColorSwap();
+		gradient.shader = gradientShader.shader;
+		gradientShader.hue = -1.0;
 		add(gradient);
+
+		FlxTween.tween(gradientShader, {hue: 1}, 20, {ease: FlxEase.linear, type: PINGPONG});
 
 		gridBG = new FlxBackdrop(Paths.image('checker'), 0.2, 0.2, true, true);
 		gridBG.scrollFactor.set(0.1, -0.1);
