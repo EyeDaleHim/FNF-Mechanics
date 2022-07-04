@@ -28,12 +28,14 @@ typedef SwagSong =
 	var arrowSkin:String;
 	var splashSkin:String;
 	var validScore:Bool;
+	@:optional var chartVer:Int; // if its not in the json file, assume its 1 instead
 }
 
 class Song
 {
 	public static var cachedCharts:Map<String, SwagSong> = [];
 	public static var cachedEvents:Map<String, Array<Dynamic>> = [];
+	public static var chartVer:Int = 1;
 
 	public var song:String;
 	public var notes:Array<SwagSection>;

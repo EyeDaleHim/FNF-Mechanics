@@ -117,6 +117,28 @@ class InputFormatter
 		}
 	}
 
+	public static function keyListAsString(keys:Array<Null<FlxKey>>):String
+	{
+		if (keys.length == 0)
+			return 'NONE';
+
+		var keyString:String = '';
+
+		for (key in keys)
+		{
+			keyString += getKeyName(key);
+			if (keys.indexOf(key) != keys.length)
+			{
+				if (keys[keys.indexOf(key) + 1] != null)
+				{
+					keyString += ' / ';
+				}
+			}
+		}
+
+		return keyString.toUpperCase();
+	}
+
 	public static function shortenButtonName(button:String = '')
 	{
 		button = button.toLowerCase();
