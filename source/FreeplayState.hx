@@ -17,9 +17,12 @@ import flixel.util.FlxColor;
 import flixel.util.FlxStringUtil;
 import flixel.util.FlxGradient;
 import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
 import lime.utils.Assets;
 import flixel.system.FlxSound;
 import openfl.utils.Assets as OpenFlAssets;
+import openfl.filters.ShaderFilter;
+import openfl.filters.BitmapFilter;
 import WeekData;
 #if MODS_ALLOWED
 import sys.FileSystem;
@@ -50,6 +53,8 @@ class FreeplayState extends MusicBeatState
 	var intendedRating:Float = 0;
 
 	var gradientSprite:FlxSprite;
+
+	public static var cameraShader:ColorSwap = new ColorSwap();
 
 	private var grpSongs:FlxTypedGroup<Alphabet>;
 	private var curPlaying:Bool = false;
@@ -215,11 +220,22 @@ class FreeplayState extends MusicBeatState
 		textBG.alpha = 0.6;
 		add(textBG);
 
+		var filter = new ShaderFilter(cameraShader.shader);
+
+		FlxG.camera.setFilters([filter]);
+
+		var formattedInput:Array<Array<Int>> = 
+		[
+			ClientPrefs.copyKey(ClientPrefs.keyBinds.get('accept')),
+			ClientPrefs.copyKey(ClientPrefs.keyBinds.get('reset')),
+			ClientPrefs.copyKey(ClientPrefs.keyBinds.get('interact'))
+		];
+		formattedInput[0].remove(formattedInput[0][1]);
 		#if PRELOAD_ALL
-		var leText:String = "[SPACE] Listen Song / [CTRL] Gameplay Changers Menu / [RESET] Reset Progress on Song";
+		var leText:String = '[${InputFormatter.keyListAsString(formattedInput[0])}] Listen Song | [${InputFormatter.keyListAsString(formattedInput[2])}] Gameplay Changers Menu | [${InputFormatter.keyListAsString(formattedInput[1])}] Reset Progress on Song';
 		var size:Int = 16;
 		#else
-		var leText:String = "[CTRL] Gameplay Changers Menu / [RESET] Reset Progress on Song";
+		var leText:String = '[${InputFormatter.keyListAsString(formattedInput[2])}] Gameplay Changers Menu / [${InputFormatter.keyListAsString(formattedInput[1])}] Reset Progress on Song';
 		var size:Int = 18;
 		#end
 		var text:FlxText = new FlxText(textBG.x, textBG.y + 4, FlxG.width, leText, size);
@@ -231,9 +247,12 @@ class FreeplayState extends MusicBeatState
 
 		if (events != null && events.length > 0)
 		{
-			while (Conductor.songPosition > events[0].position)
+			if (events[nextEventIndex] != null)
 			{
-				events.shift();
+				while (Conductor.songPosition > events[nextEventIndex].position)
+				{
+					nextEventIndex++;
+				}
 			}
 		}
 	}
@@ -304,7 +323,6 @@ class FreeplayState extends MusicBeatState
 		var downP = controls.UI_DOWN_P;
 		var accepted = controls.ACCEPT;
 		var space = FlxG.keys.justPressed.SPACE;
-		var ctrl = FlxG.keys.justPressed.CONTROL;
 
 		var shiftMult:Int = 1;
 		if (FlxG.keys.pressed.SHIFT)
@@ -355,7 +373,7 @@ class FreeplayState extends MusicBeatState
 			MusicBeatState.switchState(new MainMenuState());
 		}
 
-		if (ctrl)
+		if (FlxG.keys.anyJustPressed(ClientPrefs.copyKey(ClientPrefs.keyBinds.get('interact'))))
 		{
 			persistentUpdate = false;
 			openSubState(new GameplayChangersSubstate());
@@ -376,6 +394,7 @@ class FreeplayState extends MusicBeatState
 				Conductor.changeBPM(curBPM = PlayState.SONG.bpm);
 
 				camBeat = 1;
+				cameraShader.saturation = 0.0;
 
 				var exists:Bool = false;
 				#if sys
@@ -531,6 +550,7 @@ class FreeplayState extends MusicBeatState
 	override function destroy():Void
 	{
 		camBeat = 1;
+		FlxG.camera.setFilters([]);
 		super.destroy();
 	}
 
@@ -540,6 +560,8 @@ class FreeplayState extends MusicBeatState
 	{
 		super.stepHit();
 	}
+
+	private var listedEvents:Array<String> = [];
 
 	public function triggerEvent(event:
 		{
@@ -558,14 +580,39 @@ class FreeplayState extends MusicBeatState
 					gradientSprite.updateHitbox();
 					gradientSprite.y = FlxG.height - gradientSprite.height;
 				}
-			case 'Set GF Speed':
+			case 'Freeplay Beat Speed' | 'Set GF Speed':
 				{
+					if (event.event == 'Set GF Speed') 
+					// prob big issue is that if you add this event before freeplay beat speed, it'll still be added regardless
+					{
+						if (listedEvents.contains('Freeplay Beat Speed'))
+							return;
+					}
 					if (Math.isNaN(Std.parseInt(event.value1)))
 						event.value1 = '1';
 
 					camBeat = Std.parseInt(event.value1);
 				}
+			case 'Freeplay Shader':
+				{
+					if (Math.isNaN(Std.parseFloat(event.value1)))
+						event.value1 = '0.0';
+					if (Math.isNaN(Std.parseFloat(event.value2)))
+						event.value2 = '0.0';
+
+					if (Std.parseFloat(event.value2) <= 0)
+					{
+						cameraShader.saturation = Std.parseFloat(event.value1);
+					}
+					else
+					{
+						FlxTween.tween(cameraShader, {saturation: Std.parseFloat(event.value1)}, Std.parseFloat(event.value2), {ease: FlxEase.quadOut});
+					}
+				}
 		}
+
+		if (listedEvents.indexOf(event.event) == -1) // if it doesn't exist, then push it! lol
+			listedEvents.push(event.event);
 	}
 
 	public static function destroyFreeplayVocals()

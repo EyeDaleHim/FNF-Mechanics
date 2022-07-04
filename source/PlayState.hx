@@ -21,6 +21,7 @@ import flixel.addons.effects.FlxTrailArea;
 import flixel.addons.effects.chainable.FlxEffectSprite;
 import flixel.addons.effects.chainable.FlxWaveEffect;
 import flixel.addons.transition.FlxTransitionableState;
+import flixel.effects.FlxFlicker;
 import flixel.graphics.atlas.FlxAtlas;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -213,6 +214,7 @@ class PlayState extends MusicBeatState
 	public var iconP2:HealthIcon;
 
 	public var sleepFog:FlxSprite;
+	public var dodgeFog:FlxSprite;
 
 	public var iconPixelScale:{p1:FlxPoint, p2:FlxPoint} = {p1: new FlxPoint(1, 1), p2: new FlxPoint(1, 1)};
 	public var iconPixelTimer:FlxTimer;
@@ -237,8 +239,10 @@ class PlayState extends MusicBeatState
 	var phillyWindow:BGSprite;
 	var phillyStreet:BGSprite;
 	var phillyTrain:BGSprite;
+	var phillyWall:BGSprite;
 	var blammedLightsBlack:FlxSprite;
 	var phillyWindowEvent:BGSprite;
+	var phillyWindowShader:ColorSwap;
 	var trainSound:FlxSound;
 
 	var phillyGlowGradient:PhillyGlow.PhillyGlowGradient;
@@ -551,10 +555,13 @@ class PlayState extends MusicBeatState
 				city.updateHitbox();
 				add(city);
 
+				phillyWindowShader = new ColorSwap();
+
 				phillyLightsColors = [0xFF31A2FD, 0xFF31FD8C, 0xFFFB33F5, 0xFFFD4531, 0xFFFBA633];
 				phillyWindow = new BGSprite('philly/window', city.x, city.y, 0.3, 0.3);
 				phillyWindow.setGraphicSize(Std.int(phillyWindow.width * 0.85));
 				phillyWindow.updateHitbox();
+				phillyWindow.shader = phillyWindowShader.shader;
 				add(phillyWindow);
 				phillyWindow.alpha = 0;
 
@@ -572,6 +579,10 @@ class PlayState extends MusicBeatState
 
 				phillyStreet = new BGSprite('philly/street', -40, 50);
 				add(phillyStreet);
+
+				phillyWall = new BGSprite('philly/wall', -290, -10);
+				phillyWall.scale.set(1.2, 1.2);
+				phillyWall.scrollFactor.set(0.65, 0.04);
 
 			case 'limo': // Week 4
 				var skyBG:BGSprite = new BGSprite('limo/limoSunset', -120, -50, 0.1, 0.1);
@@ -866,6 +877,8 @@ class PlayState extends MusicBeatState
 		{
 			case 'spooky':
 				add(halloweenWhite);
+			case 'philly':
+				add(phillyWall);
 			case 'tank':
 				add(foregroundSprites);
 		}
@@ -1259,6 +1272,12 @@ class PlayState extends MusicBeatState
 		// sleepFog.blend = ADD;
 		add(sleepFog);
 
+		dodgeFog = new FlxSprite().loadGraphic(Paths.image('dodgeVignette'));
+		dodgeFog.scrollFactor.set();
+		dodgeFog.antialiasing = ClientPrefs.globalAntialiasing;
+		dodgeFog.alpha = 0;
+		add(dodgeFog);
+
 		strumLineNotes.cameras = [camHUD];
 		grpNoteSplashes.cameras = [camHUD];
 		notes.cameras = [camHUD];
@@ -1272,6 +1291,7 @@ class PlayState extends MusicBeatState
 		timeBarBG.cameras = [camHUD];
 		timeTxt.cameras = [camHUD];
 		sleepFog.cameras = [camHUD];
+		dodgeFog.cameras = [camHUD];
 		doof.cameras = [camHUD];
 
 		// if (SONG.song == 'South')
@@ -1419,7 +1439,7 @@ class PlayState extends MusicBeatState
 			FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 		}
 
-		Conductor.safeZoneOffset = (ClientPrefs.safeFrames / 60) * 1000;
+		Conductor.safeZoneOffset = (ClientPrefs.safeFrames / 60) * 1000 * FlxG.timeScale;
 		callOnLuas('onCreatePost', []);
 
 		super.create();
@@ -3077,6 +3097,103 @@ class PlayState extends MusicBeatState
 		wasSwapped = !wasSwapped;
 	}
 
+	private var dodgeTimers:Array<FlxTimer> = [];
+	private var canDodge:Bool = false;
+	private var dodgeChance:Float = 0.08;
+	private var dodgeInput:Bool = false;
+	private var dodged:Bool = false;
+	private var dodgeInvulnerability:Int = 0;
+	private var forceDodge:Int = 16;
+
+	// dodging is based on reaction time, frequency really isn't the main focus here
+	private function determineDodge():Void
+	{
+		dodgeInvulnerability--;
+
+		if (dodgeInvulnerability <= 0)
+		{
+			if (!canDodge)
+			{
+				canDodge = FlxG.random.bool(dodgeChance);
+				if (!canDodge)
+					canDodge = FlxG.random.bool(dodgeChance); // feeling unlucky?
+				dodgeChance += FlxG.random.float(0.12, 0.24) * FlxG.random.float(0.5, 1.75);
+				if (dodgeChance > 5) // start increasing luck value expotentially if you're too lucky
+					dodgeChance *= 1.25;
+			}
+			else
+			{
+				if ((!cameraFocus || playBothMode) || forceDodge <= 0)
+				{
+					trace('start dodging');
+					dodgeChance /= FlxG.random.int(12, 16);
+					if (Math.isNaN(dodgeChance))
+						dodgeChance = 0.08;
+
+					doDodge();
+				}
+				else
+				{
+					forceDodge--;
+				}
+			}
+		}
+		trace('new chance: ${dodgeChance}');
+	}
+
+	private var dodgeSound:FlxSound = null;
+
+	private function doDodge():Void
+	{
+		var formerFocus:Bool = cameraFocus;
+		var dodgeWindowTime:Float = FlxMath.remapToRange(MechanicManager.mechanics['dodging'].points, 0, 20, 1, 0.45);
+		// originally 0.25 seconds to the max, but i nerfed it because it was faster than the human reaction time
+
+		dodgeInput = true;
+
+		moveCamera(false);
+
+		dodgeSound = FlxG.sound.load(Paths.soundRandom('dodgeStart', 0, 2));
+
+		dodgeSound.play();
+
+		dodgeFog.alpha = 1;
+
+		dodgeInput = true;
+		dodgeTimers.push(new FlxTimer().start(dodgeWindowTime, function(tmr:FlxTimer)
+		{
+			if (dodged)
+			{
+				resetDodgeValues();
+				dodgeSound.play(true);
+			}
+			else
+			{
+				failedDodge();
+				resetDodgeValues();
+			}
+			moveCamera(formerFocus);
+		}));
+	}
+
+	private function resetDodgeValues():Void
+	{
+		dodgeTimers = [];
+		dodgeInput = false;
+		canDodge = false;
+		forceDodge = 16;
+		dodgeFog.alpha = 0;
+	}
+
+	private function failedDodge():Void
+	{
+		if (health < 0.4)
+			health -= 40;
+		else
+			health /= 2;
+		FlxTween.color(iconP1, 0.3, 0xFFFF0000, 0xFFFFFFFF, {ease: FlxEase.cubeOut});
+	}
+
 	function eventPushed(event:EventNote)
 	{
 		switch (event.event)
@@ -3140,6 +3257,7 @@ class PlayState extends MusicBeatState
 				phillyWindowEvent = new BGSprite('philly/window', phillyWindow.x, phillyWindow.y, 0.3, 0.3);
 				phillyWindowEvent.setGraphicSize(Std.int(phillyWindowEvent.width * 0.85));
 				phillyWindowEvent.updateHitbox();
+				phillyWindowEvent.shader = phillyWindowShader.shader;
 				phillyWindowEvent.visible = false;
 				insert(members.indexOf(blammedLightsBlack) + 1, phillyWindowEvent);
 
@@ -3151,6 +3269,8 @@ class PlayState extends MusicBeatState
 				phillyGlowParticles = new FlxTypedGroup<PhillyGlow.PhillyGlowParticle>();
 				phillyGlowParticles.visible = false;
 				insert(members.indexOf(phillyGlowGradient) + 1, phillyGlowParticles);
+
+				phillyWall.visible = false;
 		}
 
 		if (!eventPushedMap.exists(event.event))
@@ -3247,6 +3367,11 @@ class PlayState extends MusicBeatState
 				startTimer.active = false;
 			if (finishTimer != null && !finishTimer.finished)
 				finishTimer.active = false;
+			for (timer in dodgeTimers)
+			{
+				if (timer != null && !timer.finished)
+					timer.active = false;
+			}
 			if (songSpeedTween != null)
 				songSpeedTween.active = false;
 			if (pixelCamTween != null)
@@ -3300,6 +3425,11 @@ class PlayState extends MusicBeatState
 				startTimer.active = true;
 			if (finishTimer != null && !finishTimer.finished)
 				finishTimer.active = true;
+			for (timer in dodgeTimers)
+			{
+				if (timer != null && !timer.finished)
+					timer.active = true;
+			}
 			if (songSpeedTween != null)
 				songSpeedTween.active = true;
 			if (pixelCamTween != null)
@@ -3454,6 +3584,7 @@ class PlayState extends MusicBeatState
 					}
 				}
 				phillyWindow.alpha -= (Conductor.crochet / 1000) * FlxG.elapsed * 1.5;
+				phillyWindowShader.saturation = 1 - phillyWindow.alpha;
 
 				if (phillyGlowParticles != null)
 				{
@@ -3592,7 +3723,7 @@ class PlayState extends MusicBeatState
 			else
 			{
 				var lerpVal:Float = CoolUtil.boundTo(elapsed * 2.4 * cameraSpeed, 0, 1);
-				camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x + camFollowOffset.x, lerpVal),
+				camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x + camFollowOffset.x + cameraTrainOffset, lerpVal),
 					FlxMath.lerp(camFollowPos.y, camFollow.y + camFollowOffset.y, lerpVal));
 			}
 
@@ -3643,6 +3774,12 @@ class PlayState extends MusicBeatState
 				sleepTime.lerpValue = FlxMath.lerp(sleepTime.lerpValue, sleepTime.value, CoolUtil.boundTo(elapsed * 3, 0, 1));
 				sleepFog.alpha = FlxMath.remapToRange(sleepTime.lerpValue, 0, sleepTime.max, 0, 1);
 			}
+		}
+
+		if (MechanicManager.mechanics['dodging'].points > 0 && dodgeInput)
+		{
+			if (cpuControlled || FlxG.keys.anyJustPressed(ClientPrefs.copyKey(ClientPrefs.keyBinds.get('interact'))))
+				dodged = true;
 		}
 
 		/*
@@ -3842,7 +3979,7 @@ class PlayState extends MusicBeatState
 			while (unspawnNotes.length > 0 && unspawnNotes[0].strumTime - Conductor.songPosition < time)
 			{
 				var dunceNote:Note = unspawnNotes.shift();
-				if (restoreActivated && FlxG.random.bool(10) && dunceNote.mustPress && !dunceNote.autoGenerated)
+				if (restoreActivated && FlxG.random.bool(30) && dunceNote.mustPress && !dunceNote.autoGenerated)
 				{
 					if (!dunceNote.isSustainNote)
 					{
@@ -3909,36 +4046,39 @@ class PlayState extends MusicBeatState
 					daNote.alpha = strumAlpha;
 				}
 
-				var points:Int = MechanicManager.mechanics['flashlight'].points;
-				if (points > 0)
+				if (daNote.noteType != 'Fake Note')
 				{
-					var centerPoint:Float = FlxG.height;
-					var multi:Float = 0;
-					switch (ClientPrefs.downScroll)
+					var points:Int = MechanicManager.mechanics['flashlight'].points;
+					if (points > 0)
 					{
-						case true:
-							multi = FlxMath.remapToRange(points, 0, 20, 0.4, 0.2);
-						case false:
-							multi = FlxMath.remapToRange(points, 0, 20, 0.2, 0.4);
-					}
-					var notePos:Null<Float> = daNote.y;
-					var curAlpha:Float = FlxMath.remapToRange(notePos, centerPoint * multi,
-						ClientPrefs.downScroll ? strumY - (7.5 * points) : strumY + (7.5 * points), daNote.alphaLimit, 0);
-					daNote.alpha = curAlpha;
-					if (daNote.isSustainNote)
-					{
-						if (daNote.alpha > 0.6)
-							daNote.alpha = 0.6;
-					}
-					/* wanted it to have the same alpha as its parent but it got a bit janky
-					for (sustain in daNote.sustainChilds)
-					{
-						if (Math.isNaN(notePos) || notePos == null)
+						var centerPoint:Float = FlxG.height;
+						var multi:Float = 0;
+						switch (ClientPrefs.downScroll)
 						{
-							sustain.alpha = FlxMath.remapToRange(sustain.y, centerPoint * multi,
-								ClientPrefs.downScroll ? strumY - (7.5 * points) : strumY + (7.5 * points), sustain.alphaLimit, 0);
+							case true:
+								multi = FlxMath.remapToRange(points, 0, 20, 0.4, 0.2);
+							case false:
+								multi = FlxMath.remapToRange(points, 0, 20, 0.2, 0.4);
 						}
-				}*/
+						var notePos:Null<Float> = daNote.y;
+						var curAlpha:Float = FlxMath.remapToRange(notePos, centerPoint * multi,
+							ClientPrefs.downScroll ? strumY - (7.5 * points) : strumY + (7.5 * points), daNote.alphaLimit, 0);
+						daNote.alpha = curAlpha;
+						if (daNote.isSustainNote)
+						{
+							if (daNote.alpha > 0.6)
+								daNote.alpha = 0.6;
+						}
+						/* wanted it to have the same alpha as its parent but it got a bit janky
+						for (sustain in daNote.sustainChilds)
+						{
+							if (Math.isNaN(notePos) || notePos == null)
+							{
+								sustain.alpha = FlxMath.remapToRange(sustain.y, centerPoint * multi,
+									ClientPrefs.downScroll ? strumY - (7.5 * points) : strumY + (7.5 * points), sustain.alphaLimit, 0);
+							}
+					}*/
+					}
 				}
 
 				if (daNote.copyX)
@@ -4297,6 +4437,7 @@ class PlayState extends MusicBeatState
 							phillyWindowEvent.visible = false;
 							phillyGlowGradient.visible = false;
 							phillyGlowParticles.visible = false;
+							phillyWall.visible = true;
 							curLightEvent = -1;
 
 							for (who in chars)
@@ -4324,6 +4465,7 @@ class PlayState extends MusicBeatState
 							phillyWindowEvent.visible = true;
 							phillyGlowGradient.visible = true;
 							phillyGlowParticles.visible = true;
+							phillyWall.visible = false;
 						}
 						else if (ClientPrefs.flashing)
 						{
@@ -5366,7 +5508,7 @@ class PlayState extends MusicBeatState
 					ratingTxt = null;
 				}
 
-				ratingTxt = new FlxText(rating.x + 130, rating.y + 130, 0, FlxMath.roundDecimal(noteDiff, 1) + 'ms', 32);
+				ratingTxt = new FlxText(rating.x + 130, rating.y + 130, 0, CoolUtil.formatAccuracy(FlxMath.roundDecimal(noteDiff, 2)) + ' ms', 32);
 				ratingTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, null, OUTLINE, FlxColor.BLACK);
 				ratingTxt.color = ratingColors[daRating];
 				ratingTxt.cameras = [camHUD];
@@ -6022,7 +6164,7 @@ class PlayState extends MusicBeatState
 			if (playBothMode)
 				note.mustPress = note.formerPress;
 			var indexNote = notes.members.indexOf(note);
-			callOnLuas('goodNoteHit', [indexNote, leData, leType, isSus]);
+			callOnLuas('goodNoteHit', [indexNote, leData, leType, isSus, note.formerPress]);
 			note.mustPress = formerPressed;
 
 			if (!note.isSustainNote)
@@ -6110,6 +6252,9 @@ class PlayState extends MusicBeatState
 	}
 
 	var startedMoving:Bool = false;
+	var cameraTrainOffset:Float = 0;
+	var cameraTrainElapsed:Float = 0;
+	var cameraTrainDirection:Bool = false;
 
 	function updateTrainPos():Void
 	{
@@ -6126,8 +6271,17 @@ class PlayState extends MusicBeatState
 			}
 		}
 
+		cameraTrainElapsed += FlxG.elapsed;
+
+		if (cameraTrainElapsed > 0.02)
+		{
+			cameraTrainDirection = !cameraTrainDirection;
+			cameraTrainElapsed = 0;
+		}
+
 		if (startedMoving)
 		{
+			cameraTrainOffset += (cameraTrainDirection ? 2000 : -2000) * FlxG.elapsed;
 			phillyTrain.x -= 400;
 
 			if (phillyTrain.x < -2000 && !trainFinishing)
@@ -6154,8 +6308,7 @@ class PlayState extends MusicBeatState
 		}
 		phillyTrain.x = FlxG.width + 200;
 		trainMoving = false;
-		// trainSound.stop();
-		// trainSound.time = 0;
+		cameraTrainOffset = 0;
 		trainCars = 8;
 		trainFinishing = false;
 		startedMoving = false;
@@ -6373,6 +6526,11 @@ class PlayState extends MusicBeatState
 						// trace('we\'re gonna check donations to see who activated the great restore');
 					}
 				}
+
+				if (MechanicManager.mechanics['dodging'].points > 0)
+				{
+					determineDodge();
+				}
 			}
 		}
 		if (camZooming && FlxG.camera.zoom < 1.35 && ClientPrefs.camZooms && curBeat % 4 == 0)
@@ -6463,9 +6621,10 @@ class PlayState extends MusicBeatState
 					curLight = FlxG.random.int(0, phillyLightsColors.length - 1, [curLight]);
 					phillyWindow.color = phillyLightsColors[curLight];
 					phillyWindow.alpha = 1;
+					phillyWindowShader.saturation = 1 - phillyWindow.alpha;
 				}
 
-				if (curBeat % 8 == 4 && FlxG.random.bool(30) && !trainMoving && trainCooldown > 8)
+				if ((curBeat % 8 == 4 && FlxG.random.bool(30) && !trainMoving && trainCooldown > 8) || FlxG.keys.pressed.Y)
 				{
 					trainCooldown = FlxG.random.int(-4, 0);
 					trainStart();

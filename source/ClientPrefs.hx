@@ -77,6 +77,7 @@ class ClientPrefs
 		'ui_down' => [S, DOWN],
 		'ui_up' => [W, UP],
 		'ui_right' => [D, RIGHT],
+		'interact' => [CONTROL, ALT],
 		'accept' => [SPACE, ENTER],
 		'back' => [BACKSPACE, ESCAPE],
 		'pause' => [ENTER, ESCAPE],

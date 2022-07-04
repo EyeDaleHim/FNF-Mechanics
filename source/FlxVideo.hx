@@ -82,12 +82,16 @@ class FlxVideo extends FlxBasic {
 	}
 	
 	public static function onFocus() {
+		if (!FlxG.autoPause)
+			return;
 		if(vlcBitmap != null) {
 			vlcBitmap.resume();
 		}
 	}
 	
 	public static function onFocusLost() {
+		if (!FlxG.autoPause)
+			return;
 		if(vlcBitmap != null) {
 			vlcBitmap.pause();
 		}
