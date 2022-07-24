@@ -25,6 +25,7 @@ class Note extends FlxSprite
 	public var mustPress:Bool = false;
 	public var formerPress:Bool = false;
 	public var noteData:Int = 0;
+	public var expectedData:Int = -1;
 	public var canBeHit:Bool = false;
 	public var tooLate:Bool = false;
 	public var wasGoodHit:Bool = false;
@@ -90,6 +91,8 @@ class Note extends FlxSprite
 	public var distance:Float = 2000; // plan on doing scroll directions soon -bb
 
 	public var hitsoundDisabled:Bool = false;
+
+	public static var colors:Array<String> = ['purple', 'blue', 'green', 'red'];
 
 	private function set_texture(value:String):String
 	{
@@ -200,6 +203,11 @@ class Note extends FlxSprite
 					noAnimation = true;
 				case 'GF Sing':
 					gfNote = true;
+				case null:
+					reloadNote();
+					gfNote = false;
+					noAnimation = false;
+					noteSplashDisabled = false;
 			}
 			noteType = value;
 		}
@@ -253,8 +261,6 @@ class Note extends FlxSprite
 				animation.play(animToPlay + 'Scroll');
 			}
 		}
-
-		// trace(prevNote);
 
 		if (isSustainNote && prevNote != null)
 		{

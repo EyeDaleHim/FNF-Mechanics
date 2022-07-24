@@ -4,6 +4,7 @@ import flixel.graphics.FlxGraphic;
 import flixel.FlxG;
 import flixel.FlxGame;
 import flixel.FlxState;
+import flixel.system.scaleModes.*;
 import openfl.Assets;
 import openfl.Lib;
 import openfl.display.FPSSprite;
@@ -73,7 +74,11 @@ class Main extends Sprite
 		#end
 	
 		ClientPrefs.loadDefaultKeys();
+		FlxG.save.bind('mechanics-mod', 'eyedalehim');
+
 		addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
+
+		// FlxG.scaleMode = new FixedScaleAdjustSizeScaleMode(true, true);
 
 		#if !mobile
 		fpsVar = new FPSSprite(10, 3, 0xFFFFFF);

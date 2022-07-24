@@ -30,6 +30,7 @@ using StringTools;
 class AdvancedSettingsSubState extends BaseOptionsMenu
 {
 	var lastOption:Array<String> = ['', ''];
+	var perfOpt:Option;
 
 	public function new()
 	{
@@ -60,13 +61,16 @@ class AdvancedSettingsSubState extends BaseOptionsMenu
 						{
 							for (i in 0...option.text.length)
 							{
-								if (i >= 7)
+								if (option.child.members[i] != null)
 								{
-									option.child.members[i].y += 40;
-									option.child.members[i].x -= 280;
+									if (i >= 7)
+									{
+										option.child.members[i].y += 40;
+										option.child.members[i].x -= 280;
+									}
+									else
+										option.child.members[i].y -= 15;
 								}
-								else
-									option.child.members[i].y -= 15;
 							}
 						}
 					}
@@ -77,18 +81,23 @@ class AdvancedSettingsSubState extends BaseOptionsMenu
 						{
 							for (i in 0...option.text.length)
 							{
-								if (i >= 7)
+								if (option.child.members[i] != null)
 								{
-									option.child.members[i].y += 40;
-									option.child.members[i].x -= 360;
+									if (i >= 7)
+									{
+										option.child.members[i].y += 40;
+										option.child.members[i].x -= 360;
+									}
+									else
+										option.child.members[i].y -= 15;
 								}
-								else
-									option.child.members[i].y -= 15;
 							}
 						}
 					}
 			}
 		};
+
+		perfOpt = option;
 		#end
 
 		var option:Option = new Option('Chart Caching',
@@ -97,11 +106,11 @@ class AdvancedSettingsSubState extends BaseOptionsMenu
 		lastOption[0] = option.getValue();
 		addOption(option);
 
-		var option:Option = new Option('Persistent Cache',
-			'If checked, any assets will stay in memory\nuntil the game is closed, this increases memory usage,\nbut basically makes reloading times instant.',
-			'imagesPersist', 'string', 'Base Game', ['None', 'Mods', 'Base Game', 'All']);
-		lastOption[1] = option.getValue();
-		addOption(option);
+		/*var option:Option = new Option('Persistent Cache',
+				'If checked, any assets will stay in memory\nuntil the game is closed, this increases memory usage,\nbut basically makes reloading times instant.',
+				'imagesPersist', 'string', 'Base Game', ['None', 'Mods', 'Base Game', 'All']);
+			lastOption[1] = option.getValue();
+			addOption(option); */
 
 		var option:Option = new Option('Safe Scripts',
 			'Any scripts containing malicious functions will be dealt with based on this option, change this option if you know what you\'re doing!',
@@ -165,7 +174,7 @@ class AdvancedSettingsSubState extends BaseOptionsMenu
 						}
 					}
 				}
-			Main.fpsVar.fps.forceUpdateText = true;
+				Main.fpsVar.fps.forceUpdateText = true;
 		}
 	}
 
@@ -192,10 +201,6 @@ class AdvancedSettingsSubState extends BaseOptionsMenu
 
 		if (controls.BACK)
 		{
-			if (lastOption[1] != optionsArray[2].getValue())
-			{
-				Paths.clearUnusedMemory();
-			}
 			if (lastOption[0] != optionsArray[1].getValue())
 			{
 				Song.cleanCache();
@@ -205,6 +210,9 @@ class AdvancedSettingsSubState extends BaseOptionsMenu
 		}
 
 		super.update(elapsed);
+
+		if (perfOpt != null)
+			perfOpt.onChange();
 	}
 
 	override function changeSelection(change:Int = 0)

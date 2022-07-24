@@ -35,10 +35,6 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.app.Application;
 import openfl.Assets;
-#if sys
-import sys.io.File;
-import sys.FileSystem;
-#end
 
 using StringTools;
 
@@ -84,12 +80,10 @@ class TitleState extends MusicBeatState
 
 	public static var updateVersion:String = '';
 
-	public var beatFunctionList:Array<BeatFunction> = [];
-
 	override public function create():Void
 	{
 		Paths.clearStoredMemory();
-		// Paths.clearUnusedMemory();
+		Paths.clearUnusedMemory();
 
 		// Just to load a mod on start up if ya got one. For mods that change the menu music and bg
 		WeekData.loadTheFirstEnabledMod();
@@ -153,67 +147,12 @@ class TitleState extends MusicBeatState
 		swagShader = new ColorSwap();
 		super.create();
 
-		FlxG.save.bind('funkin', 'ninjamuffin99');
-
 		ClientPrefs.loadPrefs();
 
 		Highscore.load();
 
 		// IGNORE THIS!!!
 		titleJSON = Json.parse(Paths.getTextFromFile('images/gfDanceTitle.json'));
-
-		var titleTextJSON:Array<Dynamic> = Json.parse(File.getContent(Paths.json('titleList')).trim());
-
-		for (beatEvent in titleTextJSON)
-		{
-			var daBeat = beatEvent[0];
-			switch (beatEvent[1])
-			{
-				case 'restartMusic':
-					{
-						beatFunctionList.push(new BeatFunction(daBeat, function()
-						{
-							/*FlxG.sound.music.stop();
-								FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-								FlxG.sound.music.time = Conductor.songPosition;
-								FlxG.sound.music.fadeIn(5, 0, 0.7); */
-						}));
-					}
-				case 'skipIntro':
-					{
-						skipIntro();
-					}
-				case 'addText':
-					{
-						beatFunctionList.push(new BeatFunction(daBeat, function()
-						{
-							addMoreText(beatEvent[2], beatEvent[3] == null ? 0 : beatEvent[3]);
-						}));
-					}
-				case 'createTextList':
-					{
-						beatFunctionList.push(new BeatFunction(daBeat, function()
-						{
-							createCoolText(beatEvent[2], beatEvent[3] == null ? 0 : Std.parseInt(beatEvent[3]));
-						}));
-					}
-				case 'toggleVisible':
-					{
-						beatFunctionList.push(new BeatFunction(daBeat, function()
-						{
-							if (ngSpr != null)
-								ngSpr.visible = beatEvent[2];
-						}));
-					}
-				case 'deleteText':
-					{
-						beatFunctionList.push(new BeatFunction(daBeat, function()
-						{
-							deleteCoolText();
-						}));
-					}
-			}
-		}
 
 		#if TITLE_SCREEN_EASTER_EGG
 		if (FlxG.save.data.psychDevsEasterEgg == null)
@@ -252,31 +191,24 @@ class TitleState extends MusicBeatState
 		#elseif CHARTING
 		MusicBeatState.switchState(new ChartingState());
 		#else
-		if (FlxG.save.data.flashing == null && !FlashingState.leftState)
+		#if desktop
+		if (!DiscordClient.isInitialized)
 		{
-			FlxTransitionableState.skipNextTransIn = true;
-			FlxTransitionableState.skipNextTransOut = true;
-			MusicBeatState.switchState(new FlashingState());
-		}
-		else
-		{
-			#if desktop
-			if (!DiscordClient.isInitialized)
+			DiscordClient.initialize();
+			Application.current.onExit.add(function(exitCode)
 			{
-				DiscordClient.initialize();
-				Application.current.onExit.add(function(exitCode)
-				{
-					DiscordClient.shutdown();
-					ClientPrefs.saveSettings();
-				});
-			}
-			#end
-
-			new FlxTimer().start(1, function(tmr:FlxTimer)
-			{
-				startIntro();
+				if (ClientPrefs.defaultSave != null)
+					ClientPrefs.defaultSave.flush();
+				FlxG.save.flush();
+				DiscordClient.shutdown();
 			});
 		}
+		#end
+
+		new FlxTimer().start(1, function(tmr:FlxTimer)
+		{
+			startIntro();
+		});
 		#end
 	}
 
@@ -288,14 +220,36 @@ class TitleState extends MusicBeatState
 
 	function startIntro()
 	{
-		if (FlxG.sound.music == null)
+		if (!initialized)
 		{
-			Conductor.changeBPM(titleJSON.bpm);
-			FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-			FlxG.sound.music.stop();
-			FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-			FlxG.sound.music.fadeIn(5, 0, 0.7);
+			/*var diamond:FlxGraphic = FlxGraphic.fromClass(GraphicTransTileDiamond);
+				diamond.persist = true;
+				diamond.destroyOnNoUse = false;
+				FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 1, new FlxPoint(0, -1), {asset: diamond, width: 32, height: 32},
+					new FlxRect(-300, -300, FlxG.width * 1.8, FlxG.height * 1.8));
+				FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.7, new FlxPoint(0, 1),
+					{asset: diamond, width: 32, height: 32}, new FlxRect(-300, -300, FlxG.width * 1.8, FlxG.height * 1.8));
+					
+				transIn = FlxTransitionableState.defaultTransIn;
+				transOut = FlxTransitionableState.defaultTransOut; */
+
+			// HAD TO MODIFY SOME BACKEND SHIT
+			// IF THIS PR IS HERE IF ITS ACCEPTED UR GOOD TO GO
+			// https://github.com/HaxeFlixel/flixel-addons/pull/348
+
+			// var music:FlxSound = new FlxSound();
+			// music.loadStream(Paths.music('freakyMenu'));
+			// FlxG.sound.list.add(music);
+			// music.play();
+
+			if (FlxG.sound.music == null)
+			{
+				FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+			}
 		}
+
+		Conductor.changeBPM(titleJSON.bpm);
+		persistentUpdate = true;
 
 		var bg:FlxSprite = new FlxSprite();
 
@@ -392,9 +346,9 @@ class TitleState extends MusicBeatState
 		// titleText.screenCenter(X);
 		add(titleText);
 
-		/*var logo:FlxSprite = new FlxSprite().loadGraphic(Paths.image('logo'));
-			logo.screenCenter();
-			logo.antialiasing = ClientPrefs.globalAntialiasing; */
+		var logo:FlxSprite = new FlxSprite().loadGraphic(Paths.image('logo'));
+		logo.screenCenter();
+		logo.antialiasing = ClientPrefs.globalAntialiasing;
 		// add(logo);
 
 		// FlxTween.tween(logoBl, {y: logoBl.y + 50}, 0.6, {ease: FlxEase.quadInOut, type: PINGPONG});
@@ -576,50 +530,6 @@ class TitleState extends MusicBeatState
 		}
 
 		super.update(elapsed);
-
-		/*var jsonList:Array<Dynamic> = [];
-			var jsonBeat:Int = 0;
-
-			jsonList.push([1, 'restartMusic']);
-			jsonList.push([2, 'addText', 'Psych Engine By']);
-			jsonList.push([3, 'addText', 'Shadow Mario', 15]);
-			jsonList.push([3, 'addText', 'RiverOaken', 15]);
-			jsonList.push([3, 'addText', 'shubs', 15]);
-			jsonList.push([5, 'deleteText']);
-			jsonList.push([6, 'createTextList', ['In association', 'with'], -45]);
-			jsonList.push([8, 'deleteText']);
-			jsonList.push([8, 'toggleVisible', true]);
-			jsonList.push([9, 'deleteText']);
-			jsonList.push([9, 'toggleVisible', false]);
-			jsonList.push([10, 'randomText', 0]);
-			jsonList.push([12, 'randomText', 1]);
-			jsonList.push([13, 'deleteText']);
-			jsonList.push([14, 'addText', 'Friday']);
-			jsonList.push([15, 'addText', 'Night']);
-			jsonList.push([16, 'addText', 'Funkin\'']);
-			jsonList.push([17,'skipIntro']);
-
-			trace(Json.stringify(jsonList)); */
-
-		if (beatFunctionList.length > 0)
-		{
-			try
-			{
-				while (curBeat >= beatFunctionList[0].beat)
-				{
-					var beatFunction = beatFunctionList.shift();
-
-					beatFunction.funcCallback();
-				}
-				trace('uh');
-				trace(curBeat);
-			}
-			catch (e)
-			{
-				trace('how');
-				trace(curBeat);
-			}
-		}
 	}
 
 	function createCoolText(textArray:Array<String>, ?offset:Float = 0)
@@ -678,73 +588,73 @@ class TitleState extends MusicBeatState
 				gfDance.animation.play('danceLeft');
 		}
 
-		/*if (!closedState)
+		if (!closedState)
+		{
+			sickBeats++;
+			switch (sickBeats)
 			{
-				sickBeats++;
-				switch (sickBeats)
-				{
-					case 1:
-						FlxG.sound.music.stop();
-						FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-						FlxG.sound.music.fadeIn(5, 0, 0.7);
-					// credTextShit.visible = true;
-					case 2:
-						#if PSYCH_WATERMARKS
-						addMoreText('Shadow Mario', 15);
-						addMoreText('RiverOaken', 15);
-						addMoreText('shubs', 15);
-						addMoreText('present', 15);
-						#else
-						addMoreText('present');
-						#end
-					// credTextShit.text += '\npresent...';
-					// credTextShit.addText();
-					case 5:
-						deleteCoolText();
-					// credTextShit.visible = false;
-					// credTextShit.text = 'In association \nwith';
-					// credTextShit.screenCenter();
-					case 6:
-						#if PSYCH_WATERMARKS
-						createCoolText(['Not associated', 'with'], -40);
-						#else
-						createCoolText(['In association', 'with'], -40);
-						#end
-					case 8:
-						addMoreText('newgrounds', -40);
-						ngSpr.visible = true;
-					// credTextShit.text += '\nNewgrounds';
-					case 9:
-						deleteCoolText();
-						ngSpr.visible = false;
-					// credTextShit.visible = false;
+				case 1:
+					FlxG.sound.music.stop();
+					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+					FlxG.sound.music.fadeIn(5, 0, 0.7);
+				// credTextShit.visible = true;
+				case 2:
+					#if PSYCH_WATERMARKS
+					addMoreText('Shadow Mario', 15);
+					addMoreText('RiverOaken', 15);
+					addMoreText('shubs', 15);
+					addMoreText('present', 15);
+					#else
+					addMoreText('present');
+					#end
+				// credTextShit.text += '\npresent...';
+				// credTextShit.addText();
+				case 5:
+					deleteCoolText();
+				// credTextShit.visible = false;
+				// credTextShit.text = 'In association \nwith';
+				// credTextShit.screenCenter();
+				case 6:
+					#if PSYCH_WATERMARKS
+					createCoolText(['Not associated', 'with'], -40);
+					#else
+					createCoolText(['In association', 'with'], -40);
+					#end
+				case 8:
+					addMoreText('newgrounds', -40);
+					ngSpr.visible = true;
+				// credTextShit.text += '\nNewgrounds';
+				case 9:
+					deleteCoolText();
+					ngSpr.visible = false;
+				// credTextShit.visible = false;
 
-					// credTextShit.text = 'Shoutouts Tom Fulp';
-					// credTextShit.screenCenter();
-					case 10:
-						createCoolText([curWacky[0]]);
-					// credTextShit.visible = true;
-					case 12:
-						addMoreText(curWacky[1]);
-					// credTextShit.text += '\nlmao';
-					case 13:
-						deleteCoolText();
-					// credTextShit.visible = false;
-					// credTextShit.text = "Friday";
-					// credTextShit.screenCenter();
-					case 14:
-						addMoreText('Friday');
-					// credTextShit.visible = true;
-					case 15:
-						addMoreText('Night');
-					// credTextShit.text += '\nNight';
-					case 16:
-						addMoreText('Funkin'); // credTextShit.text += '\nFunkin';
+				// credTextShit.text = 'Shoutouts Tom Fulp';
+				// credTextShit.screenCenter();
+				case 10:
+					createCoolText([curWacky[0]]);
+				// credTextShit.visible = true;
+				case 12:
+					addMoreText(curWacky[1]);
+				// credTextShit.text += '\nlmao';
+				case 13:
+					deleteCoolText();
+				// credTextShit.visible = false;
+				// credTextShit.text = "Friday";
+				// credTextShit.screenCenter();
+				case 14:
+					addMoreText('Friday');
+				// credTextShit.visible = true;
+				case 15:
+					addMoreText('Night');
+				// credTextShit.text += '\nNight';
+				case 16:
+					addMoreText('Funkin'); // credTextShit.text += '\nFunkin';
 
-					case 17:
-						skipIntro();
-				}
-		}*/
+				case 17:
+					skipIntro();
+			}
+		}
 	}
 
 	var skippedIntro:Bool = false;
@@ -812,12 +722,6 @@ class TitleState extends MusicBeatState
 			}
 			else // Default! Edit this one!!
 			{
-				while (beatFunctionList.length > 0)
-				{
-					var beatFunc = beatFunctionList.shift();
-					beatFunc = null;
-				}
-
 				remove(ngSpr);
 				remove(credGroup);
 				FlxG.camera.flash(FlxColor.WHITE, 4);
@@ -835,23 +739,5 @@ class TitleState extends MusicBeatState
 			}
 			skippedIntro = true;
 		}
-	}
-}
-
-class BeatFunction
-{
-	public var beat:Int = -1;
-	public var funcCallback:Void->Void = function()
-	{
-	};
-
-	public function new(beat:Int, funcCallback:Void->Void)
-	{
-		this.funcCallback = function()
-		{
-		};
-
-		this.beat = beat;
-		this.funcCallback = funcCallback;
 	}
 }
