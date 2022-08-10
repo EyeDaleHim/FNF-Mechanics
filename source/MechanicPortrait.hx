@@ -225,9 +225,7 @@ class MechanicSprite extends FlxSprite
 
 		if (!isSelected)
 		{
-			colorTransform.redMultiplier = FlxMath.lerp(colorTransform.redMultiplier, unselectedColor, CoolUtil.boundTo(elapsed * colorSpeed, 0, 1));
-			colorTransform.blueMultiplier = FlxMath.lerp(colorTransform.blueMultiplier, unselectedColor, CoolUtil.boundTo(elapsed * colorSpeed, 0, 1));
-			colorTransform.greenMultiplier = FlxMath.lerp(colorTransform.greenMultiplier, unselectedColor, CoolUtil.boundTo(elapsed * colorSpeed, 0, 1));
+			lerpColorMult(unselectedColor, CoolUtil.boundTo(elapsed * colorSpeed, 0, 1));
 
 			var lerpScale:Float = FlxMath.lerp(scale.x, unselectedScale, CoolUtil.boundTo(elapsed * scaleSpeed, 0, 1));
 
@@ -236,14 +234,19 @@ class MechanicSprite extends FlxSprite
 		}
 		else
 		{
-			colorTransform.redMultiplier = FlxMath.lerp(colorTransform.redMultiplier, selectedColor, CoolUtil.boundTo(elapsed * colorSpeed, 0, 1));
-			colorTransform.blueMultiplier = FlxMath.lerp(colorTransform.blueMultiplier, selectedColor, CoolUtil.boundTo(elapsed * colorSpeed, 0, 1));
-			colorTransform.greenMultiplier = FlxMath.lerp(colorTransform.greenMultiplier, selectedColor, CoolUtil.boundTo(elapsed * colorSpeed, 0, 1));
+			lerpColorMult(selectedColor, CoolUtil.boundTo(elapsed * colorSpeed, 0, 1));
 
 			var lerpScale:Float = FlxMath.lerp(scale.x, selectedScale, CoolUtil.boundTo(elapsed * scaleSpeed, 0, 1));
 
 			scale.x = lerpScale;
 			scale.y = lerpScale;
 		}
+	}
+
+	private function lerpColorMult(col:Float, ratio:Float) // haha funny word
+	{
+		colorTransform.redMultiplier = FlxMath.lerp(colorTransform.redMultiplier, col, ratio);
+		colorTransform.blueMultiplier = FlxMath.lerp(colorTransform.blueMultiplier, col, ratio);
+		colorTransform.greenMultiplier = FlxMath.lerp(colorTransform.greenMultiplier, col, ratio);
 	}
 }

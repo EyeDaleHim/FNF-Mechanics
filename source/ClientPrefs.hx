@@ -13,6 +13,8 @@ class ClientPrefs
 	public static var timeHit:Bool = false;
 	public static var showFPS:Bool = true;
 	public static var performanceCounter:String = 'fps-mem-peak';
+	public static var musicSync:Bool = false;
+	public static var autoPause:Bool = true;
 	public static var flashing:Bool = true;
 	public static var globalAntialiasing:Bool = true;
 	public static var noteSplashes:Bool = true;
@@ -67,6 +69,7 @@ class ClientPrefs
 	public static var safeFrames:Float = 10;
 
 	// Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
+	// -4 = LMOUSE, -5 = RMOUSE
 	public static var keyBinds:Map<String, Array<FlxKey>> = [
 		// Key Bind, Name for ControlsSubState
 		'note_left' => [A, LEFT],
@@ -100,7 +103,7 @@ class ClientPrefs
 
 	public static function saveSettings()
 	{
-		defaultSave.bind('ultimatemechanics-settings', 'eyedalehim');
+		defaultSave.bind('fnfmechanics-settings', 'eyedalehim');
 
 		defaultSave.data.downScroll = downScroll;
 		defaultSave.data.middleScroll = middleScroll;
@@ -121,6 +124,8 @@ class ClientPrefs
 		defaultSave.data.imagesPersist = imagesPersist;
 		defaultSave.data.chartCache = chartCache;
 		defaultSave.data.debugMode = debugMode;
+		defaultSave.data.musicSync = musicSync;
+		defaultSave.data.autoPause = autoPause;
 		defaultSave.data.ghostTapping = ghostTapping;
 		defaultSave.data.timeBarType = timeBarType;
 		defaultSave.data.scoreZoom = scoreZoom;
@@ -153,7 +158,7 @@ class ClientPrefs
 
 	public static function loadPrefs()
 	{
-		defaultSave.bind('ultimatemechanics-settings', 'eyedalehim');
+		defaultSave.bind('fnfmechanics-settings', 'eyedalehim');
 
 		var lastTime = openfl.Lib.getTimer();
 		if (defaultSave.data.firstTime == null)
@@ -261,6 +266,14 @@ class ClientPrefs
 		if (defaultSave.data.channel != null)
 		{
 			channel = defaultSave.data.channel;
+		}
+		if (defaultSave.data.musicSync != null)
+		{
+			musicSync = defaultSave.data.musicSync;
+		}
+		if (defaultSave.data.autoPause != null)
+		{
+			FlxG.autoPause = autoPause = defaultSave.data.autoPause;
 		}
 		if (defaultSave.data.imagesPersist != null)
 		{
@@ -401,6 +414,7 @@ class ClientPrefs
 		framerate = 60;
 		cursing = true;
 		violence = true;
+		musicSync = false;
 		camZooms = true;
 		hideHud = false;
 		noteOffset = 0;

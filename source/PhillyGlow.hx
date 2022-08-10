@@ -16,7 +16,7 @@ class PhillyGlowParticle extends FlxSprite
 		super(x, y);
 		this.color = color;
 
-		loadGraphic(Paths.image('philly/particle'));
+		loadGraphic(Paths.image('philly/particle', 'week3'));
 		antialiasing = ClientPrefs.globalAntialiasing;
 		lifeTime = FlxG.random.float(0.6, 0.9);
 		decay = FlxG.random.float(0.8, 1);
@@ -71,7 +71,7 @@ class PhillyGlowGradient extends FlxSprite
 		super(x, y);
 		originalY = y;
 
-		loadGraphic(Paths.image('philly/gradient'));
+		loadGraphic(Paths.image('philly/gradient', 'week3'));
 		antialiasing = ClientPrefs.globalAntialiasing;
 		scrollFactor.set(0, 0.75);
 		setGraphicSize(2000, originalHeight);

@@ -109,6 +109,10 @@ class InputFormatter
 				return "PrtScrn";
 			case NONE:
 				return '---';
+			case -4:
+				return 'LMB';
+			case -5:
+				return 'RMB';
 			default:
 				var label:String = '' + key;
 				if (label.toLowerCase() == 'null')

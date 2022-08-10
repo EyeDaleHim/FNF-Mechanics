@@ -221,65 +221,280 @@ class Controls extends FlxActionSet
 	inline function get_UI_DOWN_R()
 		return _ui_downR.check();
 
+	private function checkIfMouse(keyBind:String, state:FlxInputState)
+	{
+		if (ClientPrefs.keyBinds.exists(keyBind))
+		{
+			for (key in ClientPrefs.copyKey(ClientPrefs.keyBinds.get(keyBind)))
+			{
+				var keyID:Int = key;
+				if (keyID < -1)
+					continue;
+
+				if (FlxG.keys.checkStatus(key, state))
+					return -1;
+			}
+
+			if (ClientPrefs.copyKey(ClientPrefs.keyBinds.get(keyBind)).contains(-4))
+				return -4;
+			if (ClientPrefs.copyKey(ClientPrefs.keyBinds.get(keyBind)).contains(-5))
+				return -5;
+		}
+
+		return -1;
+	}
+
 	public var NOTE_UP(get, never):Bool;
 
 	inline function get_NOTE_UP()
-		return _note_up.check();
+	{
+		var check:Int = checkIfMouse('note_up', PRESSED);
+
+		if (check == -1)
+			return _note_up.check();
+
+		if (check != -1)
+		{
+			if (check == -4) // fuck you i can't do switch caes
+				return FlxG.mouse.pressed;
+			else if (check == -5)
+				return FlxG.mouse.pressedRight;
+			else
+				return false;
+		}
+		return false;
+	}
 
 	public var NOTE_LEFT(get, never):Bool;
 
 	inline function get_NOTE_LEFT()
-		return _note_left.check();
+	{
+		var check:Int = checkIfMouse('note_left', PRESSED);
+
+		if (check == -1)
+			return _note_left.check();
+
+		if (check != -1)
+		{
+			if (check == -4) // fuck you i can't do switch caes
+				return FlxG.mouse.pressed;
+			else if (check == -5)
+				return FlxG.mouse.pressedRight;
+			else
+				return false;
+		}
+		return false;
+	}
 
 	public var NOTE_RIGHT(get, never):Bool;
 
 	inline function get_NOTE_RIGHT()
-		return _note_right.check();
+	{
+		var check:Int = checkIfMouse('note_right', PRESSED);
+
+		if (check == -1)
+			return _note_right.check();
+
+		if (check != -1)
+		{
+			if (check == -4) // fuck you i can't do switch caes
+				return FlxG.mouse.pressed;
+			else if (check == -5)
+				return FlxG.mouse.pressedRight;
+			else
+				return false;
+		}
+		return false;
+	}
 
 	public var NOTE_DOWN(get, never):Bool;
 
 	inline function get_NOTE_DOWN()
-		return _note_down.check();
+	{
+		var check:Int = checkIfMouse('note_down', PRESSED);
+
+		if (check == -1)
+			return _note_down.check();
+
+		if (check != -1)
+		{
+			if (check == -4) // fuck you i can't do switch caes
+				return FlxG.mouse.pressed;
+			else if (check == -5)
+				return FlxG.mouse.pressedRight;
+			else
+				return false;
+		}
+		return false;
+	}
 
 	public var NOTE_UP_P(get, never):Bool;
 
 	inline function get_NOTE_UP_P()
-		return _note_upP.check();
+	{
+		var check:Int = checkIfMouse('note_up', JUST_PRESSED);
+
+		if (check == -1)
+			return _note_upP.check();
+
+		if (check != -1)
+		{
+			if (check == -4) // fuck you i can't do switch caes
+				return FlxG.mouse.pressed;
+			else if (check == -5)
+				return FlxG.mouse.pressedRight;
+			else
+				return false;
+		}
+		return false;
+	}
 
 	public var NOTE_LEFT_P(get, never):Bool;
 
 	inline function get_NOTE_LEFT_P()
-		return _note_leftP.check();
+	{
+		var check:Int = checkIfMouse('note_left', JUST_PRESSED);
+
+		if (check == -1)
+			return _note_leftP.check();
+
+		if (check != -1)
+		{
+			if (check == -4) // fuck you i can't do switch caes
+				return FlxG.mouse.pressed;
+			else if (check == -5)
+				return FlxG.mouse.pressedRight;
+			else
+				return false;
+		}
+		return false;
+	}
 
 	public var NOTE_RIGHT_P(get, never):Bool;
 
 	inline function get_NOTE_RIGHT_P()
-		return _note_rightP.check();
+	{
+		var check:Int = checkIfMouse('note_right', JUST_PRESSED);
+
+		if (check == -1)
+			return _note_rightP.check();
+
+		if (check != -1)
+		{
+			if (check == -4) // fuck you i can't do switch caes
+				return FlxG.mouse.pressed;
+			else if (check == -5)
+				return FlxG.mouse.pressedRight;
+			else
+				return false;
+		}
+		return false;
+	}
 
 	public var NOTE_DOWN_P(get, never):Bool;
 
 	inline function get_NOTE_DOWN_P()
-		return _note_downP.check();
+	{
+		var check:Int = checkIfMouse('note_down', JUST_PRESSED);
+
+		if (check == -1)
+			return _note_downP.check();
+
+		if (check != -1)
+		{
+			if (check == -4) // fuck you i can't do switch caes
+				return FlxG.mouse.pressed;
+			else if (check == -5)
+				return FlxG.mouse.pressedRight;
+			else
+				return false;
+		}
+		return false;
+	}
 
 	public var NOTE_UP_R(get, never):Bool;
 
 	inline function get_NOTE_UP_R()
-		return _note_upR.check();
+	{
+		var check:Int = checkIfMouse('note_up', RELEASED);
+
+		if (check == -1)
+			return _note_upP.check();
+
+		if (check != -1)
+		{
+			if (check == -4) // fuck you i can't do switch caes
+				return FlxG.mouse.pressed;
+			else if (check == -5)
+				return FlxG.mouse.pressedRight;
+			else
+				return false;
+		}
+		return false;
+	}
 
 	public var NOTE_LEFT_R(get, never):Bool;
 
 	inline function get_NOTE_LEFT_R()
-		return _note_leftR.check();
+	{
+		var check:Int = checkIfMouse('note_left', RELEASED);
+
+		if (check == -1)
+			return _note_leftP.check();
+
+		if (check != -1)
+		{
+			if (check == -4) // fuck you i can't do switch caes
+				return FlxG.mouse.pressed;
+			else if (check == -5)
+				return FlxG.mouse.pressedRight;
+			else
+				return false;
+		}
+		return false;
+	}
 
 	public var NOTE_RIGHT_R(get, never):Bool;
 
 	inline function get_NOTE_RIGHT_R()
-		return _note_rightR.check();
+	{
+		var check:Int = checkIfMouse('note_right', RELEASED);
+
+		if (check == -1)
+			return _note_rightP.check();
+
+		if (check != -1)
+		{
+			if (check == -4) // fuck you i can't do switch caes
+				return FlxG.mouse.pressed;
+			else if (check == -5)
+				return FlxG.mouse.pressedRight;
+			else
+				return false;
+		}
+		return false;
+	}
 
 	public var NOTE_DOWN_R(get, never):Bool;
 
 	inline function get_NOTE_DOWN_R()
-		return _note_downR.check();
+	{
+		var check:Int = checkIfMouse('note_down', RELEASED);
+
+		if (check == -1)
+			return _note_downP.check();
+
+		if (check != -1)
+		{
+			if (check == -4) // fuck you i can't do switch caes
+				return FlxG.mouse.pressed;
+			else if (check == -5)
+				return FlxG.mouse.pressedRight;
+			else
+				return false;
+		}
+		return false;
+	}
 
 	public var ACTION1(get, never):Bool;
 
@@ -383,7 +598,7 @@ class Controls extends FlxActionSet
 
 		for (action in digitalActions)
 			byName[action.name] = action;
-			
+
 		if (scheme == null)
 			scheme = None;
 		setKeyboardScheme(scheme, false);
@@ -541,7 +756,7 @@ class Controls extends FlxActionSet
 			for (input in action.inputs)
 			{
 				if (device == null || isDevice(input, device))
-				byName[name].add(cast input);
+					byName[name].add(cast input);
 			}
 		}
 		#end
@@ -557,7 +772,7 @@ class Controls extends FlxActionSet
 				#else
 				for (gamepad in controls.gamepadsAdded)
 					if (gamepadsAdded.indexOf(gamepad) == -1)
-					  gamepadsAdded.push(gamepad);
+						gamepadsAdded.push(gamepad);
 				#end
 
 				mergeKeyboardScheme(controls.keyboardScheme);
@@ -595,8 +810,10 @@ class Controls extends FlxActionSet
 	public function bindKeys(control:Control, keys:Array<FlxKey>)
 	{
 		var copyKeys:Array<FlxKey> = keys.copy();
-		for (i in 0...copyKeys.length) {
-			if(i == NONE) copyKeys.remove(i);
+		for (i in 0...copyKeys.length)
+		{
+			if (i == NONE)
+				copyKeys.remove(i);
 		}
 
 		#if (haxe >= "4.0.0")
@@ -613,8 +830,10 @@ class Controls extends FlxActionSet
 	public function unbindKeys(control:Control, keys:Array<FlxKey>)
 	{
 		var copyKeys:Array<FlxKey> = keys.copy();
-		for (i in 0...copyKeys.length) {
-			if(i == NONE) copyKeys.remove(i);
+		for (i in 0...copyKeys.length)
+		{
+			if (i == NONE)
+				copyKeys.remove(i);
 		}
 
 		#if (haxe >= "4.0.0")
@@ -627,7 +846,7 @@ class Controls extends FlxActionSet
 	inline static function addKeys(action:FlxActionDigital, keys:Array<FlxKey>, state:FlxInputState)
 	{
 		for (key in keys)
-			if(key != NONE)
+			if (key != NONE)
 				action.addKey(key, state);
 	}
 
@@ -649,7 +868,7 @@ class Controls extends FlxActionSet
 
 		keyboardScheme = scheme;
 		var keysMap = ClientPrefs.keyBinds;
-		
+
 		#if (haxe >= "4.0.0")
 		switch (scheme)
 		{
@@ -761,10 +980,10 @@ class Controls extends FlxActionSet
 	public function addGamepad(id:Int, ?buttonMap:Map<Control, Array<FlxGamepadInputID>>):Void
 	{
 		gamepadsAdded.push(id);
-		
+
 		#if (haxe >= "4.0.0")
 		for (control => buttons in buttonMap)
-			inline bindButtons(control, id, buttons);
+		inline bindButtons(control, id, buttons);
 		#else
 		for (control in buttonMap.keys())
 			bindButtons(control, id, buttonMap[control]);
@@ -777,7 +996,7 @@ class Controls extends FlxActionSet
 
 		#if (haxe >= "4.0.0")
 		for (control => buttons in buttonMap)
-			inline bindButtons(control, id, buttons);
+		inline bindButtons(control, id, buttons);
 		#else
 		for (control in buttonMap.keys())
 			bindButtons(control, id, buttonMap[control]);
@@ -819,7 +1038,7 @@ class Controls extends FlxActionSet
 		]);
 		#else
 		addGamepadLiteral(id, [
-			//Swap A and B for switch
+			// Swap A and B for switch
 			Control.ACCEPT => [B, START],
 			Control.BACK => [A],
 			Control.UI_UP => [DPAD_UP, LEFT_STICK_DIGITAL_UP, RIGHT_STICK_DIGITAL_UP],

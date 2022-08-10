@@ -17,6 +17,7 @@ import flixel.FlxSprite;
 import sys.io.File;
 import sys.FileSystem;
 #end
+import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.graphics.FlxGraphic;
 import openfl.display.BitmapData;
 import flash.media.Sound;
@@ -47,6 +48,7 @@ class Paths
 		'assets/music/freakyMenu.$SOUND_EXT',
 		'assets/shared/music/breakfast.$SOUND_EXT',
 		'assets/shared/music/tea-time.$SOUND_EXT',
+		'assets/shared/music/outpost-alpha.$SOUND_EXT'
 	];
 
 	/// haya I love you for the base cache dump I took to the max
@@ -55,15 +57,6 @@ class Paths
 		// clear non local assets in the tracked assets list
 		for (key in currentTrackedAssets.keys())
 		{
-			switch (ClientPrefs.imagesPersist)
-			{
-				case 'Base Game':
-					if (key.contains('mod'))
-						continue;
-				case 'Mod':
-					if (!key.contains('mod'))
-						continue;
-			}
 			// if it is not currently contained within the used local assets
 			if (!localTrackedAssets.contains(key) && !dumpExclusions.contains(key))
 			{
@@ -87,23 +80,10 @@ class Paths
 	public static var localTrackedAssets:Array<String> = [];
 
 	public static function clearStoredMemory(?cleanUnused:Bool = false)
-	{
-		// clear anything not in the tracked assets list
-		if (ClientPrefs.imagesPersist == 'All')
-			return;
-		
+	{		
 		@:privateAccess
 		for (key in FlxG.bitmap._cache.keys())
 		{
-			switch (ClientPrefs.imagesPersist)
-			{
-				case 'Base Game':
-					if (key.contains('mod'))
-						continue;
-				case 'Mod':
-					if (!key.contains('mod'))
-						continue;
-			}
 			var obj = FlxG.bitmap._cache.get(key);
 			if (obj != null && !currentTrackedAssets.exists(key))
 			{
@@ -116,16 +96,6 @@ class Paths
 		// clear all sounds that are cached
 		for (key in currentTrackedSounds.keys())
 		{
-			switch (ClientPrefs.imagesPersist)
-			{
-				case 'Base Game':
-					if (key.contains('mod'))
-						continue;
-				case 'Mod':
-					if (!key.contains('mod'))
-						continue;
-			}
-
 			if (!localTrackedAssets.contains(key) && !dumpExclusions.contains(key) && key != null)
 			{
 				// trace('test: ' + dumpExclusions, key);

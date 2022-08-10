@@ -16,16 +16,11 @@ class MosaicShader extends FlxShader
 {
     @:glFragmentSource('
     #pragma header
-    uniform bool small = false;
     
     void main()
     {
         vec2 blocks = openfl_TextureSize / 2;
-        if (small)
-            // fuck you
-            gl_FragColor = texture2D(bitmap, openfl_TextureCoordv);
-        else
-            gl_FragColor = texture2D(bitmap, floor(openfl_TextureCoordv * blocks) / blocks);
+         gl_FragColor = texture2D(bitmap, floor(openfl_TextureCoordv * blocks) / blocks);
     }
     ')
 

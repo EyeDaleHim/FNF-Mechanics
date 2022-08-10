@@ -13,8 +13,10 @@ import flixel.util.FlxTimer;
 import flixel.util.FlxSort;
 import flixel.ui.FlxBar;
 import flixel.math.FlxMath;
+import flixel.math.FlxRect;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
+import flixel.tweens.misc.VarTween;
 import flixel.input.mouse.FlxMouseEventManager;
 import flixel.group.FlxSpriteGroup;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -24,6 +26,7 @@ class MechanicMenu extends MusicBeatState
 {
 	var bg:FlxSprite;
 	var gradient:FlxSprite;
+	var vignette:FlxSprite;
 	var blackGrid:FlxBackdrop;
 	var gridBG:FlxBackdrop;
 	var randomTxt:FlxText;
@@ -36,6 +39,8 @@ class MechanicMenu extends MusicBeatState
 
 	var pointTxt:Alphabet;
 	var rightBG:FlxSprite;
+	var socialLogos:Array<FlxSprite> = [];
+	var socialTxt:FlxText;
 	var globalPointTxt:FlxSprite;
 	var pointArrowL:MechanicSprite;
 	var pointArrowR:MechanicSprite;
@@ -46,6 +51,7 @@ class MechanicMenu extends MusicBeatState
 
 	static var globalPoints:Int = 0;
 	public static var multiplierPoints:Float = 0;
+
 	var multiPointsDisplay:Float = 0;
 
 	var gridShader = new ColorSwap();
@@ -60,13 +66,94 @@ class MechanicMenu extends MusicBeatState
 		camFollow.scrollFactor.set();
 		add(camFollow);
 
+		FlxG.camera.bgColor = FlxColor.GRAY;
 		FlxG.camera.follow(camFollow, LOCKON, 1);
 
 		bg = new FlxSprite();
 		bg.loadGraphic(Paths.image('menuDesat'));
 		bg.scrollFactor.set();
 		bg.antialiasing = true;
+		bg.scale.set(1.6, 1.6);
+		bg.angle = FlxG.random.float(-15, 15);
 		add(bg);
+
+		var rotationSide:Int = 0;
+		var maxRotations:Int = 5;
+
+		var lockedAngles:{min:Float, max:Float} = {min: -15, max: 15};
+		var state:Int = 1;
+		/*
+		 * 0 = small angles, increment rotationSide until maxRotations
+		 * 1 = big angles, set rotationSide to 0 and random value for maxRotations
+		 */
+
+		var doTweenAngle:FlxTween->Void = null;
+
+		doTweenAngle = function(tween:FlxTween)
+		{
+			switch (state)
+			{
+				case 0:
+					{
+						FlxTween.tween(bg, {angle: FlxG.random.float(lockedAngles.min, lockedAngles.max)}, FlxG.random.float(1, 2.25), {
+							ease: FlxEase.backOut,
+							onComplete: function(twn:FlxTween)
+							{
+								if (bg == null)
+									return;
+
+								if (rotationSide >= maxRotations)
+									state = 1;
+								else
+									rotationSide++;
+
+								doTweenAngle(twn);
+							}
+						});
+					}
+				case 1:
+					{
+						var newMin:Float = FlxG.random.float(-25, -20);
+						var newMax:Float = FlxG.random.float(20, 25);
+
+						lockedAngles = {min: newMin, max: newMax};
+
+						FlxTween.tween(bg, {angle: FlxG.random.float(lockedAngles.min, lockedAngles.max)}, FlxG.random.float(1, 2.25), {
+							ease: FlxEase.backOut,
+							onComplete: function(twn:FlxTween)
+							{
+								if (bg == null)
+									return;
+
+								rotationSide = 0;
+								maxRotations = FlxG.random.int(5, 10);
+
+								doTweenAngle(twn);
+							}
+						});
+					}
+			}
+		}
+
+		var doTweenZoom:Void->Void = null;
+		doTweenZoom = function()
+		{
+			var random:Float = FlxG.random.float(1.3, 1.6);
+			FlxTween.tween(bg.scale, {x: random, y: random}, 3, {
+				ease: FlxEase.backOut,
+				onComplete: function(twn:FlxTween)
+				{
+					if (bg == null)
+						return;
+
+					doTweenZoom();
+				},
+				startDelay: FlxG.random.float(2, 5)
+			});
+		};
+
+		doTweenAngle(null);
+		doTweenZoom();
 
 		gradient = FlxGradient.createGradientFlxSprite(Math.floor(bg.width), Math.floor(bg.height), [randomColor(), randomColor()]);
 		gradient.scrollFactor.set();
@@ -79,6 +166,11 @@ class MechanicMenu extends MusicBeatState
 
 		FlxTween.tween(gradientShader, {hue: 1}, 20, {ease: FlxEase.linear, type: PINGPONG});
 
+		vignette = new FlxSprite().loadGraphic(Paths.image('bgVignette', 'shared'));
+		vignette.scrollFactor.set();
+		vignette.antialiasing = true;
+		add(vignette);
+
 		gridBG = new FlxBackdrop(Paths.image('checker'), 0.2, 0.2, true, true);
 		gridBG.scrollFactor.set(0.1, -0.1);
 		gridBG.antialiasing = true;
@@ -90,6 +182,8 @@ class MechanicMenu extends MusicBeatState
 		add(gridBG);
 
 		blackGrid = new FlxBackdrop(Paths.image('bgGrid'), 0.2, 0.2, true, true);
+		blackGrid.x -= 2;
+		blackGrid.y -= 2;
 		blackGrid.scrollFactor.set();
 		blackGrid.antialiasing = true;
 		add(blackGrid);
@@ -99,6 +193,40 @@ class MechanicMenu extends MusicBeatState
 		rightBG.alpha = 0.3;
 		rightBG.scrollFactor.set();
 		add(rightBG);
+
+		var logoSpr:FlxSprite = new FlxSprite((FlxG.width * 0.7) - 8, (FlxG.height * 0.9) - 12).loadGraphic(Paths.image('tikTok0', 'shared'));
+		logoSpr.scrollFactor.set();
+		logoSpr.visible = false;
+		logoSpr.alpha = 0.1;
+		add(logoSpr);
+		socialLogos.push(logoSpr);
+
+		var logoSpr:FlxSprite = new FlxSprite((FlxG.width * 0.7) - 8, (FlxG.height * 0.9) - 12).loadGraphic(Paths.image('tikTok1', 'shared'));
+		logoSpr.scrollFactor.set();
+		logoSpr.visible = false;
+		logoSpr.alpha = 0.1;
+		add(logoSpr);
+		socialLogos.push(logoSpr);
+
+		var idx:Int = 0;
+		new FlxTimer().start(1 / 4, function(tmr:FlxTimer)
+		{
+			for (logo in socialLogos)
+			{
+				logo.visible = false;
+			}
+			if (socialLogos[idx] == null)
+				idx = 0;
+			socialLogos[idx].visible = true;
+
+			idx++;
+		}, 0);
+
+		socialTxt = new FlxText(socialLogos[0].x + socialLogos[0].width + 5, socialLogos[0].getGraphicMidpoint().y, 'Check out mod progresses on TikTok');
+		socialTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		socialTxt.visible = false;
+		socialTxt.scrollFactor.set();
+		add(socialTxt);
 
 		mechanicGrp = new FlxSpriteGroup();
 		mechanicGrp.scrollFactor.set(0, 0.4);
@@ -128,7 +256,7 @@ class MechanicMenu extends MusicBeatState
 		pointTxt.antialiasing = true;
 		add(pointTxt);
 
-		pointArrowL = new MechanicSprite(0, FlxG.height * 0.15);
+		pointArrowL = new MechanicSprite(1031.8, FlxG.height * 0.15);
 		pointArrowL.loadGraphic(Paths.image('mechanicArr', 'shared'));
 
 		pointArrowL.unselectedScale = 1.4;
@@ -138,12 +266,11 @@ class MechanicMenu extends MusicBeatState
 
 		pointArrowL.scale.set(1.4, 1.4);
 		pointArrowL.updateHitbox();
-		pointArrowL.x = pointTxt.x - pointArrowL.width - 28;
 		pointArrowL.scrollFactor.set();
 		pointArrowL.antialiasing = true;
 		add(pointArrowL);
 
-		pointArrowR = new MechanicSprite(0, FlxG.height * 0.15);
+		pointArrowR = new MechanicSprite(1168.2, FlxG.height * 0.15);
 		pointArrowR.loadGraphic(Paths.image('mechanicArr', 'shared'));
 
 		pointArrowR.unselectedScale = 1.4;
@@ -153,7 +280,6 @@ class MechanicMenu extends MusicBeatState
 
 		pointArrowR.scale.set(1.4, 1.4);
 		pointArrowR.updateHitbox();
-		pointArrowR.x = pointTxt.x + pointArrowR.width + 16;
 		pointArrowR.scrollFactor.set();
 		pointArrowR.antialiasing = true;
 		pointArrowR.flipX = true;
@@ -339,7 +465,7 @@ class MechanicMenu extends MusicBeatState
 
 		multiplierTxt = new FlxText(0, FlxG.height * 0.45, 0, '0.0X', 64);
 		multiplierTxt.setFormat(Paths.font("vcr.ttf"), 64, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
-		multiplierTxt.borderSize = 2;
+		multiplierTxt.borderSize = 3.5;
 		multiplierTxt.updateHitbox();
 		multiplierTxt.scrollFactor.set();
 		multiplierTxt.antialiasing = true;
@@ -347,8 +473,8 @@ class MechanicMenu extends MusicBeatState
 		multiplierTxt.x += 4;
 		add(multiplierTxt);
 
-		multiplierBar = new FlxBar(multiplierTxt.x, multiplierTxt.y + multiplierTxt.height + 4, LEFT_TO_RIGHT, Std.int(multiplierTxt.width), 4, 
-		this, 'multiPointsDisplay', 1, 3.4);
+		multiplierBar = new FlxBar(multiplierTxt.x, multiplierTxt.y + multiplierTxt.height + 4, LEFT_TO_RIGHT, Std.int(multiplierTxt.width), 4, this,
+			'multiPointsDisplay', 1, 3.4);
 		multiplierBar.scrollFactor.set();
 		multiplierBar.antialiasing = true;
 		multiplierBar.numDivisions = FlxG.width * 2;
@@ -513,6 +639,14 @@ class MechanicMenu extends MusicBeatState
 			if (FlxG.mouse.getScreenPosition().x > rightBG.x)
 				multiplier = 0.2;
 
+			if (socialTxt.visible = FlxMath.mouseInFlxRect(false,
+				new FlxRect(socialLogos[0].x, socialLogos[0].y, socialLogos[0].width, socialLogos[0].height)))
+			{
+				multiplier = 0;
+				if (FlxG.mouse.justPressed)
+					FlxG.openURL('https://www.tiktok.com/@eyedalehim');
+			}
+
 			if (FlxG.mouse.getScreenPosition().y > FlxG.height * 0.8)
 				smoothY += 420 * (elapsed * 2.2) * multiplier;
 			else if (FlxG.mouse.getScreenPosition().y < FlxG.height * 0.2)
@@ -521,7 +655,7 @@ class MechanicMenu extends MusicBeatState
 			smoothY -= FlxG.mouse.wheel * 120;
 		}
 
-		smoothY = CoolUtil.boundTo(smoothY, 800, 4500);
+		smoothY = CoolUtil.boundTo(smoothY, 700, 4500);
 
 		camFollow.y = FlxMath.lerp(camFollow.y, smoothY, CoolUtil.boundTo(elapsed * 3.5, 0, 1));
 
@@ -582,6 +716,8 @@ class MechanicMenu extends MusicBeatState
 		{
 			MechanicManager.mechanics[mechanic].spriteParent = null;
 		}
+
+		FlxG.camera.bgColor = 0;
 
 		super.destroy();
 	}

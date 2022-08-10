@@ -63,7 +63,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Pause Screen Song:', "What song do you prefer for the Pause Screen?", 'pauseMusic', 'string', 'Outpost Alpha',
-			['None', 'Breakfast', 'Tea Time', 'Outpost Alpha', 'Ice Cavern']);
+			['None', 'Breakfast', 'Tea Time', 'Outpost Alpha']);
 		addOption(option);
 		option.onChange = onChangePauseMusic;
 

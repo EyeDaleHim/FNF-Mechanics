@@ -1,3 +1,5 @@
 {
-    "haxe.displayPort": "auto"
+    "haxe.displayPort": "auto",
+    "codesnap.shutterAction": "copy",
+    "codesnap.transparentBackground": true
 }
