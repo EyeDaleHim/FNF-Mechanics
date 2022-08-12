@@ -80,7 +80,7 @@ class Paths
 	public static var localTrackedAssets:Array<String> = [];
 
 	public static function clearStoredMemory(?cleanUnused:Bool = false)
-	{		
+	{
 		@:privateAccess
 		for (key in FlxG.bitmap._cache.keys())
 		{
@@ -372,7 +372,7 @@ class Paths
 			return currentTrackedAssets.get(path);
 		}
 		trace('oh no ${path} returning null NOOOO');
-		return null;
+		return FlxGraphic.fromBitmapData(new FlxSprite().loadGraphic("flixel/images/logo/default.png").pixels, false);
 	}
 
 	public static var currentTrackedSounds:Map<String, Sound> = [];

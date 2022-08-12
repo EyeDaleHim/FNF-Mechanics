@@ -32,6 +32,10 @@ class StrumGroups extends FlxBasic
 		opponentNotes.parent = this;
 		globalNotes = new NoteGroup();
 		globalNotes.parent = this;
+
+		hittableNotes.sustains = new FlxTypedGroup<Note>();
+		opponentNotes.sustains = new FlxTypedGroup<Note>();
+		globalNotes.sustains = new FlxTypedGroup<Note>();
 	}
 
 	public function remove(object:Note, splice:Bool = false)
@@ -110,4 +114,5 @@ class StrumGroups extends FlxBasic
 class NoteGroup extends FlxTypedGroup<Note>
 {
 	public var parent:StrumGroups;
+	public var sustains:FlxTypedGroup<Note>;
 }

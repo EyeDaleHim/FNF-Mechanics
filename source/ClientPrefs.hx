@@ -55,10 +55,12 @@ class ClientPrefs
 		'healthgain' => 1.0,
 		'healthloss' => 1.0,
 		'instakill' => false,
+		'sickonly' => false,
 		'practice' => false,
 		'botplay' => false,
 		'opponentplay' => false,
-		'duetMode' => false
+		'duetMode' => false,
+		'enemyMode' => false
 	];
 
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
@@ -81,6 +83,8 @@ class ClientPrefs
 		'ui_up' => [W, UP],
 		'ui_right' => [D, RIGHT],
 		'interact' => [CONTROL, ALT],
+		'select-rps' => [R, NONE],
+		'choose-rps' => [T, NONE],
 		'accept' => [SPACE, ENTER],
 		'back' => [BACKSPACE, ESCAPE],
 		'pause' => [ENTER, ESCAPE],
@@ -146,6 +150,9 @@ class ClientPrefs
 		defaultSave.data.controllerMode = controllerMode;
 		defaultSave.data.hitsoundVolume = hitsoundVolume;
 		defaultSave.data.pauseMusic = pauseMusic;
+
+		defaultSave.data.volume = FlxG.sound.volume;
+		defaultSave.data.muted = FlxG.sound.muted;
 
 		defaultSave.flush();
 
@@ -377,9 +384,9 @@ class ClientPrefs
 		{
 			FlxG.sound.volume = defaultSave.data.volume;
 		}
-		if (defaultSave.data.mute != null)
+		if (defaultSave.data.muted != null)
 		{
-			FlxG.sound.muted = FlxG.save.data.mute;
+			FlxG.sound.muted = defaultSave.data.muted;
 		}
 
 		var save:FlxSave = new FlxSave();

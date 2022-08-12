@@ -112,10 +112,10 @@ class AdvancedSettingsSubState extends BaseOptionsMenu
 			lastOption[1] = option.getValue();
 			addOption(option); */
 
-		var option:Option = new Option('Safe Scripts',
+		/*var option:Option = new Option('Safe Scripts',
 			'Any scripts containing malicious functions will be dealt with based on this option, change this option if you know what you\'re doing!',
 			'safeScript', 'string', 'on', ['Off', 'Warn First', 'On']);
-		addOption(option);
+		addOption(option);*/
 
 		var option:Option = new Option('Debugger Mode', "Lets you enable the keybinds to access debug menus.", 'debugMode', 'bool',
 			#if debug true #else false #end);

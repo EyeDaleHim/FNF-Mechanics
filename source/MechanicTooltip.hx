@@ -49,6 +49,7 @@ class MechanicTooltip extends FlxTypedGroup<FlxSprite>
 		titleText.scrollFactor.set(0, 0.4);
 		titleText.setFormat(Paths.font("vcr.ttf"), titleText.size, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
 		titleText.x = titleBG.getGraphicMidpoint().x - (titleText.width / 2);
+		titleText.borderSize = 2;
 		titleText.antialiasing = true;
 		add(titleText);
 
@@ -56,6 +57,7 @@ class MechanicTooltip extends FlxTypedGroup<FlxSprite>
 		descriptionText.scrollFactor.set(0, 0.4);
 		descriptionText.setFormat(Paths.font("vcr.ttf"), descriptionText.size, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
 		descriptionText.antialiasing = true;
+		descriptionText.borderSize = 2;
 		add(descriptionText);
 
 		titleText.y -= 140;

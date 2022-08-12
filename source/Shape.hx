@@ -63,8 +63,8 @@ class Shape extends FlxSprite
 		setPosition(decidedX, decidedY);
 
 		// chance for min to be above max, but that's fine
-		lifeTime = FlxG.random.float(FlxMath.remapToRange(cappedPoints, 1, 20, 6, 40) * FlxG.random.float(1, 1.6) / 2,
-			FlxMath.remapToRange(cappedPoints, 1, 20, 23, 93) * FlxG.random.float(1, 1.6) * 1.5) * 1.2;
+		lifeTime = (FlxG.random.float(FlxMath.remapToRange(cappedPoints, 1, 20, 6, 40) * FlxG.random.float(1, 1.6),
+			FlxMath.remapToRange(cappedPoints, 1, 20, 10, 40) * FlxG.random.float(1, 1.6) * 1.5) * 1.2) / 4;
 
 		// i know this is strange but i didn't wanna have a nightmarish crap there
 		switch (spawnFrom)

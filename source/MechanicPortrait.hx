@@ -30,6 +30,8 @@ class MechanicPortrait extends FlxSpriteGroup
 		if (scrollFactor == null)
 			scrollFactor = new FlxPoint(0, 0);
 
+		this.child = child;
+
 		var image:String = child.image;
 		if (!Assets.exists(Paths.getPath('images/portraits/${image}.png', IMAGE, 'shared')))
 			image = 'blank';

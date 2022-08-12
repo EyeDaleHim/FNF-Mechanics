@@ -13,6 +13,7 @@ import flixel.util.FlxTimer;
 import flixel.util.FlxSort;
 import flixel.ui.FlxBar;
 import flixel.math.FlxMath;
+import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
@@ -29,17 +30,67 @@ class MechanicMenu extends MusicBeatState
 	var vignette:FlxSprite;
 	var blackGrid:FlxBackdrop;
 	var gridBG:FlxBackdrop;
+	var spawnedGrids:FlxTypedGroup<FlxSprite>;
+	var spawnedRandoms:FlxTypedGroup<FlxSprite>;
 	var randomTxt:FlxText;
 
 	var mechanicGrp:FlxSpriteGroup;
 	var mechanicTooltips:FlxTypedGroup<MechanicTooltip>;
+
+	private var buttonList:Array<{name:String, callback:Void->Void}> = [
+		{
+			name: 'STORY MODE',
+			callback: function()
+			{
+				MusicBeatState.switchState(new StoryMenuState());
+			}
+		},
+		{
+			name: 'FREEPLAY',
+			callback: function()
+			{
+				MusicBeatState.switchState(new FreeplayState());
+			}
+		},
+		{
+			name: 'MODS',
+			callback: function()
+			{
+				MusicBeatState.switchState(new ModsMenuState());
+			}
+		},
+		{
+			name: 'ACHIEVEMENTS',
+			callback: function()
+			{
+				MusicBeatState.switchState(new AchievementsMenuState());
+			}
+		},
+		{
+			name: 'CREDITS',
+			callback: function()
+			{
+				MusicBeatState.switchState(new CreditsState());
+			}
+		},
+		{
+			name: 'OPTIONS',
+			callback: function()
+			{
+				MusicBeatState.switchState(new options.OptionsState());
+			}
+		}
+	];
+
+	private var buttonBG:FlxSprite;
+	private var buttonListGroup:Array<{box:FlxSprite, text:FlxText}> = [];
 
 	var camFollow:FlxObject;
 	var smoothY:Float = 0;
 
 	var pointTxt:Alphabet;
 	var rightBG:FlxSprite;
-	var socialLogos:Array<FlxSprite> = [];
+	var socialLogo:FlxSprite;
 	var socialTxt:FlxText;
 	var globalPointTxt:FlxSprite;
 	var pointArrowL:MechanicSprite;
@@ -55,6 +106,8 @@ class MechanicMenu extends MusicBeatState
 	var multiPointsDisplay:Float = 0;
 
 	var gridShader = new ColorSwap();
+
+	private static var gridColors:Array<Int> = [0xC1DBEC, 0xAEF1F3, 0xA9B6F0];
 
 	override public function create()
 	{
@@ -182,11 +235,197 @@ class MechanicMenu extends MusicBeatState
 		add(gridBG);
 
 		blackGrid = new FlxBackdrop(Paths.image('bgGrid'), 0.2, 0.2, true, true);
-		blackGrid.x -= 2;
 		blackGrid.y -= 2;
+		blackGrid.alpha = 0.8;
 		blackGrid.scrollFactor.set();
 		blackGrid.antialiasing = true;
 		add(blackGrid);
+
+		spawnedRandoms = new FlxTypedGroup<FlxSprite>();
+		add(spawnedRandoms);
+
+		new FlxTimer().start(2, function(tmr:FlxTimer)
+		{
+			var chanceSpawns:Int = 1;
+
+			for (i in 0...4)
+			{
+				if (FlxG.random.bool(20))
+					chanceSpawns++;
+			}
+
+			var maxTime:Float = 0;
+
+			for (j in 0...Std.int(chanceSpawns))
+			{
+				var randState:Int = FlxG.random.int(0, 1);
+
+				switch (randState)
+				{
+					case 0:
+						{
+							var newSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/menuRandom0'));
+							newSpr.alpha = 0;
+							newSpr.scrollFactor.set();
+							newSpr.flipX = FlxG.random.bool();
+							newSpr.flipY = FlxG.random.bool();
+							spawnedRandoms.add(newSpr);
+
+							var wantedHeight:Float = -newSpr.height;
+							var fromHeight:Float = FlxG.height + 15;
+
+							if (FlxG.random.bool())
+							{
+								var originalHeight:Float = cast(wantedHeight, Float);
+								fromHeight = wantedHeight;
+								wantedHeight = originalHeight;
+							}
+
+							newSpr.setPosition(FlxG.random.float(0, FlxG.width - newSpr.width), fromHeight);
+
+							var time:Float = FlxG.random.float(15, 20);
+							FlxTween.tween(newSpr, {y: wantedHeight}, time, {
+								onComplete: function(twn:FlxTween)
+								{
+									spawnedRandoms.remove(newSpr);
+									newSpr.destroy();
+								}
+							});
+
+							maxTime = Math.max(time, maxTime);
+
+							// needs 16 attempts
+							var alphaAttempt:Int = 0;
+							var doAlphas:Void->Void = null;
+							var wantedAlpha:Float = 0.1;
+							doAlphas = function()
+							{
+								if (alphaAttempt >= 16)
+									return;
+
+								FlxTween.tween(newSpr, {alpha: wantedAlpha}, time / 16, {
+									ease: FlxEase.sineOut,
+									onComplete: function(twn:FlxTween)
+									{
+										doAlphas();
+									}
+								});
+
+								if (wantedAlpha == 0.2)
+									wantedAlpha = 0.3;
+								else if (wantedAlpha == 0.3)
+									wantedAlpha = 0.2;
+								alphaAttempt++;
+							};
+
+							doAlphas();
+						}
+					case 1:
+						{
+							var time:Float = FlxG.random.float(6, 12);
+							for (i in 0...3)
+							{
+								var newSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/menuRandom1'));
+								newSpr.alpha = 0;
+								newSpr.scrollFactor.set();
+								newSpr.flipX = Math.random() > 0.5;
+								newSpr.flipY = Math.random() > 0.5;
+								spawnedRandoms.add(newSpr);
+
+								var posX:Int = Std.int(Math.random() * 12);
+								var posY:Int = Std.int(Math.random() * 7);
+
+								newSpr.setPosition((98 * posX) + 2.25, (91 * posY) - 2);
+
+								var wantedDirection:String = FlxG.random.getObject(['left', 'down', 'up', 'right']);
+
+								newSpr.scale.set((wantedDirection == 'left' || wantedDirection == 'right') ? 1 : 0,
+									(wantedDirection == 'down' || wantedDirection == 'up') ? 1 : 0);
+
+								FlxTween.tween(newSpr.scale, {x: 1, y: 1}, 1.3 + FlxG.random.float(0.2, 0.4), {
+									ease: FlxEase.sineOut,
+									onUpdate: function(twn:FlxTween)
+									{
+										newSpr.alpha = FlxMath.remapToRange((newSpr.scale.x + newSpr.scale.y) / 2, 0, 2, 0, 0.7);
+									},
+									onComplete: function(twn:FlxTween)
+									{
+										newSpr.alpha = FlxMath.remapToRange((newSpr.scale.x + newSpr.scale.y) / 2, 0, 2, 0, 0.7);
+									}
+								});
+
+								new FlxTimer().start(time - 1.8, function(rTmr:FlxTimer)
+								{
+									FlxTween.tween(newSpr, {alpha: 0}, 1.3 + FlxG.random.float(0.2, 0.4), {
+										ease: FlxEase.sineOut,
+										onComplete: function(twn:FlxTween)
+										{
+											spawnedRandoms.remove(newSpr);
+											newSpr.destroy();
+										}
+									});
+								});
+
+								maxTime = Math.max(time, maxTime);
+							}
+						}
+				}
+			}
+
+			tmr.reset(maxTime + 1);
+		});
+
+		spawnedGrids = new FlxTypedGroup<FlxSprite>();
+		add(spawnedGrids);
+
+		new FlxTimer().start(1, function(tmr:FlxTimer)
+		{
+			var elapsedTime:Float = FlxG.random.float(1.25, 3);
+
+			new FlxTimer().start(elapsedTime - 0.3, function(daTmr:FlxTimer)
+			{
+				if (!destroyed)
+					tmr.reset(FlxG.random.float(0.1, 0.3));
+			});
+
+			var len:Int = Math.floor(Math.random() * 16);
+			if (len <= 5)
+				len = 5;
+
+			for (i in 0...len)
+			{
+				var posX:Int = FlxG.random.int(0, 12);
+				var posY:Int = FlxG.random.int(0, 7);
+
+				var gridSprite:FlxSprite = new FlxSprite().loadGraphic(Paths.image('bgFilledGrid'));
+				gridSprite.setPosition((98 * posX) + 2.25, (91 * posY) - 2);
+				gridSprite.scrollFactor.set();
+				gridSprite.alpha = 0;
+				gridSprite.color = FlxG.random.getObject(gridColors);
+				spawnedGrids.add(gridSprite);
+
+				FlxTween.tween(gridSprite, {alpha: 0.4}, elapsedTime / 4, {
+					ease: FlxEase.sineOut,
+					onComplete: function(twn:FlxTween)
+					{
+						new FlxTimer().start((elapsedTime / 4) * 2, function(sprTmr:FlxTimer)
+						{
+							FlxTween.tween(gridSprite, {alpha: 0}, elapsedTime / 4, {
+								ease: FlxEase.sineOut,
+								onComplete: function(twn:FlxTween)
+								{
+									if (gridSprite != null && !destroyed)
+									{
+										remove(gridSprite);
+										gridSprite.destroy();
+									}
+								}
+							});
+						});
+					}
+				});
+			}
+		});
 
 		rightBG = new FlxSprite(FlxG.width * 0.75, 0);
 		rightBG.makeGraphic(Std.int(FlxG.width * 0.25), FlxG.height, FlxColor.fromRGB(0, 0, 0));
@@ -194,37 +433,17 @@ class MechanicMenu extends MusicBeatState
 		rightBG.scrollFactor.set();
 		add(rightBG);
 
-		var logoSpr:FlxSprite = new FlxSprite((FlxG.width * 0.7) - 8, (FlxG.height * 0.9) - 12).loadGraphic(Paths.image('tikTok0', 'shared'));
-		logoSpr.scrollFactor.set();
-		logoSpr.visible = false;
-		logoSpr.alpha = 0.1;
-		add(logoSpr);
-		socialLogos.push(logoSpr);
+		socialLogo = new FlxSprite((FlxG.width * 0.7) - 8, (FlxG.height * 0.9) - 12).loadGraphic(Paths.image('discord', 'shared'));
+		socialLogo.scrollFactor.set();
+		socialLogo.scale.set(0.6, 0.6);
+		socialLogo.updateHitbox();
+		socialLogo.alpha = 0.6;
+		add(socialLogo);
 
-		var logoSpr:FlxSprite = new FlxSprite((FlxG.width * 0.7) - 8, (FlxG.height * 0.9) - 12).loadGraphic(Paths.image('tikTok1', 'shared'));
-		logoSpr.scrollFactor.set();
-		logoSpr.visible = false;
-		logoSpr.alpha = 0.1;
-		add(logoSpr);
-		socialLogos.push(logoSpr);
-
-		var idx:Int = 0;
-		new FlxTimer().start(1 / 4, function(tmr:FlxTimer)
-		{
-			for (logo in socialLogos)
-			{
-				logo.visible = false;
-			}
-			if (socialLogos[idx] == null)
-				idx = 0;
-			socialLogos[idx].visible = true;
-
-			idx++;
-		}, 0);
-
-		socialTxt = new FlxText(socialLogos[0].x + socialLogos[0].width + 5, socialLogos[0].getGraphicMidpoint().y, 'Check out mod progresses on TikTok');
+		socialTxt = new FlxText(socialLogo.x + socialLogo.width + 5, socialLogo.getGraphicMidpoint().y, 'Join the Discord Server');
 		socialTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		socialTxt.visible = false;
+		socialTxt.antialiasing = ClientPrefs.globalAntialiasing;
 		socialTxt.scrollFactor.set();
 		add(socialTxt);
 
@@ -473,7 +692,7 @@ class MechanicMenu extends MusicBeatState
 		multiplierTxt.x += 4;
 		add(multiplierTxt);
 
-		multiplierBar = new FlxBar(multiplierTxt.x, multiplierTxt.y + multiplierTxt.height + 4, LEFT_TO_RIGHT, Std.int(multiplierTxt.width), 4, this,
+		multiplierBar = new FlxBar(multiplierDisplay.x, multiplierTxt.y + multiplierTxt.height + 10, LEFT_TO_RIGHT, Std.int(multiplierDisplay.width), 8, this,
 			'multiPointsDisplay', 1, 3.4);
 		multiplierBar.scrollFactor.set();
 		multiplierBar.antialiasing = true;
@@ -619,6 +838,36 @@ class MechanicMenu extends MusicBeatState
 		{
 			mechanicTooltips.add(tooltip);
 		}
+
+		buttonBG = new FlxSprite().makeGraphic(Std.int(FlxG.width * 0.75), 30, 0xFF000000);
+		buttonBG.alpha = 0.3;
+		buttonBG.scrollFactor.set();
+		add(buttonBG);
+
+		for (button in buttonList)
+		{
+			var center:FlxPoint = buttonBG.getGraphicMidpoint();
+
+			var buttonText:FlxText = new FlxText(center.x, center.y, Std.int(FlxG.width * 0.75) / buttonList.length, button.name, 20);
+			buttonText.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+			buttonText.scrollFactor.set();
+			buttonText.borderSize = 2;
+			buttonText.setPosition(center.x - (buttonText.width / 2), center.y - (buttonText.height / 2));
+			if (buttonList.indexOf(button) != 0)
+				buttonText.x = buttonListGroup[buttonList.indexOf(button) - 1].text.x + buttonListGroup[buttonList.indexOf(button) - 1].text.width;
+			else
+				buttonText.x = 0;
+
+			var buttonBox:FlxSprite = new FlxSprite().makeGraphic(Std.int(buttonText.width), Std.int(buttonText.height), 0xFFFFFFFF);
+			buttonBox.setPosition(buttonText.x, buttonText.y);
+			buttonBox.scrollFactor.set();
+			buttonBox.alpha = 0.0;
+
+			add(buttonBox);
+			add(buttonText);
+
+			buttonListGroup.push({box: buttonBox, text: buttonText});
+		}
 	}
 
 	var moveBG:Bool = true;
@@ -627,8 +876,13 @@ class MechanicMenu extends MusicBeatState
 	{
 		super.update(elapsed);
 
-		if (FlxG.keys.justPressed.R)
-			FlxG.switchState(new MainMenuState());
+		if (FlxG.sound.music != null)
+		{
+			if (FlxG.sound.music.volume < 0.7)
+			{
+				FlxG.sound.music.volume += 0.5 * elapsed;
+			}
+		}
 
 		gridShader.hue += elapsed * 0.1;
 
@@ -636,15 +890,12 @@ class MechanicMenu extends MusicBeatState
 		{
 			var multiplier:Float = 1.4;
 
-			if (FlxG.mouse.getScreenPosition().x > rightBG.x)
-				multiplier = 0.2;
-
 			if (socialTxt.visible = FlxMath.mouseInFlxRect(false,
-				new FlxRect(socialLogos[0].x, socialLogos[0].y, socialLogos[0].width, socialLogos[0].height)))
+				new FlxRect(socialLogo.x, socialLogo.y, socialLogo.width, socialLogo.height)))
 			{
 				multiplier = 0;
 				if (FlxG.mouse.justPressed)
-					FlxG.openURL('https://www.tiktok.com/@eyedalehim');
+					FlxG.openURL('https://discord.gg/Q88Xb3KM');
 			}
 
 			if (FlxG.mouse.getScreenPosition().y > FlxG.height * 0.8)
@@ -654,6 +905,8 @@ class MechanicMenu extends MusicBeatState
 
 			smoothY -= FlxG.mouse.wheel * 120;
 		}
+
+		socialTxt.x = rightBG.getGraphicMidpoint().x - (socialTxt.width / 2);
 
 		smoothY = CoolUtil.boundTo(smoothY, 700, 4500);
 
@@ -693,6 +946,32 @@ class MechanicMenu extends MusicBeatState
 			multiplierTxt.x -= multiplierTxt.width / 2;
 			multiplierTxt.x += 4;
 		}
+
+		moveBG = !(((FlxG.mouse.getScreenPosition().x >= buttonBG.x && FlxG.mouse.getScreenPosition().x <= buttonBG.x + buttonBG.width)
+			&& (FlxG.mouse.getScreenPosition().y >= buttonBG.y && FlxG.mouse.getScreenPosition().y <= buttonBG.y + buttonBG.height))
+			|| FlxG.mouse.getScreenPosition().x >= rightBG.x);
+
+		buttonBG.y = CoolUtil.boundTo(FlxMath.remapToRange(FlxG.mouse.getScreenPosition().y, FlxG.height / 4, buttonBG.height * 1.5, -buttonBG.height * 4, 0),
+			-buttonBG.height * 4, 0);
+
+		for (sprites in buttonListGroup)
+		{
+			var posX:Bool = (FlxG.mouse.getScreenPosition().x >= sprites.text.x
+				&& FlxG.mouse.getScreenPosition().x <= sprites.text.x + sprites.text.width);
+			var posY:Bool = (FlxG.mouse.getScreenPosition().y >= sprites.text.y
+				&& FlxG.mouse.getScreenPosition().y <= sprites.text.y + sprites.text.height);
+
+			sprites.text.y = sprites.box.y = buttonBG.getMidpoint().y / 2;
+
+			if (posX && posY)
+			{
+				sprites.box.alpha = 0.6;
+				if (FlxG.mouse.justPressed)
+					buttonList[buttonListGroup.indexOf(sprites)].callback();
+			}
+			else
+				sprites.box.alpha = 0.0;
+		}
 	}
 
 	function formatMulti(num:Float):String
@@ -718,6 +997,11 @@ class MechanicMenu extends MusicBeatState
 		}
 
 		FlxG.camera.bgColor = 0;
+
+		spawnedRandoms.forEachExists(function(spr:FlxSprite)
+		{
+			FlxTween.completeTweensOf(spr);
+		});
 
 		super.destroy();
 	}

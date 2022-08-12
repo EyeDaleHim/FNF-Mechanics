@@ -22,12 +22,15 @@ class AchievementsMenuState extends MusicBeatState
 	#if ACHIEVEMENTS_ALLOWED
 	var options:Array<String> = [];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
+
 	private static var curSelected:Int = 0;
+
 	private var achievementArray:Array<AttachedAchievement> = [];
 	private var achievementIndex:Array<Int> = [];
 	private var descText:FlxText;
 
-	override function create() {
+	override function create()
+	{
 		#if desktop
 		DiscordClient.changePresence("Achievements Menu", null);
 		#end
@@ -43,16 +46,21 @@ class AchievementsMenuState extends MusicBeatState
 		add(grpOptions);
 
 		Achievements.loadAchievements();
-		for (i in 0...Achievements.achievementsStuff.length) {
-			if(!Achievements.achievementsStuff[i][3] || Achievements.achievementsMap.exists(Achievements.achievementsStuff[i][2])) {
-				options.push(Achievements.achievementsStuff[i]);
+		for (i in 0...Achievements.achievementsStuff.length)
+		{
+			if (!Achievements.achievementsStuff[i].hidden || Achievements.achievementsMap.exists(Achievements.achievementsStuff[i].tag))
+			{
+				options.push(Achievements.achievementsStuff[i].name);
 				achievementIndex.push(i);
 			}
+			// trace('{name: "${Achievements.achievementsStuff[i][0]}", description: "${Achievements.achievementsStuff[i][1]}", tag: \'${Achievements.achievementsStuff[i][2]}\', hidden: ${Achievements.achievementsStuff[i][3]}}');
 		}
 
-		for (i in 0...options.length) {
-			var achieveName:String = Achievements.achievementsStuff[achievementIndex[i]][2];
-			var optionText:Alphabet = new Alphabet(0, (100 * i) + 210, Achievements.isAchievementUnlocked(achieveName) ? Achievements.achievementsStuff[achievementIndex[i]][0] : '?', false, false);
+		for (i in 0...options.length)
+		{
+			var achieveName:String = Achievements.achievementsStuff[achievementIndex[i]].tag;
+			var optionText:Alphabet = new Alphabet(0, (100 * i) + 210,
+				Achievements.isAchievementUnlocked(achieveName) ? Achievements.achievementsStuff[achievementIndex[i]].name : 'LOCKED', false, false);
 			optionText.isMenuItem = true;
 			optionText.x += 280;
 			optionText.xAdd = 200;
@@ -75,45 +83,53 @@ class AchievementsMenuState extends MusicBeatState
 		super.create();
 	}
 
-	override function update(elapsed:Float) {
+	override function update(elapsed:Float)
+	{
 		super.update(elapsed);
 
-		if (controls.UI_UP_P) {
+		if (controls.UI_UP_P)
+		{
 			changeSelection(-1);
 		}
-		if (controls.UI_DOWN_P) {
+		if (controls.UI_DOWN_P)
+		{
 			changeSelection(1);
 		}
 
-		if (controls.BACK) {
+		if (controls.BACK)
+		{
 			FlxG.sound.play(Paths.sound('cancelMenu'));
-			MusicBeatState.switchState(new MainMenuState());
+			MusicBeatState.switchState(new MechanicMenu());
 		}
 	}
 
-	function changeSelection(change:Int = 0) {
-
+	function changeSelection(change:Int = 0)
+	{
 		curSelected = FlxMath.wrap(curSelected + change, 0, options.length - 1);
 
 		var bullShit:Int = 0;
 
-		for (item in grpOptions.members) {
+		for (item in grpOptions.members)
+		{
 			item.targetY = bullShit - curSelected;
 			bullShit++;
 
 			item.alpha = 0.6;
-			if (item.targetY == 0) {
+			if (item.targetY == 0)
+			{
 				item.alpha = 1;
 			}
 		}
 
-		for (i in 0...achievementArray.length) {
+		for (i in 0...achievementArray.length)
+		{
 			achievementArray[i].alpha = 0.6;
-			if(i == curSelected) {
+			if (i == curSelected)
+			{
 				achievementArray[i].alpha = 1;
 			}
 		}
-		descText.text = Achievements.achievementsStuff[achievementIndex[curSelected]][1];
+		descText.text = Achievements.achievementsStuff[achievementIndex[curSelected]].description;
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 	}
 	#end
