@@ -114,7 +114,7 @@ class TitleState extends MusicBeatState
 			http.onData = function(data:String)
 			{
 				updateVersion = data.split('\n')[0].trim();
-				var curVersion:String = MainMenuState.psychEngineVersion.trim();
+				var curVersion:String = MechanicMenu.psychEngineVersion.trim();
 				trace('version online: ' + updateVersion + ', your version: ' + curVersion);
 				if (updateVersion != curVersion)
 				{
@@ -149,6 +149,8 @@ class TitleState extends MusicBeatState
 
 		ClientPrefs.loadPrefs();
 
+		FlxG.sound.volume = ClientPrefs.defaultSave.data.volume;
+
 		Highscore.load();
 
 		// IGNORE THIS!!!
@@ -156,7 +158,7 @@ class TitleState extends MusicBeatState
 
 		#if TITLE_SCREEN_EASTER_EGG
 		if (FlxG.save.data.psychDevsEasterEgg == null)
-			FlxG.save.data.psychDevsEasterEgg = ''; // Crash prevention
+			FlxG.save.data.psychDevsEasterEgg =  ''; // Crash prevention
 		switch (FlxG.save.data.psychDevsEasterEgg.toUpperCase())
 		{
 			case 'SHADOW':
@@ -459,7 +461,7 @@ class TitleState extends MusicBeatState
 					}
 					else
 					{
-						MusicBeatState.switchState(new MainMenuState());
+						MusicBeatState.switchState(new MechanicMenu());
 					}
 					closedState = true;
 				});

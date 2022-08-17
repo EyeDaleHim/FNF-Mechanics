@@ -53,7 +53,7 @@ class CoolUtil
 	{
 		var size:Float = num;
 		var data = 0;
-		var dataTexts = ["B", "KB", "MB", "GB", "TB", "PB"];
+		var dataTexts = ["B", "KB", "MB", "GB"];
 		while (size > 1024 && data < dataTexts.length - 1)
 		{
 			data++;

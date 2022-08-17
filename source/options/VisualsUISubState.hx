@@ -63,7 +63,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Pause Screen Song:', "What song do you prefer for the Pause Screen?", 'pauseMusic', 'string', 'Outpost Alpha',
-			['None', 'Breakfast', 'Tea Time', 'Outpost Alpha']);
+			['None', 'Breakfast', 'Tea Time', 'Sneaky Snitch', 'Elevator Music', 'Outpost Alpha']);
 		addOption(option);
 		option.onChange = onChangePauseMusic;
 
@@ -81,7 +81,10 @@ class VisualsUISubState extends BaseOptionsMenu
 		if (ClientPrefs.pauseMusic == 'None')
 			FlxG.sound.music.volume = 0;
 		else
+		{
 			FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath(ClientPrefs.pauseMusic)));
+			FlxG.sound.music.volume = 1;
+		}
 
 		changedMusic = true;
 	}

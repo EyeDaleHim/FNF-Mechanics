@@ -15,6 +15,7 @@ import openfl.display._internal.stats.DrawCallContext;
 #if flash
 import openfl.Lib;
 #end
+import flixel.FlxG;
 import flixel.FlxGame;
 import flixel.util.FlxColor;
 import openfl.Assets;
@@ -38,7 +39,7 @@ class FPS extends TextField
 	/**
 		The current frame rate, expressed using frames-per-second
 	**/
-	public var currentFPS(default, null):Int;
+	public var currentFPS(default, null):Float;
 
 	public var curMemory:Float;
 	public var maxMemory:Float;
@@ -114,13 +115,26 @@ class FPS extends TextField
 			times.shift();
 		}
 
+		var minAlpha:Float = 0.5;
+		var aggressor:Float = 1;
+
+		if ((FlxG.mouse.screenX >= this.x && FlxG.mouse.screenX <= this.x + this.width)
+			&& (FlxG.mouse.screenY >= this.y && FlxG.mouse.screenY <= this.y + this.height) && FlxG.mouse.visible)
+		{
+			minAlpha = 0.1;
+			aggressor = 2.5;
+		}
+
 		if (!lagging)
-			realAlpha = CoolUtil.boundTo(realAlpha - (deltaTime / 1000), 0.5, 1);
+			realAlpha = CoolUtil.boundTo(realAlpha - (deltaTime / 1000) * aggressor, minAlpha, 1);
 		else
-			realAlpha = CoolUtil.boundTo(realAlpha + (deltaTime / 1000), 0.5, 1);
+			realAlpha = CoolUtil.boundTo(realAlpha + (deltaTime / 1000), 0.3, 1);
 
 		var currentCount = times.length;
-		currentFPS = Math.round((currentCount + cacheCount) / 2);
+		currentFPS = (currentCount + cacheCount) / 2;
+
+		// currentFPS = 1 / (deltaTime / 1000);
+
 		if (currentFPS > ClientPrefs.framerate)
 			currentFPS = ClientPrefs.framerate;
 
@@ -142,9 +156,9 @@ class FPS extends TextField
 
 	private function updateText():Void
 	{
-		text = "FPS: " + currentFPS;
+		text = "FPS: " + Math.round(currentFPS);
 
-		var ms:Float = 1 / currentFPS;
+		var ms:Float = 1 / Math.round(currentFPS);
 		ms *= 1000;
 		#if debug
 		text += ' (${FlxMath.roundDecimal(ms, 2)}ms)';
@@ -172,8 +186,13 @@ class FPS extends TextField
 			text += '\n';
 		}
 		#if debug
+		text += '\nDEBUG INFO:\n';
 		text += 'CPU: ${FlxGame.updateMS}ms\nGPU: ${FlxGame.drawMS}ms';
 		text += '\nRUNTIME: ${FlxStringUtil.formatTime(currentTime / 1000)}';
+		text += "\n";
+		text += 'STATE: ${Type.getClassName(Type.getClass(FlxG.state))}';
+		if (FlxG.state.subState != null)
+			text += ' (SUBSTATE: ${Type.getClassName(Type.getClass(FlxG.state.subState))})';
 		text += "\n";
 		#end
 	}

@@ -80,7 +80,7 @@ class Paths
 	public static var localTrackedAssets:Array<String> = [];
 
 	public static function clearStoredMemory(?cleanUnused:Bool = false)
-	{		
+	{
 		@:privateAccess
 		for (key in FlxG.bitmap._cache.keys())
 		{

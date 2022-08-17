@@ -21,6 +21,16 @@ class MallSnow extends FlxTypedGroup<SnowSprite>
 		super();
 
 		SnowSprite.perlin = new Perlin();
+
+		spawnGroup(FlxG.random.int(3, 6), FlxG.random.int(9, 16), 0.8, 1.4, 120, 360);
+
+		for (member in members)
+		{
+			if (member != null)
+			{
+				member.update(2);
+			}
+		}
 	}
 
 	override function update(elapsed:Float)
@@ -48,18 +58,21 @@ class MallSnow extends FlxTypedGroup<SnowSprite>
 
 		for (i in 0...spawnedValues)
 		{
-			var snowSprite = recycle(SnowSprite);
-            snowSprite.totalElapsed = 0;
-            snowSprite.lifeTime = FlxG.random.float(4, 16);
-			snowSprite.scrollFactor.set(scrollFactor.x, scrollFactor.y);
-			snowSprite.antialiasing = antialiasing;
-			snowSprite.angle = FlxG.random.float(-90, 90);
-			snowSprite.startScale = FlxG.random.float(scaleMin + scaleFactor, scaleMax + scaleFactor);
-			snowSprite.velocity.y = FlxG.random.float(speedMin, speedMax);
-			snowSprite.scale.set(snowSprite.startScale, snowSprite.startScale);
-			snowSprite.x = FlxG.random.float(spawnPosition.x, spawnPosition.x + spawnPosition.width);
-			snowSprite.y = FlxG.random.float(spawnPosition.y, spawnPosition.y + spawnPosition.height);
-			add(snowSprite);
+			if (FlxG.random.bool(100 / 3))
+			{
+				var snowSprite = recycle(SnowSprite);
+				snowSprite.totalElapsed = 0;
+				snowSprite.lifeTime = FlxG.random.float(4, 16);
+				snowSprite.scrollFactor.set(scrollFactor.x, scrollFactor.y);
+				snowSprite.antialiasing = antialiasing;
+				snowSprite.angle = FlxG.random.float(-90, 90);
+				snowSprite.startScale = FlxG.random.float(scaleMin + scaleFactor, scaleMax + scaleFactor);
+				snowSprite.velocity.y = FlxG.random.float(speedMin, speedMax);
+				snowSprite.scale.set(snowSprite.startScale, snowSprite.startScale);
+				snowSprite.x = FlxG.random.float(spawnPosition.x, spawnPosition.x + spawnPosition.width);
+				snowSprite.y = FlxG.random.float(spawnPosition.y, spawnPosition.y + spawnPosition.height);
+				add(snowSprite);
+			}
 		}
 	}
 }
@@ -75,8 +88,7 @@ class SnowSprite extends FlxSprite
 	{
 		super(x, y);
 
-		// ???
-		loadGraphic('week5:assets/week5/images/christmas/snowParticle.png');
+		loadGraphic(Paths.image('christmas/snowParticle', 'week5'));
 		lifeTime = FlxG.random.float(4, 16);
 	}
 

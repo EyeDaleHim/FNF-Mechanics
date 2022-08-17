@@ -85,14 +85,40 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		var option:GameplayOption = new GameplayOption('Instakill on Miss', 'instakill', 'bool', false);
 		optionsArray.push(option);
 
+		var option:GameplayOption = new GameplayOption('Sick Rating Only', 'sickonly', 'bool', false);
+		optionsArray.push(option);
+
 		var option:GameplayOption = new GameplayOption('Practice Mode', 'practice', 'bool', false);
 		optionsArray.push(option);
 
 		var option:GameplayOption = new GameplayOption('Botplay', 'botplay', 'bool', false);
 		optionsArray.push(option);
 
-		var option:GameplayOption = new GameplayOption('Duet Mode', 'duetMode', 'bool', false);
-		optionsArray.push(option);
+		// var option:GameplayOption = new GameplayOption('Play As Enemy', 'enemyMode', 'bool', false);
+
+		var dOption:GameplayOption = new GameplayOption('Duet Mode', 'duetMode', 'bool', false);
+		dOption.onChange = function()
+		{
+			/*if (ClientPrefs.getGameplaySetting('duetMode', false))
+			{
+				option.setValue(false);
+				option.change();
+				reloadCheckboxes();
+			}*/
+		};
+		optionsArray.push(dOption);
+
+		
+		/*option.onChange = function()
+		{
+			if (ClientPrefs.getGameplaySetting('enemyMode', false))
+			{
+				dOption.setValue(false);
+				dOption.change();
+				reloadCheckboxes();
+			}
+		};
+		optionsArray.push(option);*/
 	}
 
 	public function getOptionByName(name:String)
@@ -106,7 +132,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		return null;
 	}
 
-	public function new()
+	public function new(isStoryMode:Bool = false)
 	{
 		super();
 		

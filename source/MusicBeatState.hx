@@ -1,6 +1,7 @@
 package;
 
 import Conductor.BPMChangeEvent;
+import flash.text.TextFormat;
 import flixel.FlxG;
 import flixel.addons.ui.FlxUIState;
 import flixel.math.FlxRect;
@@ -133,6 +134,15 @@ class MusicBeatState extends FlxUIState
 		}
 		FlxTransitionableState.skipNextTransIn = false;
 		FlxG.switchState(nextState);
+	}
+
+	override public function destroy():Void
+	{
+		#if web
+		FlxG.autoPause = ClientPrefs.autoPause;
+		#end
+
+		Main.fpsVar.fps.defaultTextFormat = new TextFormat(Main.fpsVar.fps.getFont(Paths.font("vcr.ttf")), 14, 0xFFFFFFFF);
 	}
 
 	public static function resetState()
