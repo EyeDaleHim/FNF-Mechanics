@@ -372,7 +372,7 @@ class Paths
 			return currentTrackedAssets.get(path);
 		}
 		trace('oh no ${path} returning null NOOOO');
-		return FlxGraphic.fromBitmapData(new FlxSprite().loadGraphic("flixel/images/logo/default.png").pixels, false);
+		return null;
 	}
 
 	public static var currentTrackedSounds:Map<String, Sound> = [];

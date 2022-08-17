@@ -133,6 +133,7 @@ class CreditsState extends MusicBeatState
 
 	var bg:FlxSprite;
 	var descText:FlxText;
+	var specText:FlxText;
 	var intendedColor:Int;
 	var colorTween:FlxTween;
 	var descBox:AttachedSprite;
@@ -155,10 +156,17 @@ class CreditsState extends MusicBeatState
 		add(grpOptions);
 
 		creditsStuff.unshift([
+			'Raltyro',
+			'unknown',
+			'Logo Artist',
+			'https://twitter.com/raltyro',
+			'FFD56D'
+		]);
+		creditsStuff.unshift([
 			'EyeDaleHim',
 			'eyedalehim',
 			'Creator & Programmer of FNF Mechanics Mod',
-			'https://https://twitter.com/him_dale',
+			'https://twitter.com/him_dale',
 			'FF9300'
 		]);
 		creditsStuff.unshift(['FNF Mechanics Mod']);
@@ -263,6 +271,12 @@ class CreditsState extends MusicBeatState
 		if (FlxG.sound.music.volume < 0.7)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
+		}
+
+		if (FlxG.keys.justPressed.SHIFT)
+		{
+			persistentUpdate = false;
+			openSubState(new CreditsSubState());
 		}
 
 		if (!quitting)

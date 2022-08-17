@@ -54,6 +54,14 @@ class MusicBeatSubstate extends FlxSubState
 		curStep = lastChange.stepTime + Math.floor((Conductor.songPosition - lastChange.songTime) / Conductor.stepCrochet);
 	}
 
+	override public function destroy():Void
+	{
+		#if !web
+		FlxG.autoPause = ClientPrefs.autoPause;
+		#end
+	}
+
+
 	public function stepHit():Void
 	{
 		if (curStep % 4 == 0)

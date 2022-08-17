@@ -60,7 +60,7 @@ class MechanicMenu extends MusicBeatState
 			}
 		},
 		{
-			name: 'ACHIEVEMENTS',
+			name: 'AWARDS',
 			callback: function()
 			{
 				MusicBeatState.switchState(new AchievementsMenuState());

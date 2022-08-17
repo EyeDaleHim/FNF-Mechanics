@@ -21,6 +21,16 @@ class MallSnow extends FlxTypedGroup<SnowSprite>
 		super();
 
 		SnowSprite.perlin = new Perlin();
+
+		spawnGroup(FlxG.random.int(3, 6), FlxG.random.int(9, 16), 0.8, 1.4, 120, 360);
+
+		for (member in members)
+		{
+			if (member != null)
+			{
+				member.update(2);
+			}
+		}
 	}
 
 	override function update(elapsed:Float)
@@ -78,8 +88,7 @@ class SnowSprite extends FlxSprite
 	{
 		super(x, y);
 
-		// ???
-		loadGraphic(Paths.image('christmas/snowParticle.png', 'week5'));
+		loadGraphic(Paths.image('christmas/snowParticle', 'week5'));
 		lifeTime = FlxG.random.float(4, 16);
 	}
 

@@ -118,8 +118,8 @@ class FPS extends TextField
 		var minAlpha:Float = 0.5;
 		var aggressor:Float = 1;
 
-		if ((FlxG.mouse.getScreenPosition().x >= this.x && FlxG.mouse.getScreenPosition().x <= this.x + this.width)
-			&& (FlxG.mouse.getScreenPosition().y >= this.y && FlxG.mouse.getScreenPosition().y <= this.y + this.height) && FlxG.mouse.visible)
+		if ((FlxG.mouse.screenX >= this.x && FlxG.mouse.screenX <= this.x + this.width)
+			&& (FlxG.mouse.screenY >= this.y && FlxG.mouse.screenY <= this.y + this.height) && FlxG.mouse.visible)
 		{
 			minAlpha = 0.1;
 			aggressor = 2.5;

@@ -39,6 +39,7 @@ enum abstract Action(String) to String from String
 	var NOTE_RIGHT_R = "note_right-release";
 	var NOTE_DOWN_R = "note_down-release";
 	var ACTION1 = "action1";
+	var ACTION2 = "action2";
 	var ACCEPT = "accept";
 	var BACK = "back";
 	var PAUSE = "pause";
@@ -73,6 +74,7 @@ abstract Action(String) to String from String
 	var NOTE_RIGHT_R = "note_right-release";
 	var NOTE_DOWN_R = "note_down-release";
 	var ACTION1 = "action1";
+	var ACTION2 = "action2";
 	var ACCEPT = "accept";
 	var BACK = "back";
 	var PAUSE = "pause";
@@ -102,6 +104,7 @@ enum Control
 	NOTE_RIGHT;
 	NOTE_DOWN;
 	ACTION1;
+	ACTION2;
 	RESET;
 	ACCEPT;
 	BACK;
@@ -147,6 +150,7 @@ class Controls extends FlxActionSet
 	var _note_rightR = new FlxActionDigital(Action.NOTE_RIGHT_R);
 	var _note_downR = new FlxActionDigital(Action.NOTE_DOWN_R);
 	var _action1 = new FlxActionDigital(Action.ACTION1);
+	var _action2 = new FlxActionDigital(Action.ACTION2);
 	var _accept = new FlxActionDigital(Action.ACCEPT);
 	var _back = new FlxActionDigital(Action.BACK);
 	var _pause = new FlxActionDigital(Action.PAUSE);
@@ -501,6 +505,11 @@ class Controls extends FlxActionSet
 	inline function get_ACTION1()
 		return _action1.check();
 
+	public var ACTION2(get, never):Bool;
+
+	inline function get_ACTION2()
+		return _action2.check();
+
 	public var ACCEPT(get, never):Bool;
 
 	inline function get_ACCEPT()
@@ -551,6 +560,7 @@ class Controls extends FlxActionSet
 		add(_note_rightR);
 		add(_note_downR);
 		add(_action1);
+		add(_action2);
 		add(_accept);
 		add(_back);
 		add(_pause);
@@ -591,6 +601,7 @@ class Controls extends FlxActionSet
 		add(_note_rightR);
 		add(_note_downR);
 		add(_action1);
+		add(_action2);
 		add(_accept);
 		add(_back);
 		add(_pause);
@@ -649,6 +660,7 @@ class Controls extends FlxActionSet
 			case NOTE_LEFT: _note_left;
 			case NOTE_RIGHT: _note_right;
 			case ACTION1: _action1;
+			case ACTION2: _action2;
 			case ACCEPT: _accept;
 			case BACK: _back;
 			case PAUSE: _pause;
@@ -706,6 +718,8 @@ class Controls extends FlxActionSet
 				func(_note_downR, JUST_RELEASED);
 			case ACTION1:
 				func(_action1, JUST_PRESSED);
+			case ACTION2:
+				func(_action2, JUST_PRESSED);
 			case ACCEPT:
 				func(_accept, JUST_PRESSED);
 			case BACK:

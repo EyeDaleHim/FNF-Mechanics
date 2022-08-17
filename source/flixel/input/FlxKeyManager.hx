@@ -184,7 +184,7 @@ class FlxKeyManager<Key:Int, KeyList:FlxBaseKeyList> implements IFlxInputManager
 		}
 		
 		#if debug
-        if (KeyCode != -4 || KeyCode != -5)
+		if (KeyCode >= 0)
 			trace('Invalid key code: $KeyCode.');
 		#end
 		return false;

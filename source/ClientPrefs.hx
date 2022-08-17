@@ -83,6 +83,7 @@ class ClientPrefs
 		'ui_up' => [W, UP],
 		'ui_right' => [D, RIGHT],
 		'interact' => [CONTROL, ALT],
+		'dodge' => [SPACE, NONE],
 		'select-rps' => [R, NONE],
 		'choose-rps' => [T, NONE],
 		'accept' => [SPACE, ENTER],
@@ -439,7 +440,7 @@ class ClientPrefs
 		pauseMusic = 'Outpost Alpha';
 		performanceCounter = 'fps-mem-peak';
 		channel = 'Stereo';
-		FlxG.save.data.volume = 1;
+		
 
 		comboOffset = [0, 0, 0, 0];
 		ratingOffset = 0;
