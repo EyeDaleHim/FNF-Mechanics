@@ -4,12 +4,15 @@ Notices
 ### Friday Night Funkin' Mechanics Mod
 
 * This mod is based off a game: Friday Night Funkin'
+
 For details see: [Friday Night Funkin'](https://www.newgrounds.com/portal/view/770371).
 
 * This mod and the game that the mod is based of uses the game engine: HaxeFlixel
+
 For details see: [HaxeFlixel](https://haxeflixel.com).
 
 * This mod uses a heavily modified version of Psych Engine 0.5.2
+
 For details see: [Psych Engine](https://github.com/ShadowMario/FNF-PsychEngine).
 
 * The mod uses pause music originating from artists from "Kevin MacLeod" and "TeknoAXE"
