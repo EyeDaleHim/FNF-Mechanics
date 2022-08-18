@@ -419,6 +419,11 @@ class ModsMenuState extends MusicBeatState
 			buttonToggle.label.text = 'OFF';
 			buttonToggle.color = FlxColor.RED;
 		}
+
+		@:privateAccess
+		{
+			FreeplayState.songs = [];
+		}
 	}
 
 	function moveMod(change:Int, skipResetCheck:Bool = false)

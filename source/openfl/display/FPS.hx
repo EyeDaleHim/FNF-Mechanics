@@ -30,6 +30,14 @@ using StringTools;
 	The FPS class provides an easy-to-use monitor to display
 	the current frame rate of an OpenFL project
 **/
+#if windows
+@:headerCode("
+#include <windows.h>
+#include <psapi.h>
+")
+#end
+
+
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
 @:noDebug
@@ -46,8 +54,6 @@ class FPS extends TextField
 	public var realAlpha:Float = 1;
 	public var lagging:Bool = false;
 	public var forceUpdateText(default, set):Bool = false;
-
-	public var spriteParent:FPSSprite;
 
 	@:noCompletion private var cacheCount:Int;
 	@:noCompletion private var currentTime:Float;
@@ -101,12 +107,6 @@ class FPS extends TextField
 	@:noCompletion
 	private #if !flash override #end function __enterFrame(deltaTime:Float):Void
 	{
-		if (spriteParent != null)
-		{
-			// spriteParent.outlineFPS = this;
-			spriteParent.updateFPS(deltaTime);
-		}
-
 		currentTime += deltaTime;
 		times.push(currentTime);
 
@@ -177,7 +177,7 @@ class FPS extends TextField
 
 		if (ClientPrefs.performanceCounter.contains('mem'))
 		{
-			curMemory = System.totalMemory;
+			curMemory = obtainMemory();
 			if (curMemory >= maxMemory)
 				maxMemory = curMemory;
 			text += 'MEM: ${CoolUtil.formatMemory(Std.int(curMemory))}';
@@ -187,7 +187,7 @@ class FPS extends TextField
 		}
 		#if debug
 		text += '\nDEBUG INFO:\n';
-		text += 'CPU: ${FlxGame.updateMS}ms\nGPU: ${FlxGame.drawMS}ms';
+		text += 'USAGE:\n';
 		text += '\nRUNTIME: ${FlxStringUtil.formatTime(currentTime / 1000)}';
 		text += "\n";
 		text += 'STATE: ${Type.getClassName(Type.getClass(FlxG.state))}';
@@ -196,6 +196,27 @@ class FPS extends TextField
 		text += "\n";
 		#end
 	}
+
+	// inbie cross
+	#if windows
+	@:functionCode("
+		auto memhandle = GetCurrentProcess();
+		PROCESS_MEMORY_COUNTERS pmc;
+		if (GetProcessMemoryInfo(memhandle, &pmc, sizeof(pmc)))
+			return(pmc.WorkingSetSize);
+		else
+			return 0;
+	")
+	function obtainMemory():Dynamic
+	{
+		return 0;
+	}
+	#else
+	function obtainMemory():Dynamic
+	{
+		return System.totalMemory;
+	}
+	#end
 
 	public var textAfter:String = '';
 }

@@ -5107,7 +5107,7 @@ class PlayState extends MusicBeatState
 						}
 						var notePos:Null<Float> = daNote.y;
 						var curAlpha:Float = FlxMath.remapToRange(notePos, centerPoint * multi,
-							ClientPrefs.downScroll ? strumY - (7.5 * points) : strumY + (7.5 * points), daNote.alphaLimit, 0);
+							ClientPrefs.downScroll ? strumY - (7.5 * points) : strumY + (7.5 * points), daNote.alphaLimit, 0.2);
 						daNote.alpha = curAlpha;
 						if (daNote.isSustainNote)
 						{
