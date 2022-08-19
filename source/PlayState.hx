@@ -6966,6 +6966,17 @@ class PlayState extends MusicBeatState
 		return -1;
 	}
 
+	/*
+	function sortHitNotes(a:Note, b:Note):Int
+	{
+		if (a.lowPriority && !b.lowPriority)
+			return 1;
+		else if (!a.lowPriority && b.lowPriority)
+			return -1;
+
+		return FlxSort.byValues(FlxSort.ASCENDING, a.strumTime, b.strumTime);
+	}*/
+
 	private var pressedDirections:Array<Null<Int>> = [];
 
 	// Hold notes (and handling strum line animation)

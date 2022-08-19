@@ -55,6 +55,8 @@ class FPS extends TextField
 	public var lagging:Bool = false;
 	public var forceUpdateText(default, set):Bool = false;
 
+	public var spriteParent:FPSSprite;
+
 	@:noCompletion private var cacheCount:Int;
 	@:noCompletion private var currentTime:Float;
 	@:noCompletion private var times:Array<Float>;
