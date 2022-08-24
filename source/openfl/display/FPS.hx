@@ -30,13 +30,6 @@ using StringTools;
 	The FPS class provides an easy-to-use monitor to display
 	the current frame rate of an OpenFL project
 **/
-#if windows
-@:headerCode("
-#include <windows.h>
-#include <psapi.h>
-")
-#end
-
 
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
@@ -199,26 +192,10 @@ class FPS extends TextField
 		#end
 	}
 
-	// inbie cross
-	#if windows
-	@:functionCode("
-		auto memhandle = GetCurrentProcess();
-		PROCESS_MEMORY_COUNTERS pmc;
-		if (GetProcessMemoryInfo(memhandle, &pmc, sizeof(pmc)))
-			return(pmc.WorkingSetSize);
-		else
-			return 0;
-	")
-	function obtainMemory():Dynamic
-	{
-		return 0;
-	}
-	#else
 	function obtainMemory():Dynamic
 	{
 		return System.totalMemory;
 	}
-	#end
 
 	public var textAfter:String = '';
 }

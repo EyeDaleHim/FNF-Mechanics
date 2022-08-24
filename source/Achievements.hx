@@ -12,45 +12,37 @@ using StringTools;
 class Achievements
 {
 	public static var achievementsStuff:Array<AchievementIdentifier> = [ //Name, Description, Achievement save tag, Hidden achievement
-		{name: "Freaky on a Friday Night", description: "Play on a Friday... Night.", tag: 'friday_night_play', hidden: true},
-		{name: "She Calls Me Daddy Too", description: "Beat Week 1 on Hard with no Misses.", tag: 'week1_nomiss', hidden: false},
-		{name: "No More Tricks", description: "Beat Week 2 on Hard with no Misses.", tag: 'week2_nomiss', hidden: false},
-		{name: "Call Me The Hitman", description: "Beat Week 3 on Hard with no Misses.", tag: 'week3_nomiss', hidden: false},
-		{name: "Lady Killer", description: "Beat Week 4 on Hard with no Misses.", tag: 'week4_nomiss', hidden: false},
-		{name: "Missless Christmas", description: "Beat Week 5 on Hard with no Misses.", tag: 'week5_nomiss', hidden: false},
-		{name: "Highscore!!", description: "Beat Week 6 on Hard with no Misses.", tag: 'week6_nomiss', hidden: false},
-		{name: "God Effing Damn It!", description: "Beat Week 7 on Hard with no Misses.", tag: 'week7_nomiss', hidden: false},
-		{name: "What a Funkin' Disaster!", description: "Complete a Song with a rating lower than 20%.", tag: 'ur_bad', hidden: false},
-		{name: "Perfectionist", description: "Complete a Song with a rating of 100%.", tag: 'ur_good', hidden: false},
+		{name: "Freaky on a Friday Night", description: "Play on a Friday... Night.", tag: 'friday_night_play', hidden: true, specialAnim: false},
+		{name: "She Calls Me Daddy Too", description: "Beat Week 1 on Hard with no Misses.", tag: 'week1_nomiss', hidden: false, specialAnim: false},
+		{name: "No More Tricks", description: "Beat Week 2 on Hard with no Misses.", tag: 'week2_nomiss', hidden: false, specialAnim: false},
+		{name: "Call Me The Hitman", description: "Beat Week 3 on Hard with no Misses.", tag: 'week3_nomiss', hidden: false, specialAnim: false},
+		{name: "Lady Killer", description: "Beat Week 4 on Hard with no Misses.", tag: 'week4_nomiss', hidden: false, specialAnim: false},
+		{name: "Missless Christmas", description: "Beat Week 5 on Hard with no Misses.", tag: 'week5_nomiss', hidden: false, specialAnim: false},
+		{name: "Highscore!!", description: "Beat Week 6 on Hard with no Misses.", tag: 'week6_nomiss', hidden: false, specialAnim: false},
+		{name: "God Effing Damn It!", description: "Beat Week 7 on Hard with no Misses.", tag: 'week7_nomiss', hidden: false, specialAnim: false},
+		{name: "What a Funkin' Disaster!", description: "Complete a Song with a rating lower than 20%.", tag: 'ur_bad', hidden: false, specialAnim: false},
+		{name: "Perfectionist", description: "Complete a Song with a rating of 100%.", tag: 'ur_good', hidden: false, specialAnim: false},
 		{name: "Challenger", description: "Complete a Song with 2 Safe Frames.", tag: 'challenger', hidden: false, specialAnim: true},
 		{name: "Hardcore", description: "Beat a song with no Misses on 24/20 mode.", tag: 'hardcore', hidden: true, specialAnim: true},
 		{name: "Demon", description: "Beat a Song with 100% accuracy on 24/20 mode. Well done, now stop it.", tag: 'demon', hidden: true, specialAnim: true},
 		{name: "Persistent", description: "Beat a Week with no Misses on 24/20 mode. Jesus Christ...", tag: 'persistent', hidden: true, specialAnim: true},
-		{name: "Resilient", description: "Beat a Week with 100% accuracy on all songs on 24/20 mode. Stop grinding!", tag: 'resilient', hidden: true, specialAnim: true},
-		{name: "Roadkill Enthusiast", description: "Watch the Henchmen die over 100 times.", tag: 'roadkill_enthusiast', hidden: false},
-		{name: "Oversinging Much...?", description: "Hold down a note for 10 seconds.", tag: 'oversinging', hidden: false},
-		{name: "Hyperactive", description: "Finish a Song without going Idle.", tag: 'hype', hidden: false},
-		{name: "Just the Two of Us", description: "Finish a Song pressing only two keys.", tag: 'two_keys', hidden: false},
-		{name: "Toaster Gamer", description: "Have you tried to run the game on a toaster?", tag: 'toastie', hidden: false}
+		{name: "Resilient", description: "Beat a Week with 100% accuracy on all songs on 24/20 mode. Go touch grass you moron", tag: 'resilient', hidden: true, specialAnim: true},
+		{name: "Roadkill Enthusiast", description: "Watch the Henchmen die over 100 times.", tag: 'roadkill_enthusiast', hidden: false, specialAnim: false},
+		{name: "Oversinging Much...?", description: "Hold down a note for 10 seconds.", tag: 'oversinging', hidden: false, specialAnim: false},
+		{name: "Hyperactive", description: "Finish a Song without going Idle.", tag: 'hype', hidden: false, specialAnim: false},
+		{name: "Just the Two of Us", description: "Finish a Song pressing only two keys.", tag: 'two_keys', hidden: false, specialAnim: false},
+		{name: "Toaster Gamer", description: "Have you tried to run the game on a toaster?", tag: 'toastie', hidden: false, specialAnim: false}
 	];
 
 	public static var achievementsMap:Map<String, Bool> = new Map<String, Bool>();
 
 	public static var henchmenDeath:Int = 0;
 
-	private static function findByName(name:String):Int
-	{
-		var i:Int = -1;
-		while (achievementsStuff[i].name != name)
-			i++;
-		return i;
-	}
-
 	public static function unlockAchievement(name:String):Void
 	{
 		FlxG.log.add('Completed achievement "' + name + '"');
 		achievementsMap.set(name, true);
-		if (achievementsStuff[findByName(name)].specialAnim != null && achievementsStuff[findByName(name)].specialAnim)
+		if (achievementsStuff[getAchievementIndex(name)].specialAnim != null && achievementsStuff[getAchievementIndex(name)].specialAnim)
 		{
 			FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
 			trace('special');

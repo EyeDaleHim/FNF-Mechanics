@@ -3524,7 +3524,7 @@ class PlayState extends MusicBeatState
 		ghostCursor = new FlxSprite().loadGraphic(Paths.image('ghostCursor'));
 		ghostCursor.scrollFactor.set();
 		ghostCursor.antialiasing = ClientPrefs.globalAntialiasing;
-		ghostCursor.alpha = 0.35;
+		ghostCursor.alpha = 0.6;
 		ghostCursor.screenCenter();
 		ghostCursor.cameras = [camOther];
 		add(ghostCursor);
@@ -3976,7 +3976,7 @@ class PlayState extends MusicBeatState
 				letterFinishMechanic();
 
 				noTriggerKarma = true;
-				health -= (health / 6);
+				health -= (health / 4);
 				noTriggerKarma = false;
 			}
 			else if (currentLetter.toLowerCase() == wantedLetter.toLowerCase())
@@ -4979,7 +4979,7 @@ class PlayState extends MusicBeatState
 		FlxG.watch.addQuick("stepShit", curStep);
 
 		// RESET = Quick Game Over Screen
-		if (!ClientPrefs.noReset && controls.RESET && !inCutscene && startedCountdown && !endingSong)
+		if (!ClientPrefs.noReset && controls.RESET && !inCutscene && startedCountdown && !endingSong && !letterMechanicActive)
 		{
 			health = 0;
 			trace("RESET = True");
