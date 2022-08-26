@@ -29,6 +29,7 @@ import WeekData;
 #if MODS_ALLOWED
 import sys.FileSystem;
 #end
+import shaders.ColorSwap;
 
 using StringTools;
 

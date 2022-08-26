@@ -7,7 +7,8 @@ import Discord.DiscordClient;
 #end
 import Section.SwagSection;
 import Song.SwagSong;
-import WiggleEffect.WiggleEffectType;
+import shaders.WiggleEffect;
+import shaders.WiggleEffect.WiggleEffectType;
 import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
@@ -71,6 +72,9 @@ import DialogueBoxPsych;
 #if sys
 import sys.FileSystem;
 #end
+import shaders.ColorSwap;
+import shaders.ColorSwap.ColorSwapShader;
+import shaders.BuildingShaders;
 
 using StringTools;
 
@@ -261,8 +265,8 @@ class PlayState extends MusicBeatState
 	var phillyWall:BGSprite;
 	var blammedLightsBlack:FlxSprite;
 	var phillyWindowEvent:BGSprite;
-	var phillyWindowShader:ColorSwap;
 	var trainSound:FlxSound;
+	var lightFadeShader:BuildingShaders;
 
 	var phillyGlowGradient:PhillyGlow.PhillyGlowGradient;
 	var phillyGlowParticles:FlxTypedGroup<PhillyGlow.PhillyGlowParticle>;
@@ -582,15 +586,14 @@ class PlayState extends MusicBeatState
 				city.updateHitbox();
 				add(city);
 
-				phillyWindowShader = new ColorSwap();
+				lightFadeShader = new BuildingShaders();
 
 				phillyLightsColors = [0xFF31A2FD, 0xFF31FD8C, 0xFFFB33F5, 0xFFFD4531, 0xFFFBA633];
 				phillyWindow = new BGSprite(['philly/window', 'week3'], city.x, city.y, 0.3, 0.3);
 				phillyWindow.setGraphicSize(Std.int(phillyWindow.width * 0.85));
 				phillyWindow.updateHitbox();
-				phillyWindow.shader = phillyWindowShader.shader;
 				add(phillyWindow);
-				phillyWindow.alpha = 0;
+				phillyWindow.shader = lightFadeShader.shader;
 
 				if (!ClientPrefs.lowQuality)
 				{
@@ -1710,12 +1713,15 @@ class PlayState extends MusicBeatState
 				{
 					if (FlxG.random.bool(FlxMath.remapToRange(cappedPoints, 0, 20, 30, 70)))
 					{
-						var newShape:Shape = new Shape(directionList[FlxG.random.int(0, directionList.length - 1)],
-							shapeNames[FlxG.random.weightedPick(shapeChance)]);
-						newShape.scale.set(0.6, 0.6);
-						newShape.updateHitbox();
-						newShape.antialiasing = ClientPrefs.globalAntialiasing;
-						shapeGroup.add(newShape);
+						new FlxTimer().start(FlxG.random.float(0.5, 2), function(shapeTmr:FlxTimer)
+						{
+							var newShape:Shape = new Shape(directionList[FlxG.random.int(0, directionList.length - 1)],
+								shapeNames[FlxG.random.weightedPick(shapeChance)]);
+							newShape.scale.set(0.6, 0.6);
+							newShape.updateHitbox();
+							newShape.antialiasing = ClientPrefs.globalAntialiasing;
+							shapeGroup.add(newShape);
+						});
 					}
 				}
 				if (tmr != null)
@@ -3045,7 +3051,7 @@ class PlayState extends MusicBeatState
 				[
 					'fake_note',
 					'Fake Note',
-					Math.min(MechanicManager.mechanics['fake_note'].points * FlxMath.remapToRange(section.lengthInSteps, 0, 16, 1, 6) / noteData.length * 0.2,
+					Math.min((MechanicManager.mechanics['fake_note'].points / 2) * FlxMath.remapToRange(section.lengthInSteps, 0, 16, 1, 6) / noteData.length * 0.2,
 						1),
 					0.5,
 					0.9
@@ -4136,7 +4142,6 @@ class PlayState extends MusicBeatState
 				phillyWindowEvent = new BGSprite(['philly/window', 'week3'], phillyWindow.x, phillyWindow.y, 0.3, 0.3);
 				phillyWindowEvent.setGraphicSize(Std.int(phillyWindowEvent.width * 0.85));
 				phillyWindowEvent.updateHitbox();
-				phillyWindowEvent.shader = phillyWindowShader.shader;
 				phillyWindowEvent.visible = false;
 				insert(members.indexOf(blammedLightsBlack) + 1, phillyWindowEvent);
 
@@ -4460,14 +4465,13 @@ class PlayState extends MusicBeatState
 				{
 					trainFrameTiming += elapsed;
 
-					if (trainFrameTiming >= 1 / 24)
+					while (trainFrameTiming >= 1 / 24)
 					{
 						updateTrainPos();
-						trainFrameTiming = 0;
+						trainFrameTiming -= 1 / 24;
 					}
 				}
-				phillyWindow.alpha -= (Conductor.crochet / 1000) * FlxG.elapsed * 1.5;
-				phillyWindowShader.saturation = 1 - phillyWindow.alpha;
+				lightFadeShader.update(1.5 * (Conductor.crochet / 1000) * FlxG.elapsed);
 
 				if (phillyGlowParticles != null)
 				{
@@ -7986,10 +7990,10 @@ class PlayState extends MusicBeatState
 					curLight = FlxG.random.int(0, phillyLightsColors.length - 1, [curLight]);
 					phillyWindow.color = phillyLightsColors[curLight];
 					phillyWindow.alpha = 1;
-					phillyWindowShader.saturation = 1 - phillyWindow.alpha;
+					lightFadeShader.reset();
 				}
 
-				if ((curBeat % 8 == 4 && FlxG.random.bool(30) && !trainMoving && trainCooldown > 8) || FlxG.keys.pressed.Y)
+				if (curBeat % 8 == 4 && FlxG.random.bool(30) && !trainMoving && trainCooldown > 8)
 				{
 					trainCooldown = FlxG.random.int(-4, 0);
 					trainStart();

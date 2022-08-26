@@ -1,6 +1,7 @@
 package;
 
-import ColorSwap.ColorSwapShader;
+import shaders.ColorSwap;
+import shaders.ColorSwap.ColorSwapShader;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
