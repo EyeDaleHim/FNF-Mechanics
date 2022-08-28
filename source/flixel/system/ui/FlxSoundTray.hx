@@ -136,7 +136,7 @@ class FlxSoundTray extends Sprite
 			if (sound != null)
 			{
 				var soundVar = FlxG.sound.load(sound);
-				soundVar.pitch = FlxMath.remapToRange(FlxG.sound.volume, 0, 1, 0.2, 1);
+				// soundVar.pitch = FlxMath.remapToRange(FlxG.sound.volume, 0, 1, 0.2, 1);
 				soundVar.play();
 			}
 		}

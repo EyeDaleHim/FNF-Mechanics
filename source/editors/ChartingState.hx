@@ -211,7 +211,6 @@ class ChartingState extends MusicBeatState
 	private var blockPressWhileTypingOnStepper:Array<FlxUINumericStepper> = [];
 	private var blockPressWhileScrolling:Array<FlxUIDropDownMenuCustom> = [];
 
-	var waveformSprite:FlxSprite;
 	var gridLayer:FlxTypedGroup<FlxSprite>;
 
 	// public var quants:Array<Float> = [4,2,1];
@@ -268,9 +267,6 @@ class ChartingState extends MusicBeatState
 
 		gridLayer = new FlxTypedGroup<FlxSprite>();
 		add(gridLayer);
-
-		waveformSprite = new FlxSprite(GRID_SIZE, 0).makeGraphic(FlxG.width, FlxG.height, 0x00FFFFFF);
-		add(waveformSprite);
 
 		var eventIcon:FlxSprite = new FlxSprite(-GRID_SIZE - 5, -90).loadGraphic(Paths.image('eventArrow'));
 		leftIcon = new HealthIcon('bf');
@@ -392,7 +388,6 @@ class ChartingState extends MusicBeatState
 		addEventsUI();
 		addChartingUI();
 		updateHeads();
-		updateWaveform();
 		// UI_box.selected_tab = 4;
 
 		add(curRenderedSustains);
@@ -454,7 +449,6 @@ class ChartingState extends MusicBeatState
 		{
 			currentSongName = Paths.formatToSongPath(UI_songTitle.text);
 			loadSong();
-			updateWaveform();
 		});
 
 		var reloadSongJson:FlxButton = new FlxButton(reloadSong.x, saveButton.y + 30, "Reload JSON", function()
@@ -2356,158 +2350,6 @@ class ChartingState extends MusicBeatState
 		#end
 	}
 
-	/*
-		[
-			[[min...], [max...]], left
-			[[min...], [max...]]  right
-		]
-	 */
-	function waveformData(buffer:AudioBuffer, bytes:Bytes, time:Float, endTime:Float, multiply:Float = 1, ?array:Array<Array<Array<Float>>>,
-			?steps:Float):Array<Array<Array<Float>>>
-	{
-		#if (lime_cffi && !macro)
-		if (buffer == null || buffer.data == null)
-			return [[[0], [0]], [[0], [0]]];
-
-		var khz:Float = (buffer.sampleRate / 1000);
-		var channels:Int = buffer.channels;
-
-		var index:Int = Std.int(time * khz);
-
-		var samples:Float = ((endTime - time) * khz);
-
-		if (steps == null)
-			steps = 1280;
-
-		var samplesPerRow:Float = samples / steps;
-		var samplesPerRowI:Int = Std.int(samplesPerRow);
-
-		var gotIndex:Int = 0;
-
-		var lmin:Float = 0;
-		var lmax:Float = 0;
-
-		var rmin:Float = 0;
-		var rmax:Float = 0;
-
-		var rows:Float = 0;
-
-		var simpleSample:Bool = true; // samples > 17200;
-		var v1:Bool = false;
-
-		if (array == null)
-			array = [[[0], [0]], [[0], [0]]];
-
-		while (index < (bytes.length - 1))
-		{
-			if (index >= 0)
-			{
-				var byte:Int = bytes.getUInt16(index * channels * 2);
-
-				if (byte > 65535 / 2)
-					byte -= 65535;
-
-				var sample:Float = (byte / 65535);
-
-				if (sample > 0)
-				{
-					if (sample > lmax)
-						lmax = sample;
-				}
-				else if (sample < 0)
-				{
-					if (sample < lmin)
-						lmin = sample;
-				}
-
-				if (channels >= 2)
-				{
-					byte = bytes.getUInt16((index * channels * 2) + 2);
-
-					if (byte > 65535 / 2)
-						byte -= 65535;
-
-					sample = (byte / 65535);
-
-					if (sample > 0)
-					{
-						if (sample > rmax)
-							rmax = sample;
-					}
-					else if (sample < 0)
-					{
-						if (sample < rmin)
-							rmin = sample;
-					}
-				}
-			}
-
-			v1 = samplesPerRowI > 0 ? (index % samplesPerRowI == 0) : false;
-			while (simpleSample ? v1 : rows >= samplesPerRow)
-			{
-				v1 = false;
-				rows -= samplesPerRow;
-
-				gotIndex++;
-
-				var lRMin:Float = Math.abs(lmin) * multiply;
-				var lRMax:Float = lmax * multiply;
-
-				var rRMin:Float = Math.abs(rmin) * multiply;
-				var rRMax:Float = rmax * multiply;
-
-				if (gotIndex > array[0][0].length)
-					array[0][0].push(lRMin);
-				else
-					array[0][0][gotIndex - 1] = array[0][0][gotIndex - 1] + lRMin;
-
-				if (gotIndex > array[0][1].length)
-					array[0][1].push(lRMax);
-				else
-					array[0][1][gotIndex - 1] = array[0][1][gotIndex - 1] + lRMax;
-
-				if (channels >= 2)
-				{
-					if (gotIndex > array[1][0].length)
-						array[1][0].push(rRMin);
-					else
-						array[1][0][gotIndex - 1] = array[1][0][gotIndex - 1] + rRMin;
-
-					if (gotIndex > array[1][1].length)
-						array[1][1].push(rRMax);
-					else
-						array[1][1][gotIndex - 1] = array[1][1][gotIndex - 1] + rRMax;
-				}
-				else
-				{
-					if (gotIndex > array[1][0].length)
-						array[1][0].push(lRMin);
-					else
-						array[1][0][gotIndex - 1] = array[1][0][gotIndex - 1] + lRMin;
-
-					if (gotIndex > array[1][1].length)
-						array[1][1].push(lRMax);
-					else
-						array[1][1][gotIndex - 1] = array[1][1][gotIndex - 1] + lRMax;
-				}
-
-				lmin = 0;
-				lmax = 0;
-
-				rmin = 0;
-				rmax = 0;
-			}
-
-			index++;
-			rows++;
-			if (gotIndex > steps)
-				break;
-		}
-
-		return array;
-		#end
-	}
-
 	function changeNoteSustain(value:Float):Void
 	{
 		if (curSelectedNote != null)
@@ -2565,7 +2407,6 @@ class ChartingState extends MusicBeatState
 
 		updateGrid();
 		updateSectionUI();
-		updateWaveform();
 	}
 
 	function changeSection(sec:Int = 0, ?updateMusic:Bool = true):Void
@@ -2607,7 +2448,6 @@ class ChartingState extends MusicBeatState
 			changeSection();
 		}
 		Conductor.songPosition = FlxG.sound.music.time;
-		updateWaveform();
 	}
 
 	function updateSectionUI():Void

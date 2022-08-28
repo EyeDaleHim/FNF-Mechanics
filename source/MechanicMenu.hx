@@ -53,6 +53,7 @@ class MechanicMenu extends MusicBeatState
 				MusicBeatState.switchState(new FreeplayState());
 			}
 		},
+		#if MODS_ALLOWED
 		{
 			name: 'MODS',
 			callback: function()
@@ -60,6 +61,7 @@ class MechanicMenu extends MusicBeatState
 				MusicBeatState.switchState(new ModsMenuState());
 			}
 		},
+		#end
 		{
 			name: 'AWARDS',
 			callback: function()

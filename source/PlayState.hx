@@ -1,6 +1,5 @@
 package;
 
-import cpp.abi.Abi;
 import flixel.graphics.FlxGraphic;
 #if desktop
 import Discord.DiscordClient;
@@ -4916,11 +4915,13 @@ class PlayState extends MusicBeatState
 			if (FlxG.timeScale != 1 || ClientPrefs.musicSync)
 				Conductor.songPosition = FlxG.sound.music.time;
 
+			#if !web
 			FlxG.sound.music.pitch = FlxG.timeScale;
 			if (leftMusic != null)
 				leftMusic.pitch = FlxG.timeScale;
 			if (vocals != null)
 				vocals.pitch = FlxG.timeScale;
+			#end
 			if (!paused)
 			{
 				songTime += (FlxG.game.ticks - previousFrameTime) * FlxG.timeScale;
