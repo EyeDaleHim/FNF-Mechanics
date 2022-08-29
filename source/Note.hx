@@ -133,6 +133,7 @@ class Note extends FlxSprite
 						missHealth = 0.3;
 					}
 					hitCausesMiss = true;
+					lowPriority = true;
 				case 'Kill Note':
 					ignoreNote = mustPress;
 					reloadNote('KILL');
@@ -141,6 +142,7 @@ class Note extends FlxSprite
 					colorSwap.saturation = 0;
 					colorSwap.brightness = 0;
 					missHealth = FlxMath.MAX_VALUE_FLOAT;
+					lowPriority = true;
 				case 'Burst Note':
 					ignoreNote = mustPress;
 					reloadNote('BURST');
@@ -158,6 +160,7 @@ class Note extends FlxSprite
 						missHealth = 0.0475;
 					}
 					hitCausesMiss = true;
+					lowPriority = true;
 				case 'Sleep Note':
 					ignoreNote = mustPress;
 					reloadNote('SLEEPY');
@@ -175,6 +178,7 @@ class Note extends FlxSprite
 						missHealth = 0.0475;
 					}
 					hitCausesMiss = true;
+					lowPriority = true;
 				case 'Restore Note':
 					reloadNote('RESTORE');
 					if (isSustainNote)
