@@ -905,15 +905,6 @@ class PlayState extends MusicBeatState
 					foregroundSprites.add(new BGSprite(['tank3', 'week7'], 1300, 1200, 3.5, 2.5, ['fg']));
 		}
 
-		if (curStage == 'school' || curStage == 'schoolEvil')
-		{
-			var shader = new MosaicEffect().shader;
-			var filter = new ShaderFilter(shader);
-
-			camGame.setFilters([filter]);
-			camHUD.setFilters([filter]);
-		}
-
 		switch (Paths.formatToSongPath(SONG.song))
 		{
 			case 'stress':

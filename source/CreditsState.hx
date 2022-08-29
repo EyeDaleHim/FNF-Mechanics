@@ -157,8 +157,8 @@ class CreditsState extends MusicBeatState
 
 		creditsStuff.unshift([
 			'Raltyro',
-			'unknown',
-			'Logo Artist',
+			'raltyro',
+			'Logo Artist & Contributor',
 			'https://twitter.com/raltyro',
 			'FFD56D'
 		]);
