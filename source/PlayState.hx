@@ -3479,6 +3479,10 @@ class PlayState extends MusicBeatState
 			{
 				dodgeSound.play(true);
 				failedDodges = 0;
+			}
+			else
+			{
+				failedDodge();
 				if (++failedTotalDodges >= 3 || FlxG.save.data.firstTimeDodging == null)
 				{
 					FlxG.save.data.firstTimeDodging = true;
@@ -3495,10 +3499,6 @@ class PlayState extends MusicBeatState
 						}
 					});
 				}
-			}
-			else
-			{
-				failedDodge();
 			}
 
 			resetDodgeValues();
