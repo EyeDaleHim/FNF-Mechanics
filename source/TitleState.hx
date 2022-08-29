@@ -152,7 +152,10 @@ class TitleState extends MusicBeatState
 
 		ClientPrefs.loadPrefs();
 
-		FlxG.sound.volume = ClientPrefs.defaultSave.data.volume;
+		if (ClientPrefs.defaultSave.data.volume != null)
+			FlxG.sound.volume = ClientPrefs.defaultSave.data.volume;
+		else
+			FlxG.sound.volume = ClientPrefs.defaultSave.data.volume = 1;
 
 		Highscore.load();
 
