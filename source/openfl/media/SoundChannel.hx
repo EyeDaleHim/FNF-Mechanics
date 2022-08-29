@@ -14,6 +14,7 @@ import lime.media.AudioSource;
 	`stop()` method, properties for monitoring the amplitude
 	(volume) of the channel, and a property for assigning a SoundTransform
 	object to the channel.
+
 	@event soundComplete Dispatched when a sound has finished playing.
 **/
 #if !openfl_debug
@@ -27,16 +28,18 @@ import lime.media.AudioSource;
 		The current amplitude(volume) of the left channel, from 0(silent) to 1
 		(full amplitude).
 	**/
-	public var leftPeak(default, null):Float;
+	public var leftPeak(get, null):Float;
 
 	/**
 		When the sound is playing, the `position` property indicates in
 		milliseconds the current point that is being played in the sound file.
 		When the sound is stopped or paused, the `position` property
 		indicates the last point that was played in the sound file.
+
 		A common use case is to save the value of the `position`
 		property when the sound is stopped. You can resume the sound later by
 		restarting it from that saved position.
+
 		If the sound is looped, `position` is reset to 0 at the
 		beginning of each loop.
 	**/
@@ -46,7 +49,7 @@ import lime.media.AudioSource;
 		The current amplitude(volume) of the right channel, from 0(silent) to 1
 		(full amplitude).
 	**/
-	public var rightPeak(default, null):Float;
+	public var rightPeak(get, null):Float;
 
 	/**
 		The SoundTransform object assigned to the sound channel. A SoundTransform
@@ -54,19 +57,11 @@ import lime.media.AudioSource;
 		assignment, and right speaker assignment.
 	**/
 	public var soundTransform(get, set):SoundTransform;
-
-	/** self explanatory **/
+	
+	/**
+		self explanatory
+	*/
 	public var pitch(get, set):Float;
-
-	public function get_pitch():Float
-	{
-		return __source == null ? 1 : __source.pitch;
-	}
-
-	public function set_pitch(v:Float):Float
-	{
-		return __source == null ? 1 : (__source.pitch = v);
-	}
 
 	@:noCompletion private var __isValid:Bool;
 	@:noCompletion private var __soundTransform:SoundTransform;
@@ -93,9 +88,6 @@ import lime.media.AudioSource;
 	@:noCompletion private function new(source:#if lime AudioSource #else Dynamic #end = null, soundTransform:SoundTransform = null):Void
 	{
 		super(this);
-
-		leftPeak = 1;
-		rightPeak = 1;
 
 		if (soundTransform != null)
 		{
@@ -127,8 +119,7 @@ import lime.media.AudioSource;
 	{
 		SoundMixer.__unregisterSoundChannel(this);
 
-		if (!__isValid)
-			return;
+		if (!__isValid) return;
 
 		#if lime
 		__source.stop();
@@ -138,8 +129,7 @@ import lime.media.AudioSource;
 
 	@:noCompletion private function __dispose():Void
 	{
-		if (!__isValid)
-			return;
+		if (!__isValid) return;
 
 		#if lime
 		__source.onComplete.remove(source_onComplete);
@@ -157,8 +147,7 @@ import lime.media.AudioSource;
 	// Get & Set Methods
 	@:noCompletion private function get_position():Float
 	{
-		if (!__isValid)
-			return 0;
+		if (!__isValid) return 0;
 
 		#if lime
 		return __source.currentTime + __source.offset;
@@ -169,8 +158,7 @@ import lime.media.AudioSource;
 
 	@:noCompletion private function set_position(value:Float):Float
 	{
-		if (!__isValid)
-			return 0;
+		if (!__isValid) return 0;
 
 		#if lime
 		__source.currentTime = Std.int(value) - __source.offset;
@@ -192,10 +180,8 @@ import lime.media.AudioSource;
 
 			var pan = SoundMixer.__soundTransform.pan + __soundTransform.pan;
 
-			if (pan < -1)
-				pan = -1;
-			if (pan > 1)
-				pan = 1;
+			if (pan < -1) pan = -1;
+			if (pan > 1) pan = 1;
 
 			var volume = SoundMixer.__soundTransform.volume * __soundTransform.volume;
 
@@ -215,6 +201,140 @@ import lime.media.AudioSource;
 		}
 
 		return value;
+	}
+	
+	@:noCompletion private function get_pitch():Float
+	{
+		if (!__isValid) return 1;
+		
+		#if lime
+		return __source.pitch;
+		#else
+		return 0;
+		#end
+	}
+
+	@:noCompletion private function set_pitch(value:Float):Float
+	{
+		if (!__isValid) return 1;
+		
+		#if lime
+		return __source.pitch = value;
+		#else
+		return 0;
+		#end
+	}
+	
+	// hi i made these - raltyro
+	@:noCompletion private function get_leftPeak():Float
+	{
+		if (!__isValid) return 1;
+		
+		#if lime
+		#if (lime_cffi && !macro)
+		// MS, NOT SECOND
+		var time:Float = position - 10;
+		var endTime:Float = time + 10 + Math.min(pitch * 200, 500);
+		
+		var buffer = __source.buffer;
+		if (buffer == null || buffer.data == null) return 1;
+		var bytes = buffer.data.buffer;
+		
+		var khz:Float = (buffer.sampleRate / 1000);
+		var channels:Int = buffer.channels;
+		
+		var index:Int = Std.int(time * khz);
+		
+		var samples:Float = ((endTime - time) * khz);
+		samples = samples < 1 ? 1 : samples;
+		
+		var lmin:Float = 0;
+		var lmax:Float = 0;
+		
+		var rows:Float = 0;
+		
+		while (index < (bytes.length - 1)) {
+			if (index >= 0) {
+				var byte:Int = bytes.getUInt16(index * channels * 2);
+				
+				if (byte > 65535 / 2) byte -= 65535;
+				
+				var sample:Float = (byte / 65535);
+				
+				if (sample > 0) {
+					if (sample > lmax) lmax = sample;
+				} else if (sample < 0) {
+					if (sample < lmin) lmin = sample;
+				}
+			}
+			
+			if (rows >= samples) break;
+			rows++;
+		}
+		
+		return (Math.abs(lmin) + lmax) * 2 * (soundTransform == null ? 1 : soundTransform.volume);
+		#end
+		
+		return 1;
+		#else
+		return 0;
+		#end
+	}
+	
+	@:noCompletion private function get_rightPeak():Float
+	{
+		if (!__isValid) return 1;
+		
+		#if lime
+		#if (lime_cffi && !macro)
+		// MS, NOT SECOND
+		var time:Float = position - 10;
+		var endTime:Float = time + 10 + Math.min(pitch * 125, 325);
+		
+		var buffer = __source.buffer;
+		if (buffer == null || buffer.data == null) return 1;
+		var bytes = buffer.data.buffer;
+		
+		var khz:Float = (buffer.sampleRate / 1000);
+		var channels:Int = buffer.channels;
+		if (channels < 2) return 1;
+		
+		var index:Int = Std.int(time * khz);
+		
+		var samples:Float = ((endTime - time) * khz);
+		samples = samples < 1 ? 1 : samples;
+		
+		var rmin:Float = 0;
+		var rmax:Float = 0;
+		
+		var rows:Float = 0;
+		
+		while (index < (bytes.length - 1)) {
+			if (index >= 0) {
+				var byte:Int = bytes.getUInt16((index * channels * 2) + 2);
+				
+				if (byte > 65535 / 2) byte -= 65535;
+				
+				var sample:Float = (byte / 65535);
+				
+				if (sample > 0) {
+					if (sample > rmax) rmax = sample;
+				} else if (sample < 0) {
+					if (sample < rmin) rmin = sample;
+				}
+			}
+			
+			if (rows >= samples) break;
+			rows++;
+		}
+		
+		return (Math.abs(rmin) + rmax) * 2 * (soundTransform == null ? 1 : soundTransform.volume);
+		#end
+		
+		return 1;
+		#else
+		return 0;
+		#end
 	}
 
 	// Event Handlers
