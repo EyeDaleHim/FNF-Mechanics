@@ -585,13 +585,8 @@ class FlxSound extends FlxBasic
 	@:allow(flixel.system.FlxSoundGroup)
 	function updateTransform():Void
 	{
-		// aint fixing this shit fuck
-		try
-		{
-			_transform.volume = #if FLX_SOUND_SYSTEM (FlxG.sound.muted ? 0 : 1) * FlxG.sound.volume * #end
-				(group != null ? group.volume : 1) * _volume * _volumeAdjust;
-		}
-		catch (e) {}
+		_transform.volume = #if FLX_SOUND_SYSTEM (FlxG.sound.muted ? 0 : 1) * FlxG.sound.volume * #end
+			(group != null ? group.volume : 1) * _volume * _volumeAdjust;
 
 		if (_channel != null)
 			_channel.soundTransform = _transform;
@@ -783,11 +778,12 @@ class FlxSound extends FlxBasic
 		}
 		if (_pitch == v) return v;
 		if (_pitch <= 0 && v > 0) {
-			_pitch = Math.max(0,Math.min(v,6));
+			_pitch = v;
 			time = _time;
 		}
 		else
-			_pitch = Math.max(0,Math.min(v,6));
+			_pitch = v;
+		
 		return v;
 	}
 
