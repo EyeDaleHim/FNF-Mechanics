@@ -1,6 +1,5 @@
 package;
 
-import cpp.abi.Abi;
 import flixel.graphics.FlxGraphic;
 #if desktop
 import Discord.DiscordClient;
@@ -3828,6 +3827,7 @@ class PlayState extends MusicBeatState
 	private var atChance:Float = 10;
 	private var letterTime:Float = 20;
 	private var allowTime:Bool = true;
+	private var failedTimes:Int = 0;
 
 	private function letterMechanic():Void
 	{
@@ -3973,9 +3973,8 @@ class PlayState extends MusicBeatState
 				
 				letterFinishMechanic();
 
-				noTriggerKarma = true;
-				health -= (health / 4);
-				noTriggerKarma = false;
+				if (++failedTimes >= 5)
+					doDeathCheck(true);
 			}
 			else if (currentLetter.toLowerCase() == wantedLetter.toLowerCase())
 			{
@@ -4039,7 +4038,7 @@ class PlayState extends MusicBeatState
 			}
 
 			chosenMechanic = FlxG.random.getObject(listedMechanics);
-			trace(chosenMechanic);
+
 			MechanicManager.mechanics[chosenMechanic].points += Std.int(MechanicManager.mechanics['luck'].points / 2);
 		}
 	}
