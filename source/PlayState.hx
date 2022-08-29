@@ -237,6 +237,7 @@ class PlayState extends MusicBeatState
 
 	public var sleepFog:FlxSprite;
 	public var dodgeFog:FlxSprite;
+	public var dodgeText:FlxText;
 
 	// public var ticTacToeSpr:TicTacToe;
 	public var iconPixelScale:{p1:FlxPoint, p2:FlxPoint} = {p1: new FlxPoint(1, 1), p2: new FlxPoint(1, 1)};
@@ -1364,6 +1365,12 @@ class PlayState extends MusicBeatState
 		dodgeFog.alpha = 0;
 		add(dodgeFog);
 
+		dodgeText = new FlxText(0, 0, FlxG.width * 0.9, "", 24);
+		dodgeText.setFormat(Paths.font("vcr.ttf"), 24, 0xFFFFFFFF, CENTER, OUTLINE, 0xFF000000);
+		dodgeText.antialiasing = ClientPrefs.globalAntialiasing;
+		dodgeText.alpha = 0;
+		add(dodgeText);
+
 		/*if (MechanicManager.mechanics['tictactoe'].points > 0)
 			{
 				ticTacToeSpr = new TicTacToe(FlxG.width * 0.05, FlxG.height * 0.6);
@@ -1406,6 +1413,7 @@ class PlayState extends MusicBeatState
 		timeTxt.cameras = [camHUD];
 		sleepFog.cameras = [camHUD];
 		dodgeFog.cameras = [camHUD];
+		dodgeText.cameras = [camHUD];
 		healthBarBlock.cameras = minBarBlock.cameras = [camHUD];
 		barCursor.cameras = [camHUD];
 		doof.cameras = [camHUD];
@@ -3452,6 +3460,7 @@ class PlayState extends MusicBeatState
 	private var dodgeTimers:Array<FlxTimer> = [];
 	private var canDodge:Bool = false;
 	private var dodgeTimer:Float = 0;
+	private var failedDodges:Int = 0;
 	private var dodgeWant:Float = 0;
 	private var dodgeInput:Bool = false;
 	private var dodged:Bool = false;
@@ -3484,6 +3493,7 @@ class PlayState extends MusicBeatState
 			if (dodged)
 			{
 				dodgeSound.play(true);
+				failedDodges = 0;
 			}
 			else
 			{
@@ -3515,6 +3525,7 @@ class PlayState extends MusicBeatState
 			health -= 40;
 		else
 			health /= 2;
+		failedDodges++;
 		noTriggerKarma = false;
 		FlxTween.color(iconP1, 0.3, 0xFFFF0000, 0xFFFFFFFF, {ease: FlxEase.cubeOut});
 	}
@@ -3631,7 +3642,7 @@ class PlayState extends MusicBeatState
 
 		var keyPress:Bool = FlxG.keys.anyJustPressed(ClientPrefs.copyKey(ClientPrefs.keyBinds.get("interact")));
 
-		var pos = cpuControlled ? FlxG.mouse.getScreenPosition(camOther) : lastPosition;
+		var pos = !cpuControlled ? FlxG.mouse.getScreenPosition(camOther) : lastPosition;
 
 		var wantX:Bool = (pos.x >= timeBox.x && pos.x <= timeBox.x + timeBox.width);
 		var wantY:Bool = (pos.y >= timeBox.y && pos.y <= timeBox.y + timeBox.height);

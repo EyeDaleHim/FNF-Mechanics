@@ -371,7 +371,7 @@ class Paths
 			localTrackedAssets.push(path);
 			return currentTrackedAssets.get(path);
 		}
-		trace('${path} couldn\'t be found with a library of "${currentLevel} and ${currentModDirectory}');
+		trace('${path} couldn\'t be found with a library of "${currentLevel} and ${currentModDirectory}.');
 		return null;
 	}
 

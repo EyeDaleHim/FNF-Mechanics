@@ -1,6 +1,8 @@
 {	
-	"titlex":-150,
-	"titley":-100,
+	"titlex":0,
+	"titley":0,
+	"scalex":0.8,
+	"scaley":0.8,
 	"startx":100,
 	"starty":576,
 	"gfx":512,

@@ -117,6 +117,15 @@ class AdvancedSettingsSubState extends BaseOptionsMenu
 			'safeScript', 'string', 'on', ['Off', 'Warn First', 'On']);
 		addOption(option);*/
 
+		var option:Option = new Option('Time Pause Delay', "How many seconds the game should continue when you press \'Resume\' on the Pause Menu.", 'pauseSecond', 'float',
+		1.25);
+		option.scrollSpeed = 2.0;
+		option.minValue = 0.0;
+		option.maxValue = 5.0;
+		option.changeValue = 0.1;
+		option.displayFormat = '%vs';
+		addOption(option);
+
 		var option:Option = new Option('Debugger Mode', "Lets you enable the keybinds to access debug menus.", 'debugMode', 'bool',
 			#if debug true #else false #end);
 		addOption(option);

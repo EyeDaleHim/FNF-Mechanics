@@ -43,6 +43,8 @@ typedef TitleData =
 {
 	titlex:Float,
 	titley:Float,
+	?scalex:Float,
+	?scaley:Float,
 	startx:Float,
 	starty:Float,
 	gfx:Float,
@@ -272,6 +274,8 @@ class TitleState extends MusicBeatState
 
 		logoBl = new FlxSprite(titleJSON.titlex, titleJSON.titley);
 		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
+
+		logoBl.scale.set((titleJSON.scalex == null ? 1 : titleJSON.scalex), (titleJSON.scaley == null ? 1 : titleJSON.scaley));
 
 		logoBl.antialiasing = ClientPrefs.globalAntialiasing;
 		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24, false);

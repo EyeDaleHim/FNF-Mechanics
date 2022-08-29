@@ -20,6 +20,7 @@ class ClientPrefs
 	public static var noteSplashes:Bool = true;
 	public static var lowQuality:Bool = false;
 	public static var framerate:Int = 60;
+	public static var pauseSecond:Float = 1.2;
 	public static var cursing:Bool = true;
 	public static var violence:Bool = true;
 	public static var camZooms:Bool = true;
@@ -134,6 +135,7 @@ class ClientPrefs
 		defaultSave.data.ghostTapping = ghostTapping;
 		defaultSave.data.timeBarType = timeBarType;
 		defaultSave.data.scoreZoom = scoreZoom;
+		defaultSave.data.pauseSecond = pauseSecond;
 		defaultSave.data.noReset = noReset;
 		defaultSave.data.healthBarAlpha = healthBarAlpha;
 		defaultSave.data.comboOffset = comboOffset;
@@ -250,6 +252,10 @@ class ClientPrefs
 		if (defaultSave.data.lowQuality != null)
 		{
 			lowQuality = defaultSave.data.lowQuality;
+		}
+		if (defaultSave.data.pauseSecond != null)
+		{
+			pauseSecond = defaultSave.data.pauseSecond;
 		}
 		if (defaultSave.data.framerate != null)
 		{
@@ -434,6 +440,7 @@ class ClientPrefs
 		timeBarType = 'Time Left';
 		scoreZoom = true;
 		noReset = false;
+		pauseSecond = 1.2;
 		healthBarAlpha = 1;
 		controllerMode = false;
 		hitsoundVolume = 0;
