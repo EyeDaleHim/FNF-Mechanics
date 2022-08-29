@@ -1,6 +1,5 @@
 package;
 
-import flixel.graphics.FlxGraphic;
 #if desktop
 import Discord.DiscordClient;
 #end
@@ -23,6 +22,7 @@ import flixel.addons.effects.chainable.FlxEffectSprite;
 import flixel.addons.effects.chainable.FlxWaveEffect;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.effects.FlxFlicker;
+import flixel.graphics.FlxGraphic;
 import flixel.graphics.atlas.FlxAtlas;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -1359,8 +1359,12 @@ class PlayState extends MusicBeatState
 		add(dodgeFog);
 
 		dodgeText = new FlxText(0, 0, FlxG.width * 0.9, "", 24);
+		dodgeText.text = 'Press ${ClientPrefs.keyBinds['dodge'][0].toString()}${(ClientPrefs.keyBinds['dodge'][1] != NONE ? "or" + ClientPrefs.keyBinds['dodge'][1].toString() : "")} to dodge!';
 		dodgeText.setFormat(Paths.font("vcr.ttf"), 24, 0xFFFFFFFF, CENTER, OUTLINE, 0xFF000000);
+		dodgeText.borderSize = 2.5;
 		dodgeText.antialiasing = ClientPrefs.globalAntialiasing;
+		dodgeText.screenCenter(X);
+		dodgeText.y = FlxG.height * 0.8;
 		dodgeText.alpha = 0;
 		add(dodgeText);
 
@@ -3441,6 +3445,7 @@ class PlayState extends MusicBeatState
 	private var canDodge:Bool = false;
 	private var dodgeTimer:Float = 0;
 	private var failedDodges:Int = 0;
+	private var failedTotalDodges:Int = 0;
 	private var dodgeWant:Float = 0;
 	private var dodgeInput:Bool = false;
 	private var dodged:Bool = false;
@@ -3474,6 +3479,22 @@ class PlayState extends MusicBeatState
 			{
 				dodgeSound.play(true);
 				failedDodges = 0;
+				if (++failedTotalDodges >= 3 || FlxG.save.data.firstTimeDodging == null)
+				{
+					FlxG.save.data.firstTimeDodging = true;
+					failedTotalDodges = 0;
+
+					FlxTween.tween(dodgeText, {alpha: 1}, 0.2, {
+						ease: FlxEase.quadOut,
+						onComplete: function(twn:FlxTween)
+						{
+							FlxTween.tween(dodgeText, {alpha: 0}, 0.5, {
+								ease: FlxEase.quadOut,
+								startDelay: 3
+							});
+						}
+					});
+				}
 			}
 			else
 			{
@@ -7007,7 +7028,8 @@ class PlayState extends MusicBeatState
 			notes.forEachAlive(function(daNote:Note)
 			{
 				// hold note functions
-				if (!strumsBlocked[daNote.noteData] && daNote.isSustainNote && controlHoldArray[daNote.noteData] && daNote.canBeHit && !daNote.tooLate && !daNote.wasGoodHit)
+				if (!strumsBlocked[daNote.noteData] && daNote.isSustainNote && controlHoldArray[daNote.noteData] && daNote.canBeHit && !daNote.tooLate
+					&& !daNote.wasGoodHit)
 				{
 					goodNoteHit(daNote);
 				}
