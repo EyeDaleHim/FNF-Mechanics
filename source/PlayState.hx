@@ -3316,12 +3316,33 @@ class PlayState extends MusicBeatState
 			calculateHealth = FlxMath.remapToRange(lastHealth / 50, 0, maxHealth, minHealth, maxHealth);
 		}, 60);
 		restoreActivated = true;
+
+		FlxG.sound.play(Paths.sound('restoreActivate', 'shared'));
+
+		var vignetteAppear:FlxSprite = new FlxSprite().loadGraphic(Paths.image('restoreVignette', 'shared'));
+		vignetteAppear.y = -vignetteAppear.height;
+		vignetteAppear.cameras = [camOther];
+		add(vignetteAppear);
+
+		FlxTween.tween(vignetteAppear, {y: 0}, 0.5, {
+			ease: FlxEase.quadOut,
+			onComplete: function(twn:FlxTween)
+			{
+				FlxTween.tween(vignetteAppear, {alpha: 0.0}, 0.5, {ease: FlxEase.quadOut, onComplete: function(twn:FlxTween)
+				{
+					remove(vignetteAppear);
+					vignetteAppear.destroy();
+				}, startDelay: 2.5});
+			}
+		});
 	}
 
 	private var restoreNoteGroup:Array<Note> = [];
 
 	private function restoreNoteHit():Void
 	{
+		FlxG.sound.play(Paths.sound('restoreActivate', 'shared'), 0.6);
+
 		if (healthTimer != null)
 			healthTimer.cancel();
 		for (restoreNote in restoreNoteGroup)
