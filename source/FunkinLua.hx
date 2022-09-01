@@ -2966,9 +2966,16 @@ class FunkinLua
 		return true;
 	}
 
+	private static var replaceReference:Array<{name:String, reference:String}> = [{name: 'notes', reference: 'notes.globalNotes'}];
+
 	public static function getVarInArray(instance:Dynamic, variable:String):Any
 	{
 		var shit:Array<String> = variable.split('[');
+		for (i in 0...replaceReference.length)
+		{
+			if (instance == getInstance() && variable == replaceReference[i].name)
+				return Reflect.getProperty(instance, replaceReference[i].reference);
+		}
 		if (shit.length > 1)
 		{
 			var blah:Dynamic = Reflect.getProperty(instance, shit[0]);

@@ -708,9 +708,6 @@ class FreeplayState extends MusicBeatState
 
 		function changeSelection(change:Int = 0, playSound:Bool = true)
 		{
-			if (playSound)
-				FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-
 			curSelected = FlxMath.wrap(curSelected + change, 0, songs.length - 1);
 
 			var newColor:Int = songs[curSelected].color;
@@ -804,6 +801,9 @@ class FreeplayState extends MusicBeatState
 			{
 				curDifficulty = newPos;
 			}
+
+			if (playSound)
+				FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 		}
 
 		private function positionHighscore()
