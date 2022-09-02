@@ -1584,6 +1584,8 @@ class PlayState extends MusicBeatState
 
 		super.create();
 
+		ratingName = '?';
+
 		maxHealth = 2;
 
 		if (MechanicManager.mechanics['limit_health'].points > 0)
