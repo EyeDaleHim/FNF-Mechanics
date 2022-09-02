@@ -8125,13 +8125,16 @@ class PlayState extends MusicBeatState
 	public var ratingPercent:Float;
 	public var ratingFC:String;
 
-	public function RecalculateRating()
+	public function RecalculateRating(luaUpdate:Bool = true)
 	{
-		setOnLuas('score', songScore);
-		setOnLuas('misses', songMisses);
-		setOnLuas('hits', songHits);
+		if (luaUpdate)
+		{
+			setOnLuas('score', songScore);
+			setOnLuas('misses', songMisses);
+			setOnLuas('hits', songHits);
+		}
 
-		var ret:Dynamic = callOnLuas('onRecalculateRating', []);
+		var ret:Dynamic = luaUpdate ? callOnLuas('onRecalculateRating', []) : FunkinLua.Function_Stop;
 		if (ret != FunkinLua.Function_Stop)
 		{
 			if (totalPlayed < 1) // Prevent divide by 0
@@ -8172,9 +8175,12 @@ class PlayState extends MusicBeatState
 			else if (songMisses >= 10)
 				ratingFC = "Clear";
 		}
-		setOnLuas('rating', ratingPercent);
-		setOnLuas('ratingName', ratingName);
-		setOnLuas('ratingFC', ratingFC);
+		if (luaUpdate)
+		{
+			setOnLuas('rating', ratingPercent);
+			setOnLuas('ratingName', ratingName);
+			setOnLuas('ratingFC', ratingFC);
+		}
 	}
 
 	#if ACHIEVEMENTS_ALLOWED
@@ -8358,12 +8364,14 @@ class PlayState extends MusicBeatState
 	private function set_totalNotesHit(value:Float):Float
 	{
 		ratingPercent = CoolUtil.boundTo((totalNotesHit = value) / totalPlayed, 0, 1);
+		RecalculateRating(false);
 		return value;
 	}
 
 	private function set_totalPlayed(value:Int):Int
 	{
 		ratingPercent = CoolUtil.boundTo(totalNotesHit / (totalPlayed = value), 0, 1);
+		RecalculateRating(false);
 		return value;
 	}
 	
