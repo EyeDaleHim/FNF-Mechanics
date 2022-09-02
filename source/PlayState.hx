@@ -6322,8 +6322,8 @@ class PlayState extends MusicBeatState
 		eventNotes = [];
 	}
 
-	public var totalPlayed:Int = 0;
-	public var totalNotesHit:Float = 0.0;
+	public var totalPlayed(default, set):Int = 1;
+	public var totalNotesHit(default, set):Float = 1.0;
 	public var showCombo:Bool = true;
 	public var showRating:Bool = true;
 	public var ratingColors:Map<String, Int> = ['sick' => 0x00AEFF, 'good' => 0x0EBE2C, 'bad' => 0xFFA600, 'shit' => 0xFF0000];
@@ -8354,6 +8354,19 @@ class PlayState extends MusicBeatState
 
 		return maxHealth;
 	}
+
+	private function set_totalNotesHit(value:Float):Float
+	{
+		ratingPercent = CoolUtil.boundTo((totalNotesHit = value) / totalPlayed, 0, 1);
+		return value;
+	}
+
+	private function set_totalPlayed(value:Int):Int
+	{
+		ratingPercent = CoolUtil.boundTo(totalNotesHit / (totalPlayed = value), 0, 1);
+		return value;
+	}
+	
 
 	var curLight:Int = -1;
 	var curLightEvent:Int = -1;
