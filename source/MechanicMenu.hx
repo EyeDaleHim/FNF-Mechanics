@@ -751,10 +751,12 @@ class MechanicMenu extends MusicBeatState
 
 		sortedMechanics.sort(sortByValue);
 
+		var posY:Float = 180 + (360 * (i / 4));
+
 		for (mechanic in sortedMechanics)
 		{
 			var mechanicSpr:MechanicPortrait;
-			mechanicSpr = new MechanicPortrait(mechanicPositions[i][0], mechanicPositions[i][1], mechanic, null);
+			mechanicSpr = new MechanicPortrait(40 + (200 * (i % 4)) + 2, posY, mechanic, null);
 			mechanicSpr.scrollFactor.set(0, 0.4);
 			mechanic.spriteParent = mechanicSpr;
 			mechanicSpr.text.text = '' + mechanic.points;
