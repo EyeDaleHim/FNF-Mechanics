@@ -705,37 +705,6 @@ class MechanicMenu extends MusicBeatState
 
 		var i:Int = 0;
 
-		// someone please make a PR on this
-		var mechanicPositions:Array<Array<Float>> = [
-			[40, 180], // 0
-			[240, 180], // 1
-			[440, 180], // 2
-			[640, 180], // 3
-			[40, 540], // 4
-			[240, 540], // 5
-			[440, 540], // 6
-			[640, 540], // 7
-			[40, 900], // 8
-			[240, 900], // 9
-			[440, 900], // 10
-			[640, 900], // 11
-			[40, 1260], // 12
-			[240, 1260], // 13
-			[440, 1260], // 14
-			[640, 1260], // 15
-			[40, 1620], // 16
-			[240, 1620], // 17
-			[440, 1620], // 18
-			[640, 1620], // 19
-			[40, 1980], // 20
-			[240, 1980], // 21
-			[440, 1980], // 22
-			[640, 1980] // 23
-		];
-
-		for (i in mechanicPositions)
-			i[0] += 2;
-
 		var sortedMechanics:Array<MechanicManager.MechanicData> = [];
 		var stackedTooltips:Array<MechanicTooltip> = [];
 
@@ -751,12 +720,10 @@ class MechanicMenu extends MusicBeatState
 
 		sortedMechanics.sort(sortByValue);
 
-		var posY:Float = 180 + (360 * (i / 4));
-
 		for (mechanic in sortedMechanics)
 		{
 			var mechanicSpr:MechanicPortrait;
-			mechanicSpr = new MechanicPortrait(40 + (200 * (i % 4)) + 2, posY, mechanic, null);
+			mechanicSpr = new MechanicPortrait(40 + (200 * (i % 4)) + 2, 180 + (360 * Math.floor(i / 4)), mechanic, null);
 			mechanicSpr.scrollFactor.set(0, 0.4);
 			mechanic.spriteParent = mechanicSpr;
 			mechanicSpr.text.text = '' + mechanic.points;
