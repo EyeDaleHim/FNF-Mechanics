@@ -1765,6 +1765,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 		CustomFadeTransition.nextCamera = camOther;
+		SubtitleHandler.camera = camOther;
 	}
 
 	function set_songSpeed(value:Float):Float
@@ -2111,10 +2112,12 @@ class PlayState extends MusicBeatState
 		var songName:String = Paths.formatToSongPath(SONG.song);
 		dadGroup.alpha = 0.00001;
 		camHUD.visible = false;
-		// inCutscene = true; //this would stop the camera movement, oops
+		// inCutscene = true; //this would stop the camera movement, oops;
+
+		SubtitleHandler.camera = null;
 
 		var tankman:FlxSprite = new FlxSprite(-20, 320);
-		tankman.frames = Paths.getSparrowAtlas('cutscenes/' + songName);
+		tankman.frames = Paths.getSparrowAtlas('cutscenes/' + songName, 'week7');
 		tankman.antialiasing = ClientPrefs.globalAntialiasing;
 		addBehindDad(tankman);
 		cutsceneHandler.push(tankman);
@@ -2173,6 +2176,7 @@ class PlayState extends MusicBeatState
 				cutsceneHandler.timer(0.1, function()
 				{
 					wellWellWell.play(true);
+					SubtitleHandler.addSub('Well well well, what do we got here?', 3.2);
 				});
 
 				// Move camera to BF
@@ -2199,6 +2203,17 @@ class PlayState extends MusicBeatState
 					// We should just kill you but... what the hell, it's been a boring day... let's see what you've got!
 					tankman.animation.play('killYou', true);
 					FlxG.sound.play(Paths.sound('killYou'));
+					
+					SubtitleHandler.addSub('We should just kill you but...', 0.8);
+					
+				});
+				cutsceneHandler.timer(6.8, function()
+				{
+					SubtitleHandler.addSub('what the hell, it\'s been a boring day!', 1.5);
+				});
+				cutsceneHandler.timer(8.3, function()
+				{
+					SubtitleHandler.addSub('Let\'s see what you\'ve got!', 2.0);
 				});
 			case 'guns':
 				cutsceneHandler.endTime = 11.5;
@@ -4827,7 +4842,7 @@ class PlayState extends MusicBeatState
 		if (ratingName != '?')
 			scoreTxt.text += ' (' + Highscore.floorDecimal(ratingPercent * 100, 2) + '%)' + ' - ' + ratingFC;
 	 */
-		scoreTxt.text = ScoreText.generateText(songScore, songMisses, ratingName, Highscore.floorDecimal(ratingPercent * 100, 2), ratingFC);
+		scoreTxt.text = ScoreText.generateText(songScore, songMisses, ratingName, CoolUtil.floorDecimal(ratingPercent * 100, 2), ratingFC);
 
 		if (botplayTxt.visible)
 		{
@@ -4880,7 +4895,7 @@ class PlayState extends MusicBeatState
 		#end
 
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
-		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
+		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight
 
 		if (!PlayState.isPixelStage)
 		{
@@ -5649,7 +5664,8 @@ class PlayState extends MusicBeatState
 
 			case 'Kill Henchmen':
 				killHenchmen();
-
+			case 'Subtitle':
+				SubtitleHandler.addSub(value1, Std.parseFloat(value2));
 			case 'Add Camera Zoom':
 				if (ClientPrefs.camZooms && FlxG.camera.zoom < 1.35)
 				{

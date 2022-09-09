@@ -87,7 +87,7 @@ class VictorySubstate extends MusicBeatSubstate
 		var accuracyConvert:(String, Int)->Array<String> = function(s:String, l:Int)
 		{
 			var accuracyText:Array<String> = [];
-			var value:Float = Highscore.floorDecimal(PlayState.instance.ratingPercent * 100, 2);
+			var value:Float = CoolUtil.floorDecimal(PlayState.instance.ratingPercent * 100, 2);
 			if (value <= 0)
 				value = 0;
 
@@ -137,7 +137,7 @@ class VictorySubstate extends MusicBeatSubstate
 				{
 					group: accuracyGroup,
 					yPos: 520,
-					lerpTo: Highscore.floorDecimal(PlayState.instance.ratingPercent * 100, 2),
+					lerpTo: CoolUtil.floorDecimal(PlayState.instance.ratingPercent * 100, 2),
 					convert: accuracyConvert,
 					length: 0
 				}

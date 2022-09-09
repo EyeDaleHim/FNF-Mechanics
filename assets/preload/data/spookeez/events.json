@@ -1,67 +1,47 @@
 {
 	"song": {
-		"speed": 2.3,
-		"stage": "tank",
+		"speed": 2.4,
+		"stage": "spooky",
 		"player1": "bf",
-		"player2": "tankman",
+		"player2": "spooky",
 		"player3": null,
 		"events": [
 			[
-				5625,
+				15600,
 				[
 					[
 						"Subtitle",
-						"Ugh!",
+						"Yeah!",
 						"0.5"
 					]
 				]
 			],
 			[
-				41625,
+				18800,
 				[
 					[
 						"Subtitle",
-						"Ugh!",
+						"Yeah!",
 						"0.5"
 					]
 				]
 			],
 			[
-				49125,
+				41200,
 				[
 					[
 						"Subtitle",
-						"Ugh!",
+						"Yeah!",
 						"0.5"
 					]
 				]
 			],
 			[
-				50625,
-				[
-					[
-						"Play Animation",
-						"singUP-alt",
-						"Dad"
-					]
-				]
-			],
-			[
-				50718.75,
-				[
-					[
-						"Play Animation",
-						"singUP-alt",
-						"Dad"
-					]
-				]
-			],
-			[
-				77625,
+				44400,
 				[
 					[
 						"Subtitle",
-						"Ugh!",
+						"Yeah!",
 						"0.5"
 					]
 				]
@@ -70,10 +50,10 @@
 		"notes": [],
 		"splashSkin": null,
 		"validScore": false,
-		"gfVersion": "gf-tankmen",
-		"bpm": 160,
+		"gfVersion": "gf",
+		"bpm": 150,
 		"arrowSkin": null,
 		"needsVoices": true,
-		"song": "Ugh"
+		"song": "Spookeez"
 	}
 }

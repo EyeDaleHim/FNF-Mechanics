@@ -119,10 +119,6 @@ class ChartingState extends MusicBeatState
 			"Value 1: Camera shake\nValue 2: HUD shake\n\nEvery value works as the following example: \"1, 0.05\".\nThe first number (1) is the duration.\nThe second number (0.05) is the intensity."
 		],
 		[
-			'Subtitle',
-			"Value 1: Subtitle Text"
-		],
-		[
 			'Change Character',
 			"Value 1: Character to change (Dad, BF, GF)\nValue 2: New character's name"
 		],
@@ -130,6 +126,10 @@ class ChartingState extends MusicBeatState
 		[
 			'Change Scroll Speed',
 			"Value 1: Scroll Speed Multiplier (1 is default)\nValue 2: Time it takes to change fully in seconds."
+		],
+		[
+			'Subtitle',
+			"Value 1: Subtitle Text\nValue 2: Duration of Subtitle"
 		],
 		['Set Property', "Value 1: Variable name\nValue 2: New value"]
 	];

@@ -98,6 +98,8 @@ class Main extends Sprite
 		FlxG.console.registerClass(MechanicManager);
 		FlxG.console.registerClass(Paths);
 		FlxG.console.registerClass(KeyboardMechanic);
+		FlxG.console.registerClass(ScoreHandler);
+		FlxG.console.registerClass(SubtitleHandler);
 
 		#if html5
 		FlxG.autoPause = false;

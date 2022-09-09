@@ -30,6 +30,13 @@ using StringTools;
 	The FPS class provides an easy-to-use monitor to display
 	the current frame rate of an OpenFL project
 **/
+/*
+#if windows
+@:headerCode("
+#include <windows.h>
+#include <psapi.h>
+")
+#end*/
 
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
@@ -133,7 +140,10 @@ class FPS extends TextField
 		if (currentFPS > ClientPrefs.framerate)
 			currentFPS = ClientPrefs.framerate;
 
-		if (currentCount != cacheCount /*&& visible*/)
+		_updateMemTimer += FlxG.elapsed / 1000;
+
+		// fucking hell this is weird
+		if ((currentCount != cacheCount || _updateMemTimer >= 100.0) && visible)
 		{
 			updateText();
 		}
@@ -149,14 +159,16 @@ class FPS extends TextField
 		return value;
 	}
 
+	private var _updateMemTimer:Float = 0.0;
+	private var _ms:Float = 0.0;
+
 	private function updateText():Void
 	{
 		text = "FPS: " + Math.round(currentFPS);
 
-		var ms:Float = 1 / Math.round(currentFPS);
-		ms *= 1000;
 		#if debug
-		text += ' (${FlxMath.roundDecimal(ms, 2)}ms)';
+		_ms = FlxMath.lerp(_ms, 1 / Math.round(currentFPS) * 1000, CoolUtil.boundTo(FlxG.elapsed * 3.75 * ((Math.abs(_ms - 1 / Math.round(currentFPS) * 1000) < 0.45) ? 2.5 : 1.0), 0, 1));
+		text += ' (${FlxMath.roundDecimal(_ms, 2)} ms)';
 		#end
 
 		lagging = false;
@@ -172,13 +184,15 @@ class FPS extends TextField
 
 		if (ClientPrefs.performanceCounter.contains('mem'))
 		{
-			curMemory = obtainMemory();
+			curMemory = _updateMemTimer >= 100.0 ? curMemory : obtainMemory();
 			if (curMemory >= maxMemory)
 				maxMemory = curMemory;
 			text += 'MEM: ${CoolUtil.formatMemory(Std.int(curMemory))}';
 			if (ClientPrefs.performanceCounter.contains('peak'))
 				text += ' / ${CoolUtil.formatMemory(Std.int(maxMemory))}';
 			text += '\n';
+
+			_updateMemTimer = 0.0;
 		}
 		#if debug
 		text += '\nDEBUG INFO:\n';
@@ -192,10 +206,25 @@ class FPS extends TextField
 		#end
 	}
 
+	/**#if windows
+	@:functionCode("
+		auto memhandle = GetCurrentProcess();
+		PROCESS_MEMORY_COUNTERS pmc;
+		if (GetProcessMemoryInfo(memhandle, &pmc, sizeof(pmc)))
+			return (pmc.WorkingSetSize);
+		else
+			return 0;		
+	")
+	function obtainMemory():Dynamic
+	{
+		return 0;
+	}
+	#else*/
 	function obtainMemory():Dynamic
 	{
 		return System.totalMemory;
 	}
+	// #end
 
 	public var textAfter:String = '';
 }

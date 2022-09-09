@@ -1,0 +1,369 @@
+{
+	"song": {
+		"speed": 1.6,
+		"stage": "spooky",
+		"player1": "bf",
+		"player2": "monster",
+		"player3": null,
+		"events": [
+			[
+				13263.1578947368,
+				[
+					[
+						"Subtitle",
+						"Guess it's time...",
+						"1.25"
+					]
+				]
+			],
+			[
+				14526.3157894737,
+				[
+					[
+						"Subtitle",
+						"You better plug in all your night-lights!",
+						"1.85"
+					]
+				]
+			],
+			[
+				23368.4210526316,
+				[
+					[
+						"Subtitle",
+						"What's out there,",
+						"2.2"
+					]
+				]
+			],
+			[
+				24631.5789473684,
+				[
+					[
+						"Subtitle",
+						"Past your darkened door?",
+						"2.5"
+					]
+				]
+			],
+			[
+				32842.1052631579,
+				[
+					[
+						"Subtitle",
+						"Just the eyes floating up out of the shore.",
+						"3.85"
+					]
+				]
+			],
+			[
+				44359.9786868747,
+				[
+					[
+						"Subtitle",
+						"Hey man,",
+						"1.2"
+					]
+				]
+			],
+			[
+				44931.4072583032,
+				[
+					[
+						"Subtitle",
+						"I'm gonna eat your girlfriend!",
+						"2.4"
+					]
+				]
+			],
+			[
+				53502.8358297318,
+				[
+					[
+						"Subtitle",
+						"Or maybe turn her into broth!",
+						"3.2"
+					]
+				]
+			],
+			[
+				56645.6929725889,
+				[
+					[
+						"Subtitle",
+						"La-la-la, la, la!",
+						"1.75"
+					]
+				]
+			],
+			[
+				62359.9786868746,
+				[
+					[
+						"Subtitle",
+						"Kill a kid! Cut 'em up!",
+						"1.6"
+					]
+				]
+			],
+			[
+				63502.8358297318,
+				[
+					[
+						"Subtitle",
+						"Stuff 'em up inside of my",
+						"1.6"
+					]
+				]
+			],
+			[
+				64931.4072583032,
+				[
+					[
+						"Subtitle",
+						"Secret meat box!",
+						"2.4"
+					]
+				]
+			],
+			[
+				71502.8358297318,
+				[
+					[
+						"Subtitle",
+						"Find...",
+						"1.8"
+					]
+				]
+			],
+			[
+				72645.6929725889,
+				[
+					[
+						"Subtitle",
+						"my...",
+						"1.5"
+					]
+				]
+			],
+			[
+				73788.5501154461,
+				[
+					[
+						"Subtitle",
+						"hands across your body slowly",
+						"2"
+					]
+				]
+			],
+			[
+				74931.4072583032,
+				[
+					[
+						"Subtitle",
+						"peel your skin off!",
+						"1.6"
+					]
+				]
+			],
+			[
+				82072.5935573843,
+				[
+					[
+						"Subtitle",
+						"You'll meet your friends.",
+						"2.4"
+					]
+				]
+			],
+			[
+				86493.6461889632,
+				[
+					[
+						"Subtitle",
+						"Inside the ambulance!",
+						"2.4"
+					]
+				]
+			],
+			[
+				90598.9093468579,
+				[
+					[
+						"Subtitle",
+						"Call into the night",
+						"2.0"
+					]
+				]
+			],
+			[
+				94072.5935573843,
+				[
+					[
+						"Subtitle",
+						"to the werewolf!",
+						"2.0"
+					]
+				]
+			],
+			[
+				97230.4882942264,
+				[
+					[
+						"Subtitle",
+						"Give all your blood to him!",
+						"2.25"
+					]
+				]
+			],
+			[
+				101335.751452121,
+				[
+					[
+						"Subtitle",
+						"Stand under the warm street light.",
+						"2.5"
+					]
+				]
+			],
+			[
+				105756.8040837,
+				[
+					[
+						"Subtitle",
+						"Let yourself be hypnotized.",
+						"3.25"
+					]
+				]
+			],
+			[
+				117352.497863604,
+				[
+					[
+						"Subtitle",
+						"You're just a little snack",
+						"2.25"
+					]
+				]
+			],
+			[
+				120534.316045422,
+				[
+					[
+						"Subtitle",
+						"And so, is your girlfriend!",
+						"3.5"
+					]
+				]
+			],
+			[
+				133920.679681786,
+				[
+					[
+						"Subtitle",
+						"Hey man!",
+						"1.5"
+					]
+				]
+			],
+			[
+				134420.679681786,
+				[
+					[
+						"Subtitle",
+						"I'm gonna tear your eyes out!",
+						"2.5"
+					]
+				]
+			],
+			[
+				141920.679681786,
+				[
+					[
+						"Subtitle",
+						"And then I'll boil your girlfriend!",
+						"3.25"
+					]
+				]
+			],
+			[
+				144670.679681786,
+				[
+					[
+						"Subtitle",
+						"La-la-la, la, la!",
+						"1.25"
+					]
+				]
+			],
+			[
+				149670.679681786,
+				[
+					[
+						"Subtitle",
+						"Kill a kid, cut 'em up.",
+						"1.5"
+					]
+				]
+			],
+			[
+				150670.679681786,
+				[
+					[
+						"Subtitle",
+						"Stuff 'em up inside of my, burning dungeon.",
+						"3.5"
+					]
+				]
+			],
+			[
+				157670.679681786,
+				[
+					[
+						"Subtitle",
+						"I...",
+						"1.5"
+					]
+				]
+			],
+			[
+				158670.679681786,
+				[
+					[
+						"Subtitle",
+						"would...",
+						"1.5"
+					]
+				]
+			],
+			[
+				159670.679681786,
+				[
+					[
+						"Subtitle",
+						"give you guys a little break",
+						"1.75"
+					]
+				]
+			],
+			[
+				160670.679681786,
+				[
+					[
+						"Subtitle",
+						"but I'm not Satan.",
+						"1.75"
+					]
+				]
+			]
+		],
+		"notes": [],
+		"splashSkin": null,
+		"validScore": false,
+		"gfVersion": "gf",
+		"bpm": 95,
+		"arrowSkin": null,
+		"needsVoices": true,
+		"song": "Monster"
+	}
+}

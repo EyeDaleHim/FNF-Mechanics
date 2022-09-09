@@ -157,6 +157,7 @@ class TitleState extends MusicBeatState
 		else
 			FlxG.sound.volume = ClientPrefs.defaultSave.data.volume = 1;
 
+		ScoreHandler.syncSave();
 		Highscore.load();
 
 		// IGNORE THIS!!!

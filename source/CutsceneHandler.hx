@@ -69,6 +69,7 @@ class CutsceneHandler extends FlxBasic
 			kill();
 			destroy();
 			PlayState.instance.remove(this);
+			SubtitleHandler.camera = PlayState.instance.camOther;
 		}
 		
 		while(timedEvents.length > 0 && timedEvents[0][0] <= cutsceneTime)
