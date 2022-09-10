@@ -124,11 +124,15 @@ class MusicBeatState extends FlxUIState
 
 	override public function destroy():Void
 	{
+		SubtitleHandler.destroy();
+		
 		#if web
 		FlxG.autoPause = ClientPrefs.autoPause;
 		#end
 
 		Main.fpsVar.fps.defaultTextFormat = new TextFormat(Main.fpsVar.fps.getFont(Paths.font("vcr.ttf")), 14, 0xFFFFFFFF);
+
+		super.destroy();
 	}
 
 	public static function resetState()
