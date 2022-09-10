@@ -1,1 +1,539 @@
-{"song":{"player1":"bf-christmas","song":"Winter Horrorland","player2":"monster-christmas","notes":[{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[[21132.0754716981,-1,"Set GF Speed","2",""]],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[[45283.0188679245,-1,"Set GF Speed","1",""]],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[[57358.4905660377,-1,"Set GF Speed","2",""]],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[[81509.4339622642,-1,"Set GF Speed","1",""]],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[[105660.377358491,-1,"Set GF Speed","2",""]],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[[117735.849056604,-1,"Set GF Speed","1",""]],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":false},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"lengthInSteps":16,"sectionNotes":[],"mustHitSection":true},{"sectionNotes":[],"typeOfSection":0,"lengthInSteps":16,"altAnim":false,"mustHitSection":true,"changeBPM":false,"bpm":159},{"sectionNotes":[],"typeOfSection":0,"lengthInSteps":16,"altAnim":false,"mustHitSection":true,"changeBPM":false,"bpm":159},{"lengthInSteps":16,"altAnim":false,"typeOfSection":0,"sectionNotes":[],"bpm":159,"changeBPM":false,"mustHitSection":true}],"needsVoices":true,"validScore":true,"bpm":159,"speed":1.3}}
+{
+	"song": {
+		"speed": 1.3,
+		"stage": "mallEvil",
+		"player1": "bf-christmas",
+		"player2": "monster-christmas",
+		"player3": null,
+		"events": [
+			[
+				9433.96226415094,
+				[
+					[
+						"Subtitle",
+						"Your skin is freezing...",
+						"2.1"
+					]
+				]
+			],
+			[
+				12452.8301886792,
+				[
+					[
+						"Subtitle",
+						"Here, let me help you take it off...",
+						"2.8"
+					]
+				]
+			],
+			[
+				21132.0754716981,
+				[
+					[
+						"Set GF Speed",
+						"2",
+						""
+					]
+				]
+			],
+			[
+				21132.0754716981,
+				[
+					[
+						"Subtitle",
+						"Feasting with your friends,",
+						"2.4"
+					]
+				]
+			],
+			[
+				23207.5471698113,
+				[
+					[
+						"Subtitle",
+						"The perfect way to end",
+						"1.4"
+					]
+				]
+			],
+			[
+				24528.3018867924,
+				[
+					[
+						"Subtitle",
+						"All these lonely holidays",
+						"2.5"
+					]
+				]
+			],
+			[
+				26226.4150943396,
+				[
+					[
+						"Subtitle",
+						"La la la la!",
+						"1.7"
+					]
+				]
+			],
+			[
+				33396.2264150943,
+				[
+					[
+						"Subtitle",
+						"Gonna take a piece",
+						"1.2"
+					]
+				]
+			],
+			[
+				34528.3018867924,
+				[
+					[
+						"Subtitle",
+						"Of your rabies,",
+						"2.9"
+					]
+				]
+			],
+			[
+				36415.0943396226,
+				[
+					[
+						"Subtitle",
+						"And vivisect your mind!",
+						"2.9"
+					]
+				]
+			],
+			[
+				45283.0188679245,
+				[
+					[
+						"Set GF Speed",
+						"1",
+						""
+					],
+					[
+						"Subtitle",
+						"Snowmen smiling with your teeth,",
+						"2"
+					]
+				]
+			],
+			[
+				48301.8867924528,
+				[
+					[
+						"Subtitle",
+						"Fallen angels created",
+						"1.8"
+					]
+				]
+			],
+			[
+				49905.6603773585,
+				[
+					[
+						"Subtitle",
+						"With your meat!",
+						"1.4"
+					]
+				]
+			],
+			[
+				53207.5471698113,
+				[
+					[
+						"Subtitle",
+						"That",
+						"1"
+					]
+				]
+			],
+			[
+				53584.9056603773,
+				[
+					[
+						"Subtitle",
+						"Pearly",
+						"1.5"
+					]
+				]
+			],
+			[
+				54339.6226415094,
+				[
+					[
+						"Subtitle",
+						"Smiiiiile!",
+						"2"
+					]
+				]
+			],
+			[
+				57358.4905660377,
+				[
+					[
+						"Set GF Speed",
+						"2",
+						""
+					]
+				]
+			],
+			[
+				57547.1698113207,
+				[
+					[
+						"Subtitle",
+						"Cut",
+						"0.8"
+					]
+				]
+			],
+			[
+				57924.5283018867,
+				[
+					[
+						"Subtitle",
+						"In a thousand slices,",
+						"1.3"
+					]
+				]
+			],
+			[
+				58867.9245283018,
+				[
+					[
+						"Subtitle",
+						"Bake you til, golden brown.",
+						"2.1"
+					]
+				]
+			],
+			[
+				63396.2264150943,
+				[
+					[
+						"Subtitle",
+						"Stuff you with spices!",
+						"2.3"
+					]
+				]
+			],
+			[
+				66415.0943396226,
+				[
+					[
+						"Subtitle",
+						"Serve to friends around!",
+						"2.9"
+					]
+				]
+			],
+			[
+				69622.6415094339,
+				[
+					[
+						"Subtitle",
+						"Seperate",
+						"1.2"
+					]
+				]
+			],
+			[
+				70188.679245283,
+				[
+					[
+						"Subtitle",
+						"You from your eyes,",
+						"1.5"
+					]
+				]
+			],
+			[
+				71132.0754716981,
+				[
+					[
+						"Subtitle",
+						"Turn your girlfriend inside out",
+						"1.7"
+					]
+				]
+			],
+			[
+				72264.1509433962,
+				[
+					[
+						"Subtitle",
+						"And burn her fingernails...",
+						"2.2"
+					]
+				]
+			],
+			[
+				74528.3018867924,
+				[
+					[
+						"Subtitle",
+						"La la la la!",
+						"1.8"
+					]
+				]
+			],
+			[
+				81509.4339622642,
+				[
+					[
+						"Set GF Speed",
+						"1",
+						""
+					],
+					[
+						"Subtitle",
+						"Soak your hands in freezing water!",
+						"2.3"
+					]
+				]
+			],
+			[
+				84528.3018867925,
+				[
+					[
+						"Subtitle",
+						"Watching as the skin get softer!",
+						"2.3"
+					]
+				]
+			],
+			[
+				87547.1698113208,
+				[
+					[
+						"Subtitle",
+						"See your bones appear in",
+						"1.8"
+					]
+				]
+			],
+			[
+				89056.6037735849,
+				[
+					[
+						"Subtitle",
+						"Dark red snow, ",
+						"2"
+					]
+				]
+			],
+			[
+				90566.0377358491,
+				[
+					[
+						"Subtitle",
+						"Drop",
+						"1"
+					]
+				]
+			],
+			[
+				91132.0754716981,
+				[
+					[
+						"Subtitle",
+						"Further",
+						"1.4"
+					]
+				]
+			],
+			[
+				92075.4716981133,
+				[
+					[
+						"Subtitle",
+						"Below!",
+						"1.4"
+					]
+				]
+			],
+			[
+				93773.5849056604,
+				[
+					[
+						"Subtitle",
+						"Gonna take a piece",
+						"1.2"
+					]
+				]
+			],
+			[
+				94905.6603773585,
+				[
+					[
+						"Subtitle",
+						"Of your rabies",
+						"2.9"
+					]
+				]
+			],
+			[
+				96792.4528301887,
+				[
+					[
+						"Subtitle",
+						"And vivisect your mind!",
+						"2.9"
+					]
+				]
+			],
+			[
+				99811.320754717,
+				[
+					[
+						"Subtitle",
+						"And take a peek inside your head...",
+						"3.2"
+					]
+				]
+			],
+			[
+				102830.188679245,
+				[
+					[
+						"Subtitle",
+						"And find the worm inside...",
+						"2.7"
+					]
+				]
+			],
+			[
+				105660.377358491,
+				[
+					[
+						"Set GF Speed",
+						"2",
+						""
+					]
+				]
+			],
+			[
+				105849.056603774,
+				[
+					[
+						"Subtitle",
+						"Cut",
+						"0.8"
+					]
+				]
+			],
+			[
+				106226.41509434,
+				[
+					[
+						"Subtitle",
+						"In a thousand slices,",
+						"1.3"
+					]
+				]
+			],
+			[
+				107169.811320755,
+				[
+					[
+						"Subtitle",
+						"Bake you til, golden brown.",
+						"2.1"
+					]
+				]
+			],
+			[
+				111698.113207547,
+				[
+					[
+						"Subtitle",
+						"Fill you with spices!",
+						"2.3"
+					]
+				]
+			],
+			[
+				114716.981132076,
+				[
+					[
+						"Subtitle",
+						"Serve to friends aroound!",
+						"2.9"
+					]
+				]
+			],
+			[
+				117735.849056604,
+				[
+					[
+						"Set GF Speed",
+						"1",
+						""
+					]
+				]
+			],
+			[
+				117924.528301887,
+				[
+					[
+						"Subtitle",
+						"Turn",
+						"0.8"
+					]
+				]
+			],
+			[
+				118301.886792453,
+				[
+					[
+						"Subtitle",
+						"The heat on high",
+						"1.4"
+					]
+				]
+			],
+			[
+				119056.603773585,
+				[
+					[
+						"Subtitle",
+						"And we'll reduce your blood!",
+						"2.6"
+					]
+				]
+			],
+			[
+				123773.584905661,
+				[
+					[
+						"Subtitle",
+						"Boil lil' boyfriend...",
+						"2.6"
+					]
+				]
+			],
+			[
+				126792.452830189,
+				[
+					[
+						"Subtitle",
+						"With brandy and plum!",
+						"3"
+					]
+				]
+			]
+		],
+		"notes": [],
+		"splashSkin": null,
+		"validScore": false,
+		"gfVersion": "gf-christmas",
+		"bpm": 159,
+		"arrowSkin": null,
+		"needsVoices": true,
+		"song": "Winter Horrorland"
+	}
+}
