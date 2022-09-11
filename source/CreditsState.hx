@@ -9,6 +9,7 @@ import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
+import flixel.math.FlxRect;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.tweens.FlxTween;
@@ -156,6 +157,13 @@ class CreditsState extends MusicBeatState
 		add(grpOptions);
 
 		creditsStuff.unshift([
+			'Unholywanderer04',
+			'unholy',
+			'Winter Horrorland Subtitle Assistance',
+			'https://gamebanana.com/members/1908754',
+			'566ECE'
+		]);
+		creditsStuff.unshift([
 			'Raltyro',
 			'raltyro',
 			'Logo Artist & Contributor',
@@ -265,6 +273,7 @@ class CreditsState extends MusicBeatState
 
 	var quitting:Bool = false;
 	var holdTime:Float = 0;
+	var lookedAtMouse:Float = 0.0;
 
 	override function update(elapsed:Float)
 	{
@@ -310,6 +319,30 @@ class CreditsState extends MusicBeatState
 					if (holdTime > 0.5 && checkNewHold - checkLastHold > 0)
 					{
 						changeSelection((checkNewHold - checkLastHold) * (controls.UI_UP ? -shiftMult : shiftMult));
+					}
+				}
+			}
+
+			if (curSelected == 3)
+			{
+				if (FlxG.save.data.encounteredMouse == null)
+				{
+					if (FlxMath.mouseInFlxRect(false,
+						new FlxRect(iconArray[2].x + iconArray[2].width, iconArray[2].y, iconArray[2].width, iconArray[2].height)))
+					{
+						if ((lookedAtMouse += elapsed) > 7.5)
+						{
+							FlxG.save.data.encounteredMouse = true;
+							FlxTween.tween(iconArray[2].origin, {y: iconArray[2].origin.y - 20}, 0.2, {
+								ease: FlxEase.quintIn,
+								onComplete: function(twn:FlxTween)
+								{
+									FlxTween.tween(iconArray[2].origin, {y: iconArray[2].origin.y + 20}, 0.2, {ease: FlxEase.quintOut});
+								}
+							});
+
+							descText.text = 'this mouse is so cool pog';
+						}
 					}
 				}
 			}

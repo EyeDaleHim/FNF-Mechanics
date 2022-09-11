@@ -26,3 +26,5 @@ pico-speaker
 bf-holding-gf
 pico-player
 tankman-player
+tricky-mask
+tricky

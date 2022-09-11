@@ -68,11 +68,14 @@ class MechanicPortrait extends FlxSpriteGroup
 		arrowR.scaleSpeed *= 5;
 		arrowR.colorSpeed *= 2;
 
-		text = new MechanicText((x + portrait.width / 2) - 12, (portrait.y + portrait.height) - 55, 0, "0");
-		text.setFormat(Paths.font("vcr.ttf"), 40, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		text = new MechanicText((portrait.x + portrait.width / 2) - 12, (portrait.y + portrait.height) - 55, 0, "0");
+		text.setFormat(Paths.font("antiquarius.ttf"), 40, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		text.borderSize = 2;
 		text.antialiasing = true;
 		text.scrollFactor.set();
+
+		text.x = ((x + portrait.width / 2) - (text.width / 2));
+
 		formerTextX = text.x;
 		add(text);
 
@@ -101,9 +104,7 @@ class MechanicPortrait extends FlxSpriteGroup
 		if (MechanicManager.mechanics.exists(data))
 			text.text = '' + MechanicManager.mechanics[data].points;
 
-		text.x = formerTextX;
-		if (text.text.length == 2)
-			text.x -= 14;
+		text.x = ((portrait.x + portrait.width / 2) - (text.width / 2));
 
 		if (MechanicManager.mechanics.exists(data))
 		{

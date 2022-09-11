@@ -876,6 +876,16 @@ class MechanicMenu extends MusicBeatState
 			smoothY -= FlxG.mouse.wheel * 120;
 		}
 
+		#if desktop
+		if (ClientPrefs.debugMode)
+		{
+			if (FlxG.keys.justPressed.SEVEN)
+			{
+				MusicBeatState.switchState(new editors.MasterEditorMenu());
+			}
+		}
+		#end
+
 		socialTxt.x = rightBG.getGraphicMidpoint().x - (socialTxt.width / 2);
 
 		smoothY = CoolUtil.boundTo(smoothY, 700, 4500);

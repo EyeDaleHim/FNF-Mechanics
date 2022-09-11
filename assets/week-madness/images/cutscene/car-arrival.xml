@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="car-arrival.png">
+	<!-- Created with Adobe Animate version 21.0.0.35450 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="car0000" x="3" y="3" width="1460" height="837" frameX="-2" frameY="-8" frameWidth="1465" frameHeight="846"/>
+	<SubTexture name="car0001" x="1466" y="3" width="1460" height="836" frameX="0" frameY="-10" frameWidth="1465" frameHeight="846"/>
+	<SubTexture name="car0002" x="3" y="843" width="1460" height="835" frameX="-4" frameY="-2" frameWidth="1465" frameHeight="846"/>
+	<SubTexture name="car0003" x="1466" y="843" width="1460" height="836" frameX="-5" frameY="0" frameWidth="1465" frameHeight="846"/>
+</TextureAtlas>

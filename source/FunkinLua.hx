@@ -657,7 +657,8 @@ class FunkinLua
 			try
 			{
 				var myFunction:Dynamic = haxeInterp.expr(new Parser().parseString(codeToRun));
-				myFunction();
+				if (myFunction != null)
+					myFunction();
 			}
 			catch (e:Dynamic)
 			{

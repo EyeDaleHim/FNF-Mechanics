@@ -7,6 +7,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
+import flixel.math.FlxMath;
 import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
 
@@ -32,12 +33,10 @@ class SubtitleHandler
 		subSprite.subText.screenCenter();
 
 		subSprite.subBG.y = subSprite.subText.y = FlxG.height * 0.85;
-        subSprite.ID = 0;
+		subtitleList.unshift(subSprite);
 
 		for (sub in subtitleList)
-			sub.ID++;
-
-		subtitleList.unshift(subSprite);
+			sub.ID = subtitleList.indexOf(sub);
 
 		for (sub in subtitleList)
 		{
@@ -45,8 +44,8 @@ class SubtitleHandler
 			{
 				if (sub.ID != 0)
 				{
-					FlxTween.tween(sub.subBG, {y: subtitleList[sub.ID - 1].subBG.y - sub.subBG.height}, 0.1);
-					FlxTween.tween(sub.subText, {y: subtitleList[sub.ID - 1].subBG.y - sub.subBG.height}, 0.1);
+					sub.lerpTo = subtitleList[sub.ID - 1].subBG.y - sub.subBG.height;
+					sub.lerpValue = 0.0;
 				}
 			}
 		}
@@ -72,6 +71,10 @@ class SubtitleSprite extends FlxTypedGroup<FlxSprite>
 
 	public var subBG:FlxSprite;
 	public var subText:FlxText;
+
+	public var lerpValue:Float = 1.0;
+	public var lerpFrom:Float = FlxG.height * 0.85;
+	public var lerpTo:Float = FlxG.height * 0.85;
 
 	override public function new(text:String, durationTime:Float = 5.0)
 	{
@@ -109,6 +112,17 @@ class SubtitleSprite extends FlxTypedGroup<FlxSprite>
 		{
 			subText.alpha -= elapsed * 1.6;
 			subBG.alpha = subText.alpha * 0.6;
+		}
+
+		if ((lerpValue += elapsed * 6.0) >= 1.0)
+		{
+			lerpValue = 1.0;
+
+			lerpFrom = lerpTo;
+		}
+		else
+		{
+			subBG.y = subText.y = FlxMath.lerp(lerpFrom, lerpTo, lerpValue);
 		}
 
 		if (subText.alpha <= 0)

@@ -22,6 +22,7 @@ typedef EventNote =
 class Note extends FlxSprite
 {
 	public var strumTime:Float = 0;
+	public var AIStrumTime:Float = 0;
 
 	public var mustPress:Bool = false;
 	public var formerPress:Bool = false;

@@ -27,7 +27,7 @@ class ScoreHandler
     // gets the song progress
     public static function getBestSong(name:String, diff:Int):SongScore
     {
-        if (songScores[name] == null || songScores[name][diff] == null)
+        if (songScores[name] == null && songScores[name][diff] == null)
             return {name: name, diff: diff, score: 0, misses: 0, accuracy: 0.00, mechanics: [], gameplaySettings: []};
 
         return songScores[formatSong(name)][diff][0];

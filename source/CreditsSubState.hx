@@ -9,7 +9,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 class CreditsSubState extends MusicBeatSubstate
 {
 	public var list:Array<Dynamic> = [
-		["TESTERS", true], ["Cherif", false], ["Mark_Zer0", false], ["BlueColorSin", false], ["TheConcealedCow", false], ["Maru", false], ["raltyro", false],
+		["FEEDBACK", true], ["Cherif", false], ["Mark_Zer0", false], ["BlueColorSin", false], ["TheConcealedCow", false], ["Maru", false], ["raltyro", false],
 		["Tyler Blackbolt", false], ["stress", false], ["PAUSE MUSIC", true], ["Kevin MacLeod", false], ["TeknoAXE", false]];
 
 	public var bg:FlxSprite;
@@ -21,7 +21,7 @@ class CreditsSubState extends MusicBeatSubstate
 	{
 		super();
 
-		bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF000000);
+		bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFFFFFFFF);
 		bg.scrollFactor.set();
 		bg.alpha = 0.0;
 		add(bg);

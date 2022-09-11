@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="head-shock.png">
+	<!-- Created with Adobe Animate version 21.0.0.35450 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Head look0000" x="3" y="3" width="1030" height="745" frameX="-158" frameY="-227" frameWidth="1473" frameHeight="1145"/>
+	<SubTexture name="Head look0001" x="1036" y="3" width="1188" height="745" frameX="0" frameY="-227" frameWidth="1473" frameHeight="1145"/>
+	<SubTexture name="Head look0002" x="2227" y="3" width="1213" height="909" frameX="-158" frameY="-121" frameWidth="1473" frameHeight="1145"/>
+	<SubTexture name="Head look0003" x="3" y="915" width="1383" height="1145" frameX="-90" frameY="0" frameWidth="1473" frameHeight="1145"/>
+	<SubTexture name="Head look0004" x="1389" y="915" width="1348" height="958" frameX="-58" frameY="-91" frameWidth="1473" frameHeight="1145"/>
+	<SubTexture name="Head look0005" x="2740" y="915" width="1348" height="958" frameX="-58" frameY="-91" frameWidth="1473" frameHeight="1145"/>
+	<SubTexture name="Head look0006" x="3" y="2063" width="1349" height="958" frameX="-58" frameY="-91" frameWidth="1473" frameHeight="1145"/>
+	<SubTexture name="Head look0007" x="1355" y="2063" width="1349" height="958" frameX="-58" frameY="-91" frameWidth="1473" frameHeight="1145"/>
+	<SubTexture name="Head look0008" x="2707" y="2063" width="1349" height="958" frameX="-58" frameY="-91" frameWidth="1473" frameHeight="1145"/>
+	<SubTexture name="Head look0009" x="3" y="3024" width="1349" height="958" frameX="-58" frameY="-91" frameWidth="1473" frameHeight="1145"/>
+	<SubTexture name="Head look0010" x="1355" y="3024" width="1349" height="958" frameX="-58" frameY="-91" frameWidth="1473" frameHeight="1145"/>
+</TextureAtlas>

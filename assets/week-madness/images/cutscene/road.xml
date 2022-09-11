@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="road.png">
+	<!-- Created with Adobe Animate version 21.0.0.35450 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="road-interior0000" x="3" y="3" width="1531" height="1029" frameX="0" frameY="-2" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0001" x="1537" y="3" width="1518" height="867" frameX="-34" frameY="-9" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0002" x="3" y="1035" width="1515" height="869" frameX="-8" frameY="0" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0003" x="1521" y="1035" width="1461" height="821" frameX="-52" frameY="-8" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0004" x="3" y="1907" width="1464" height="818" frameX="-37" frameY="-16" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0005" x="1470" y="1907" width="1464" height="852" frameX="-39" frameY="-15" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0006" x="3" y="2762" width="1558" height="947" frameX="-17" frameY="-11" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0007" x="1564" y="2762" width="1461" height="835" frameX="-40" frameY="-25" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0009" x="3" y="3" width="1531" height="1029" frameX="0" frameY="-2" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0010" x="1537" y="3" width="1518" height="867" frameX="-34" frameY="-9" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0011" x="3" y="1035" width="1515" height="869" frameX="-8" frameY="0" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0012" x="1521" y="1035" width="1461" height="821" frameX="-52" frameY="-8" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0013" x="3" y="1907" width="1464" height="818" frameX="-37" frameY="-16" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0014" x="1470" y="1907" width="1464" height="852" frameX="-39" frameY="-15" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0015" x="3" y="2762" width="1558" height="947" frameX="-17" frameY="-11" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0016" x="1564" y="2762" width="1461" height="835" frameX="-40" frameY="-25" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0018" x="3" y="3" width="1531" height="1029" frameX="0" frameY="-2" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0019" x="1537" y="3" width="1518" height="867" frameX="-34" frameY="-9" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0020" x="3" y="1035" width="1515" height="869" frameX="-8" frameY="0" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0021" x="1521" y="1035" width="1461" height="821" frameX="-52" frameY="-8" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0022" x="3" y="1907" width="1464" height="818" frameX="-37" frameY="-16" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0023" x="1470" y="1907" width="1464" height="852" frameX="-39" frameY="-15" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0024" x="3" y="2762" width="1558" height="947" frameX="-17" frameY="-11" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0025" x="1564" y="2762" width="1461" height="835" frameX="-40" frameY="-25" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0027" x="3" y="3" width="1531" height="1029" frameX="0" frameY="-2" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0028" x="1537" y="3" width="1518" height="867" frameX="-34" frameY="-9" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0029" x="3" y="1035" width="1515" height="869" frameX="-8" frameY="0" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0030" x="1521" y="1035" width="1461" height="821" frameX="-52" frameY="-8" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0031" x="3" y="1907" width="1464" height="818" frameX="-37" frameY="-16" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0032" x="1470" y="1907" width="1464" height="852" frameX="-39" frameY="-15" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0033" x="3" y="2762" width="1558" height="947" frameX="-17" frameY="-11" frameWidth="1575" frameHeight="1031"/>
+	<SubTexture name="road-interior0034" x="1564" y="2762" width="1461" height="835" frameX="-40" frameY="-25" frameWidth="1575" frameHeight="1031"/>
+</TextureAtlas>

@@ -1,0 +1,48 @@
+{
+	"songs": [
+		[
+			"Improbable Outset",
+			"tricky",
+			[
+				246,
+				16,
+				4
+			]
+		],
+		[
+			"Madness",
+			"tricky",
+			[
+				246,
+				16,
+				4
+			]
+		],
+		[
+			"Hellclown",
+			"tricky",
+			[
+				246,
+				16,
+				4
+			]
+		]
+	],
+	"hideFreeplay": false,
+	"weekBackground": "madness",
+	"weekCharacters": [
+		"tricky",
+		"bf",
+		"gf"
+	],
+	"storyName": "Madness Combat",
+	"weekName": "Week Madness",
+	"freeplayColor": [
+		146,
+		113,
+		253
+	],
+	"hideStoryMode": true,
+	"weekBefore": "week7",
+	"startUnlocked": true
+}
