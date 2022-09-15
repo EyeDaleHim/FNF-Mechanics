@@ -1472,7 +1472,7 @@ class FunkinLua
 			else
 				MusicBeatState.switchState(new FreeplayState());
 
-			FlxG.sound.playMusic(Paths.music('freakyMenu'));
+			FlxG.sound.playMusic(Paths.music('freakyMenu'), (ClientPrefs.musicVolume / 10) * 0.8);
 			PlayState.changedDifficulty = false;
 			PlayState.chartingMode = false;
 			PlayState.instance.transitioning = true;
@@ -2290,7 +2290,7 @@ class FunkinLua
 
 		Lua_helper.add_callback(lua, "playMusic", function(sound:String, volume:Float = 1, loop:Bool = false)
 		{
-			FlxG.sound.playMusic(Paths.music(sound), volume, loop);
+			FlxG.sound.playMusic(Paths.music(sound), volume * ClientPrefs.musicVolume / 10, loop);
 		});
 		Lua_helper.add_callback(lua, "playSound", function(sound:String, volume:Float = 1, ?tag:String = null)
 		{

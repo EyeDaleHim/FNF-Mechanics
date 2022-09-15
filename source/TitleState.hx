@@ -607,7 +607,7 @@ class TitleState extends MusicBeatState
 				case 1:
 					FlxG.sound.music.stop();
 					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-					FlxG.sound.music.fadeIn(5, 0, 0.7);
+					FlxG.sound.music.fadeIn(5, 0, (ClientPrefs.musicVolume / 10) * 0.8);
 				// credTextShit.visible = true;
 				case 2:
 					#if PSYCH_WATERMARKS
@@ -702,7 +702,7 @@ class TitleState extends MusicBeatState
 						playJingle = false;
 
 						FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
+						FlxG.sound.music.fadeIn(4, 0, (ClientPrefs.musicVolume / 10) * 0.8);
 						return;
 				}
 
@@ -725,7 +725,7 @@ class TitleState extends MusicBeatState
 					sound.onComplete = function()
 					{
 						FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
+						FlxG.sound.music.fadeIn(4, 0, (ClientPrefs.musicVolume / 10) * 0.8);
 						transitioning = false;
 					};
 				}

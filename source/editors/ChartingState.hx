@@ -131,6 +131,10 @@ class ChartingState extends MusicBeatState
 			'Subtitle',
 			"Value 1: Subtitle Text\nValue 2: Duration of Subtitle"
 		],
+		[
+			'Advanced Camera Tween',
+			'Value 1: (X, Y, ANGLE, ZOOM)\nValue 2: (DURATION, EASE)'
+		],
 		['Set Property', "Value 1: Variable name\nValue 2: New value"]
 	];
 
@@ -1406,7 +1410,7 @@ class ChartingState extends MusicBeatState
 
 	function generateSong()
 	{
-		FlxG.sound.playMusic(Paths.inst(currentSongName), 0.6 /*, false*/);
+		FlxG.sound.playMusic(Paths.inst(currentSongName), (ClientPrefs.musicVolume / 10) * 0.6 /*, false*/);
 		if (instVolume != null)
 			FlxG.sound.music.volume = instVolume.value;
 		if (check_mute_inst != null && check_mute_inst.checked)

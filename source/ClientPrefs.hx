@@ -39,6 +39,8 @@ class ClientPrefs
 	public static var controllerMode:Bool = false;
 	public static var hitsoundVolume:Float = 0;
 	public static var pauseMusic:String = 'Tea Time';
+	public static var musicVolume:Int = 8;
+	public static var vocalVolume:Int = 10;
 	public static var safeScript:String = 'Off';
 	public static var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,

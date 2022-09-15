@@ -2,7 +2,7 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxObject;
-import flixel.FlxSubState;
+import flixel.text.FlxText;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
@@ -12,6 +12,33 @@ import flixel.tweens.FlxTween;
 
 class GameOverSubstate extends MusicBeatSubstate
 {
+	public static final tankmanSubtitles:Array<String> = [
+		'I said "Let\'s rock!" Not "Suck cock!" Wha-',
+		'Oh my god! What the hell was that? What the hell was that.',
+		'I guess your shitty blue hair dye got in your eyes! It\'s okay!\nIt happens to all of us.',
+		'Maybe you should go play Week 1 again! Hehehe!',
+		'Can you even feed yourself? Can you even walk straight?',
+		'Maybe if you had more friends, you\'d be less depressed and play better. Hm?',
+		'Man, are you tired of eating shit yet?\nHahaha.',
+		'Yeah, you\'re getting closer. I wouldn\'t\nbrag about it though.',
+		'No wonder your parents hate you.\nHahaha.',
+		'If you can\'t beat me, how are you gonna survive\nthis harsh cruel world. Hm?',
+		'The only thing funkin\' tonight is your sock!',
+		'Why am I wasting my time against some baggy pants FUCK? Hahaha.',
+		'Why am I wasting my time against some baggy pants PUNK?!',
+		'Hey here\'s some \"Friday Night Funkin\" lore for ya!\nI don\'t like you!',
+		'You just make me wanna cry...',
+		'You know, I\'m running out of shit to say here, so you better beat this\nsometime today asshole!',
+		'Congratulations, you won!\nThat\'s what I would say if you weren\'t such a goddamn failure!',
+		'You gotta press the arrows kid! Not slap your keyboard like your whine uncle. \nWhat?',
+		'You feel that? That\'s called failure, and you better get used to it.',
+		'Open your fucking eyes, Jeez!',
+		'I hope you\'re not some internet streamer streaming like a sociopath right now.',
+		'That waaas terrible...\nJust terrible...',
+		'My DEAD grandmother has more nimble fingers, Come on!',
+		'Good lord! What the hell is your problem man?\n*burp* Just do it right, pleease!'
+	];
+
 	public var boyfriend:Boyfriend;
 
 	var camFollow:FlxPoint;
@@ -28,6 +55,8 @@ class GameOverSubstate extends MusicBeatSubstate
 
 	public static var instance:GameOverSubstate;
 
+	public var resultText:FlxText;
+
 	public static function resetVariables()
 	{
 		characterName = 'bf-dead';
@@ -37,7 +66,7 @@ class GameOverSubstate extends MusicBeatSubstate
 	}
 
 	override function create()
-	{
+	{	
 		instance = this;
 		PlayState.instance.callOnLuas('onGameOverStart', []);
 
@@ -53,6 +82,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		Conductor.songPosition = 0;
 
 		boyfriend = new Boyfriend(x, y, characterName);
+		boyfriend.cameras = [PlayState.instance.camGame];
 		boyfriend.x += boyfriend.positionArray[0];
 		boyfriend.y += boyfriend.positionArray[1];
 		add(boyfriend);
@@ -125,13 +155,19 @@ class GameOverSubstate extends MusicBeatSubstate
 					var exclude:Array<Int> = [];
 					// if(!ClientPrefs.cursing) exclude = [1, 3, 8, 13, 17, 21];
 
-					FlxG.sound.play(Paths.sound('jeffGameover/jeffGameover-' + FlxG.random.int(1, 25, exclude)), 1, false, null, true, function()
+					var random:Int = FlxG.random.int(1, 25, exclude);
+
+					var tankSound = FlxG.sound.load(Paths.sound('jeffGameover/jeffGameover-' + random, 'week7'), 1, false, null, true, false, null, function()
 					{
 						if (!isEnding)
 						{
-							FlxG.sound.music.fadeIn(0.2, 1, 4);
+							FlxG.sound.music.fadeIn(0.5, FlxG.sound.music.volume, ClientPrefs.musicVolume / 8);
 						}
 					});
+
+					tankSound.play(false);
+
+					SubtitleHandler.addSub(tankmanSubtitles[random - 1], (tankSound.length / 1000) + 2.5);
 				}
 				else
 				{
@@ -146,6 +182,17 @@ class GameOverSubstate extends MusicBeatSubstate
 			Conductor.songPosition = FlxG.sound.music.time;
 		}
 		PlayState.instance.callOnLuas('onUpdatePost', [elapsed]);
+
+		for (sub in SubtitleHandler.subtitleList)
+		{
+			if (sub != null)
+			{
+				sub.subBG.draw();
+				sub.subText.draw();
+
+				sub.update(elapsed);
+			}
+		}
 	}
 
 	override function beatHit()
@@ -159,7 +206,7 @@ class GameOverSubstate extends MusicBeatSubstate
 
 	function coolStartDeath(?volume:Float = 1):Void
 	{
-		FlxG.sound.playMusic(Paths.music(loopSoundName), volume);
+		FlxG.sound.playMusic(Paths.music(loopSoundName), volume * ClientPrefs.musicVolume / 10);
 	}
 
 	function endBullshit():Void

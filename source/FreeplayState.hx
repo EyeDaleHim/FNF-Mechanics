@@ -41,7 +41,7 @@ class FreeplayState extends MusicBeatState
 
 	public var subtitleCamera:FlxCamera;
 
-	var selector:FlxText;
+	public var equalizer:Array<{sprite:FlxSprite, mult:Float}> = [];
 
 	public static var curBPM:Float = 100;
 	private static var curSelected:Int = 0;
@@ -185,6 +185,11 @@ class FreeplayState extends MusicBeatState
 		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
 		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
 
+		for (i in 0...16)
+		{
+			var equalizerSprite:FlxSprite = new FlxSprite();
+		}
+
 		scoreBG = new FlxSprite(scoreText.x - 6, 0).makeGraphic(1, 66, 0xFF000000);
 		scoreBG.alpha = 0.6;
 		add(scoreBG);
@@ -318,7 +323,7 @@ class FreeplayState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
-		if (FlxG.sound.music.volume < 0.7)
+		if (FlxG.sound.music.volume < FlxMath.remapToRange(ClientPrefs.musicVolume / 10, 0, 1, 0, 0.8))
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
@@ -481,7 +486,7 @@ class FreeplayState extends MusicBeatState
 
 								@:privateAccess
 								{
-									FlxG.sound.playMusic(tempMusic._sound, 0.7);
+									FlxG.sound.playMusic(tempMusic._sound, ClientPrefs.musicVolume / 10 * 0.7);
 								}
 								FlxG.sound.music.onComplete = function()
 								{
@@ -491,7 +496,7 @@ class FreeplayState extends MusicBeatState
 								vocals.play();
 								vocals.persist = true;
 								vocals.looped = true;
-								vocals.volume = 0.7;
+								vocals.volume = (ClientPrefs.vocalVolume / 10) * 0.7;
 
 								events = tempEvents;
 								allowCam = true;

@@ -277,7 +277,7 @@ class CreditsState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
-		if (FlxG.sound.music.volume < 0.7)
+		if (FlxG.sound.music.volume < FlxMath.remapToRange(ClientPrefs.musicVolume / 10, 0, 1, 0, 0.8))
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}

@@ -31,8 +31,8 @@ class VisualsUISubState extends BaseOptionsMenu
 {
 	public function new()
 	{
-		title = 'Visuals and UI';
-		rpcTitle = 'Visuals & UI Settings Menu'; // for Discord Rich Presence
+		title = 'Visuals UI and Sound';
+		rpcTitle = 'Visuals, UI & Sound Settings Menu'; // for Discord Rich Presence
 
 		var option:Option = new Option('Note Splashes', "If unchecked, hitting \"Sick!\" notes won't show particles.", 'noteSplashes', 'bool', true);
 		addOption(option);
@@ -67,11 +67,31 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 		option.onChange = onChangePauseMusic;
 
+		var option:Option = new Option('Game Music Volume', "How loud the game music should be.", 'musicVolume', 'int', 8);
+		option.minValue = 0;
+		option.maxValue = 10;
+		option.changeValue = 1;
+		option.displayFormat = '< %v >';
+		option.onChange = onChangeMusicVolume;
+		addOption(option);
+
+		var option:Option = new Option('Game Vocals Volume', "How loud the game music should be.", 'vocalVolume', 'int', 8);
+		option.minValue = 0;
+		option.maxValue = 10;
+		option.changeValue = 1;
+		option.displayFormat = '< %v >';
+		addOption(option);
+
 		super();
 	}
 
 	var changedMusic:Bool = false;
 	var formerTime:Float = 0;
+
+	function onChangeMusicVolume()
+	{
+		FlxG.sound.music.volume = ClientPrefs.musicVolume / 10;
+	}
 
 	function onChangePauseMusic()
 	{
@@ -82,8 +102,8 @@ class VisualsUISubState extends BaseOptionsMenu
 			FlxG.sound.music.volume = 0;
 		else
 		{
-			FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath(ClientPrefs.pauseMusic)));
-			FlxG.sound.music.volume = 1;
+			FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath(ClientPrefs.pauseMusic)), ClientPrefs.musicVolume / 10);
+			FlxG.sound.music.volume = ClientPrefs.musicVolume / 10;
 		}
 
 		changedMusic = true;
@@ -93,7 +113,7 @@ class VisualsUISubState extends BaseOptionsMenu
 	{
 		if (changedMusic)
 		{
-			FlxG.sound.playMusic(Paths.music('freakyMenu'));
+			FlxG.sound.playMusic(Paths.music('freakyMenu'), ClientPrefs.musicVolume / 10);
 			FlxG.sound.music.time = formerTime;
 		}
 		super.destroy();

@@ -167,20 +167,12 @@ class VictorySubstate extends MusicBeatSubstate
 					}
 				}, function(v:Float)
 				{
-					updateGroup(groupAppear[index].group, groupAppear[index].yPos, groupAppear[index].convert(Std.string(Math.floor(v)), groupAppear[index].length));
+					updateGroup(groupAppear[index].group, groupAppear[index].yPos, groupAppear[index].convert(Std.string(v), groupAppear[index].length));
 				});
 			}
 		}, groupAppear.length - 1);
 
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
-
-		camTmr = new FlxTimer().start((Conductor.crochet / 4) * 0.001, function(tmr:FlxTimer)
-		{
-			@:privateAccess
-			{
-				PlayState.instance.moveCamera(!PlayState.instance.cameraFocus);
-			}
-		}, 0);
 
 		for (member in members)
 		{
@@ -239,7 +231,7 @@ class VictorySubstate extends MusicBeatSubstate
 			if (sprPosition[idx - 1] != null)
 				numX = sprPosition[idx - 1];
 			var numSprite:FlxSprite;
-			switch ('${text[idx]}')
+			switch (text[idx])
 			{
 				case '.':
 					numSprite = new FlxSprite(numX, numY).loadGraphic(Paths.image('period'));

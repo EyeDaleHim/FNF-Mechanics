@@ -29,40 +29,40 @@ using StringTools;
 
 class OptionsState extends MusicBeatState
 {
-	var options:Array<String> = [
-		'Note Colors',
-		'Controls',
-		'Adjust Delay and Combo',
-		'Graphics',
-		'Visuals UI and Audio',
-		'Gameplay',
-		'Advanced'
+	public static var options:Array<{name:String, callback:Void->Void}> = [
+		{name: 'Note Colors', callback: function()
+		{
+			FlxG.state.openSubState(new options.NotesSubState());
+		}},
+		{name: 'Controls', callback: function()
+		{
+			FlxG.state.openSubState(new options.ControlsSubState());
+		}},
+		{name: 'Adjust Delay and Combo', callback: function()
+		{
+			LoadingState.loadAndSwitchState(new options.NoteOffsetState());
+		}},
+		{name: 'Graphics', callback: function()
+		{
+			FlxG.state.openSubState(new options.GraphicsSettingsSubState());
+		}},
+		{name: 'Visuals UI and Audio', callback: function()
+		{
+			FlxG.state.openSubState(new options.VisualsUISubState());
+		}},
+		{name: 'Gameplay', callback: function()
+		{
+			FlxG.state.openSubState(new options.GameplaySettingsSubState());
+		}},
+		{name: 'Advanced', callback: function()
+		{
+			FlxG.state.openSubState(new options.AdvancedSettingsSubState());
+		}}
 	];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
-
-	function openSelectedSubstate(label:String)
-	{
-		switch (label)
-		{
-			case 'Note Colors':
-				openSubState(new options.NotesSubState());
-			case 'Controls':
-				openSubState(new options.ControlsSubState());
-			case 'Graphics':
-				openSubState(new options.GraphicsSettingsSubState());
-			case 'Visuals UI and Audio':
-				openSubState(new options.VisualsUISubState());
-			case 'Gameplay':
-				openSubState(new options.GameplaySettingsSubState());
-			case 'Advanced':
-				openSubState(new options.AdvancedSettingsSubState());
-			case 'Adjust Delay and Combo':
-				LoadingState.loadAndSwitchState(new options.NoteOffsetState());
-		}
-	}
 
 	var selectorLeft:Alphabet;
 	var selectorRight:Alphabet;
@@ -86,7 +86,7 @@ class OptionsState extends MusicBeatState
 
 		for (i in 0...options.length)
 		{
-			var optionText:Alphabet = new Alphabet(0, 0, options[i], true, false);
+			var optionText:Alphabet = new Alphabet(0, 0, options[i].name, true, false);
 			optionText.screenCenter();
 			optionText.y += (100 * (i - (options.length / 2))) + 50;
 			grpOptions.add(optionText);
@@ -130,7 +130,7 @@ class OptionsState extends MusicBeatState
 
 		if (controls.ACCEPT)
 		{
-			openSelectedSubstate(options[curSelected]);
+			options[curSelected].callback();
 		}
 	}
 
