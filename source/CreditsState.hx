@@ -42,7 +42,7 @@ class CreditsState extends MusicBeatState
 		],
 		[
 			'RiverOaken',
-			'riveroaken',
+			'river',
 			'Main Artist/Animator of Psych Engine',
 			'https://twitter.com/RiverOaken',
 			'C30085'
@@ -58,7 +58,7 @@ class CreditsState extends MusicBeatState
 		['Former Engine Members'],
 		[
 			'bb-panzu',
-			'bb-panzu',
+			'bb',
 			'Ex-Programmer of Psych Engine',
 			'https://twitter.com/bbsub3',
 			'389A58'
@@ -67,38 +67,59 @@ class CreditsState extends MusicBeatState
 		['Engine Contributors'],
 		[
 			'iFlicky',
-			'iflicky',
+			'flicky',
 			'Composer of Psync and Tea Time\nMade the Dialogue Sounds',
 			'https://twitter.com/flicky_i',
-			'AA32FE'
+			'9E29CF'
 		],
 		[
 			'SqirraRNG',
-			'gedehari',
-			'Chart Editor\'s Sound Waveform base',
+			'sqirra',
+			'Crash Handler and Base code for\nChart Editor\'s Waveform',
 			'https://twitter.com/gedehari',
-			'FF9300'
+			'E1843A'
+		],
+		[
+			'EliteMasterEric',
+			'mastereric',
+			'Runtime Shaders support',
+			'https://twitter.com/EliteMasterEric',
+			'FFBD40'
 		],
 		[
 			'PolybiusProxy',
-			'polybiusproxy',
-			'.MP4 Video Loader Extension',
+			'proxy',
+			'.MP4 Video Loader Library (hxCodec)',
 			'https://twitter.com/polybiusproxy',
-			'FFEAA6'
+			'DCD294'
+		],
+		[
+			'KadeDev',
+			'kade',
+			'Fixed some cool stuff on Chart Editor\nand other PRs',
+			'https://twitter.com/kade0912',
+			'64A250'
 		],
 		[
 			'Keoiki',
 			'keoiki',
 			'Note Splash Animations',
 			'https://twitter.com/Keoiki_',
-			'FFFFFF'
+			'D2D2D2'
+		],
+		[
+			'Nebula the Zorua',
+			'nebula',
+			'LUA JIT Fork and some Lua reworks',
+			'https://twitter.com/Nebula_Zorua',
+			'7D40B2'
 		],
 		[
 			'Smokey',
 			'smokey',
-			'Spritemap Texture Support',
+			'Sprite Atlas Support',
 			'https://twitter.com/Smokey_5_',
-			'4D5DBD'
+			'483D92'
 		],
 		[''],
 		["Funkin' Crew"],
