@@ -5,6 +5,8 @@ import flixel.FlxSprite;
 import flixel.FlxCamera;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
+import flixel.text.FlxText.FlxTextFormat;
+import flixel.text.FlxText.FlxTextFormatMarkerPair;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.math.FlxMath;
@@ -44,7 +46,7 @@ class SubtitleHandler
 			{
 				if (sub.ID != 0)
 				{
-					sub.lerpTo = subtitleList[sub.ID - 1].subBG.y - sub.subBG.height;
+					sub.lerpTo = subtitleList[sub.ID - 1].subBG.y - sub.subBG.height - 8;
 					sub.lerpValue = 0.0;
 				}
 			}
@@ -88,6 +90,20 @@ class SubtitleSprite extends FlxTypedGroup<FlxSprite>
 		subText.alpha = 0.0;
 		subText.cameras = [SubtitleHandler.camera];
 
+		var bfFormat:FlxTextFormat = new FlxTextFormat(FlxColor.fromRGB(PlayState.instance.boyfriend.healthColorArray[0],
+			PlayState.instance.boyfriend.healthColorArray[1], PlayState.instance.boyfriend.healthColorArray[2]),
+			false, false, 0x00000000);
+
+		var dadFormat:FlxTextFormat = new FlxTextFormat(FlxColor.fromRGB(PlayState.instance.dad.healthColorArray[0],
+			PlayState.instance.dad.healthColorArray[1], PlayState.instance.dad.healthColorArray[2]),
+			false, false, 0x00000000);
+
+		var gfFormat:FlxTextFormat = new FlxTextFormat(FlxColor.fromRGB(PlayState.instance.gf.healthColorArray[0],
+			PlayState.instance.gf.healthColorArray[1], PlayState.instance.gf.healthColorArray[2]),
+			false, false, 0x00000000);
+
+		subText.applyMarkup(text, [new FlxTextFormatMarkerPair(bfFormat, '<bf>'), new FlxTextFormatMarkerPair(gfFormat, '<gf>'), new FlxTextFormatMarkerPair(dadFormat, '<dad>')]);
+
 		subBG = new FlxSprite().makeGraphic(Math.floor(subText.width + 8), Math.floor(subText.height + 8), FlxColor.BLACK);
 		subBG.alpha = 0.0;
 		subBG.cameras = [SubtitleHandler.camera];
@@ -129,7 +145,7 @@ class SubtitleSprite extends FlxTypedGroup<FlxSprite>
 		{
 			FlxTween.cancelTweensOf(subText);
 			FlxTween.cancelTweensOf(subBG);
-			
+
 			destroy();
 
 			FlxDestroyUtil.destroy(subText);
