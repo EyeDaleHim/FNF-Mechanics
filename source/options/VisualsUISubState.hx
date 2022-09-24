@@ -80,6 +80,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.maxValue = 10;
 		option.changeValue = 1;
 		option.displayFormat = '< %v >';
+		option.onChange = onChangeVocalsVolume;
 		addOption(option);
 
 		super();
@@ -91,6 +92,17 @@ class VisualsUISubState extends BaseOptionsMenu
 	function onChangeMusicVolume()
 	{
 		FlxG.sound.music.volume = ClientPrefs.musicVolume / 10;
+	}
+
+	function onChangeVocalsVolume()
+	{
+		@:privateAccess
+		{
+			if (FreeplayState.vocals != null)
+			{
+				FreeplayState.vocals.volume = ClientPrefs.vocalVolume / 10;
+			}
+		}
 	}
 
 	function onChangePauseMusic()

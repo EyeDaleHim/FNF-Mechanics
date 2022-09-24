@@ -135,6 +135,10 @@ class ChartingState extends MusicBeatState
 			'Advanced Camera Tween',
 			'Value 1: (X, Y, ANGLE, ZOOM)\nValue 2: (DURATION, EASE)'
 		],
+		[
+			'Persistent Draw',
+			'Toggle rendering the game'
+		],
 		['Set Property', "Value 1: Variable name\nValue 2: New value"]
 	];
 
