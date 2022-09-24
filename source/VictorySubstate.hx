@@ -23,11 +23,16 @@ class VictorySubstate extends MusicBeatSubstate
 	public var missGroup:FlxTypedGroup<FlxSprite>;
 	public var accuracyGroup:FlxTypedGroup<FlxSprite>;
 
+	// public var statsGroup:FlxTypedGroup<>;
 	public var background:FlxSprite;
 
-	public function new()
+	private var finishCallback:Void->Void = null;
+
+	public function new(finishCallback:Void->Void = null)
 	{
 		super();
+
+		this.finishCallback = finishCallback;
 
 		background = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		background.alpha = 0.2;
@@ -58,11 +63,13 @@ class VictorySubstate extends MusicBeatSubstate
 		accuracyGroup = new FlxTypedGroup<FlxSprite>();
 		add(accuracyGroup);
 
-		var scoreConvert:(String, Int)->Array<String> = function(s:String, l:Int)
+		var scoreConvert:(String, Int) -> Array<String> = function(s:String, l:Int)
 		{
 			var scoreText:Array<String> = [];
 			for (i in 0...Std.string(s).length)
 			{
+				if (Std.string(s).charAt(i) == '.')
+					break;
 				scoreText.push(Std.string(s).charAt(i));
 			}
 			while (scoreText.length < l)
@@ -70,7 +77,7 @@ class VictorySubstate extends MusicBeatSubstate
 			return scoreText;
 		}
 
-		var missConvert:(String, Int)->Array<String> = function(s:String, l:Int)
+		var missConvert:(String, Int) -> Array<String> = function(s:String, l:Int)
 		{
 			var missText:Array<String> = [];
 			for (i in 0...Std.string(s).length)
@@ -84,17 +91,17 @@ class VictorySubstate extends MusicBeatSubstate
 			return missText;
 		}
 
-		var accuracyConvert:(String, Int)->Array<String> = function(s:String, l:Int)
+		var accuracyConvert:(String, Int) -> Array<String> = function(s:String, l:Int)
 		{
 			var accuracyText:Array<String> = [];
-			var value:Float = CoolUtil.floorDecimal(PlayState.instance.ratingPercent * 100, 2);
-			if (value <= 0)
-				value = 0;
 
-			var accuracy:String = CoolUtil.formatAccuracy(value);
-			for (i in 0...accuracy.length)
+			// idk how to do it with strings
+			if (s.split('.')[1].length > 2)
+				s = s.substring(0, s.indexOf('.') + 2);
+
+			for (i in 0...Std.string(s).length)
 			{
-				accuracyText.push(accuracy.charAt(i));
+				accuracyText.push(Std.string(s).charAt(i));
 			}
 
 			accuracyText.push('%');
@@ -117,7 +124,7 @@ class VictorySubstate extends MusicBeatSubstate
 				group:FlxTypedGroup<FlxSprite>,
 				yPos:Float,
 				lerpTo:Float,
-				convert:(String, Int)->Array<String>,
+				convert:(String, Int) -> Array<String>,
 				length:Int
 			}> = [
 				{
@@ -150,7 +157,7 @@ class VictorySubstate extends MusicBeatSubstate
 			{
 				if (groupAppear[index].lerpTo == 0)
 					index++;
-				
+
 				FlxTween.num(0, groupAppear[index].lerpTo, 1.5, {
 					ease: FlxEase.linear,
 					onStart: function(twn:FlxTween)
@@ -164,10 +171,16 @@ class VictorySubstate extends MusicBeatSubstate
 					{
 						FlxG.sound.play(Paths.sound('confirmMenu'), 0.6);
 						index++;
+						if (index == groupAppear.length - 1)
+							finishedAnim = true;
 					}
 				}, function(v:Float)
 				{
-					updateGroup(groupAppear[index].group, groupAppear[index].yPos, groupAppear[index].convert(Std.string(v), groupAppear[index].length));
+					if (index == groupAppear.length - 1)
+						updateGroup(groupAppear[index].group, groupAppear[index].yPos,
+							groupAppear[index].convert(Std.string(CoolUtil.formatAccuracy(v)), groupAppear[index].length));
+					else
+						updateGroup(groupAppear[index].group, groupAppear[index].yPos, groupAppear[index].convert(Std.string(v), groupAppear[index].length));
 				});
 			}
 		}, groupAppear.length - 1);
@@ -200,18 +213,29 @@ class VictorySubstate extends MusicBeatSubstate
 
 	private var camTmr:FlxTimer;
 
+	private var finishedAnim:Bool = false;
+
 	override public function update(elapsed:Float)
 	{
-		if (controls.UI_RIGHT)
-			close();
+		if (controls.ACCEPT)
+		{
+			if (!finishedAnim)
+			{
+				FlxG.sound.play(Paths.sound('confirmMenu'), 0.6);
+			}
+			else
+			{
+				if (finishCallback != null)
+					finishCallback();
+				close();
+			}
+		}
 
 		super.update(elapsed);
 	}
 
 	override public function destroy()
 	{
-		camTmr.destroy();
-
 		super.destroy();
 	}
 
