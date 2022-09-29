@@ -135,6 +135,7 @@ class Note extends FlxSprite
 					}
 					hitCausesMiss = true;
 					lowPriority = true;
+
 				case 'Kill Note':
 					ignoreNote = mustPress;
 					reloadNote('KILL');

@@ -1,19 +1,13 @@
 package;
 
 import flixel.FlxG;
+import flixel.math.FlxMath;
 import openfl.utils.Assets;
 import lime.utils.Assets as LimeAssets;
 import lime.utils.AssetLibrary;
 import lime.utils.AssetManifest;
-import flixel.system.FlxSound;
-#if sys
-import sys.io.File;
-import sys.FileSystem;
-#else
-import openfl.utils.Assets;
-#end
-
-using StringTools;
+import flixel.system.FlxSound; #if sys import sys.io.File;
+import sys.FileSystem; #else import openfl.utils.Assets; #end using StringTools;
 
 class CoolUtil
 {
@@ -79,6 +73,26 @@ class CoolUtil
 		size = Math.round(size * 100) / 100;
 		var formatSize:String = formatAccuracy(size);
 		return formatSize + " " + dataTexts[data];
+	}
+
+	public static function flattenNumber(num:Float):String
+	{
+		var sizeList:Array<{value:Float, suffix:String}> = [{value: 1000, suffix: 'K'}, {value: 1000000, suffix: 'M'}];
+
+		if (num < 1000)
+			return '' + num;
+		else
+		{
+			sizeList.push({value: FlxMath.MAX_VALUE_FLOAT, suffix: null});
+
+			for (i in 0...sizeList.length)
+			{
+				if (num > sizeList[i].value && (sizeList[i + 1] != null && (num < sizeList[i + 1].value)))
+					return '' + floorDecimal(num / sizeList[i].value, 2) + sizeList[i].suffix;
+			}
+		}
+
+		return '';
 	}
 
 	public static function coolTextFile(path:String):Array<String>
