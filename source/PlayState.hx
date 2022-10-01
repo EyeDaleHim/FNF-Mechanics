@@ -144,6 +144,7 @@ class PlayState extends MusicBeatState
 	public static var SONG:SwagSong = null;
 	public static var isStoryMode:Bool = false;
 	public static var storyWeek:Int = 0;
+	public static var fullStoryPlaylist:Array<String> = [];
 	public static var storyPlaylist:Array<String> = [];
 	public static var storyDifficulty:Int = 1;
 
@@ -230,6 +231,7 @@ class PlayState extends MusicBeatState
 	public var playBothMode:Bool = false;
 	public var playEnemy:Bool = false;
 	public var sickOnly:Bool = false;
+	public var permaDeath:Bool = false;
 
 	public var botplaySine:Float = 0;
 	public var botplayTxt:FlxText;
@@ -312,6 +314,8 @@ class PlayState extends MusicBeatState
 	];
 
 	public var madnessTextList:Array<{text:FlxText, lifeTime:Float, updateTime:Float}> = [];
+
+	public var madnessCameraCopy:FlxSprite;
 
 	var staticSprite:FlxSprite;
 	var redBeatSprite:FlxSprite;
@@ -425,6 +429,7 @@ class PlayState extends MusicBeatState
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
 		playBothMode = ClientPrefs.getGameplaySetting('duetMode', false);
 		playEnemy = ClientPrefs.getGameplaySetting('enemyMode', false);
+		permaDeath = ClientPrefs.getGameplaySetting('permaDeath', false);
 
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
@@ -1471,6 +1476,12 @@ class PlayState extends MusicBeatState
 		healthBarBlock.cameras = minBarBlock.cameras = [camHUD];
 		barCursor.cameras = [camHUD];
 		doof.cameras = [camHUD];
+
+		madnessCameraCopy = new FlxSprite();
+		madnessCameraCopy.visible = false;
+		madnessCameraCopy.alpha = 0.1;
+		madnessCameraCopy.cameras = [camHUD];
+		add(madnessCameraCopy);
 
 		// if (SONG.song == 'South')
 		// FlxG.camera.alpha = 0.7;
@@ -3319,6 +3330,10 @@ class PlayState extends MusicBeatState
 								lastHealth -= loss;
 							else
 								health -= loss;
+
+							if (mechanicsResult[8] != null)
+								mechanicsResult[8].value += loss * 10;
+
 							noTriggerKarma = false;
 						}
 					}
@@ -3416,7 +3431,7 @@ class PlayState extends MusicBeatState
 		{
 			noTriggerKarma = true;
 			health -= calculateHealth;
-			mechanicsResult[4].value += calculateHealth;
+			mechanicsResult[4].value += calculateHealth * 10;
 			if (tmr.elapsedLoops > 15)
 			{
 				if (FlxG.random.bool(5 + (tmr.elapsedLoops * 1.25)))
@@ -3683,6 +3698,7 @@ class PlayState extends MusicBeatState
 	private var mouseCursor:FlxSprite;
 	private var barCursor:FlxSprite;
 	private var cursorValue:Float = 0;
+	private var cursorTimer:FlxTimer;
 	private var cpuPos:FlxPoint = FlxPoint.get();
 
 	private function fakeCursor():Void
@@ -3701,25 +3717,26 @@ class PlayState extends MusicBeatState
 
 		FlxTween.tween(ghostCursor, {alpha: 0.35}, 0.5, {ease: FlxEase.quadOut});
 
-		new FlxTimer().start(Math.max(FlxMath.remapToRange(MechanicManager.mechanics['mouse_follower'].points, 1, 20, 3, 1), 0.002), function(tmr:FlxTimer)
-		{
-			var lerpValue:Float = 1 + (FlxG.elapsed * 3.7) * 2.5;
-
-			FlxVelocity.moveTowardsObject(ghostCursor, mouseCursor, 175 * lerpValue, 0);
-
-			if (FlxMath.distanceBetween(ghostCursor, mouseCursor) < 48)
+		cursorTimer = new FlxTimer().start(Math.max(FlxMath.remapToRange(MechanicManager.mechanics['mouse_follower'].points, 1, 20, 3, 1), 0.002),
+			function(tmr:FlxTimer)
 			{
-				ghostCursor.velocity.set();
-				FlxTween.tween(ghostCursor, {x: mouseCursor.x, y: mouseCursor.y}, 0.25);
-			}
-			else
-			{
-				new FlxTimer().start(0.25, function(tmr:FlxTimer)
+				var lerpValue:Float = 1 + (FlxG.elapsed * 3.7) * 2.5;
+
+				FlxVelocity.moveTowardsObject(ghostCursor, mouseCursor, 175 * lerpValue, 0);
+
+				if (FlxMath.distanceBetween(ghostCursor, mouseCursor) < 48)
 				{
 					ghostCursor.velocity.set();
-				});
-			}
-		}, 0);
+					FlxTween.tween(ghostCursor, {x: mouseCursor.x, y: mouseCursor.y}, 0.25);
+				}
+				else
+				{
+					new FlxTimer().start(0.25, function(tmr:FlxTimer)
+					{
+						ghostCursor.velocity.set();
+					});
+				}
+			}, 0);
 	}
 
 	private var timeActivated:Bool = false;
@@ -3988,7 +4005,14 @@ class PlayState extends MusicBeatState
 		if (mod > 1)
 			moraleValue += (mod * goodMoraleMulti) * 0.3;
 		else
+		{
+			var lastMoraleValue:Float = moraleValue;
+
 			moraleValue -= ((1 + mod) * badMoraleMulti) * 0.4;
+
+			if (mechanicsResult[17] != null)
+				mechanicsResult[17].value += Math.abs(moraleValue - lastMoraleValue);
+		}
 	}
 
 	private var currentLetter:String = '';
@@ -4144,6 +4168,9 @@ class PlayState extends MusicBeatState
 
 				if (++failedTimes >= 5)
 					doDeathCheck(true);
+
+				if (mechanicsResult[21] != null)
+					mechanicsResult[21].value = failedTimes;
 			}
 			else if (currentLetter.toLowerCase() == wantedLetter.toLowerCase())
 			{
@@ -5502,6 +5529,8 @@ class PlayState extends MusicBeatState
 			{
 				KillNotes();
 				FlxG.sound.music.onComplete();
+				if (cursorTimer != null)
+					cursorTimer.cancel();
 			}
 			if (FlxG.keys.justPressed.TWO)
 			{ // Go 10 seconds into the future :O
@@ -7640,7 +7669,7 @@ class PlayState extends MusicBeatState
 		{
 			if (MechanicManager.mechanics["hit_hp"].points > 0)
 			{
-				var lossHealth:Float = FlxMath.remapToRange(MechanicManager.mechanics["hit_hp"].points, 0, 20, note.hitHealth / 8.5, note.hitHealth / 1.5);
+				var lossHealth:Float = FlxMath.remapToRange(MechanicManager.mechanics["hit_hp"].points, 0, 20, note.hitHealth / 4.5, note.hitHealth / 1.5);
 				if (note.isSustainNote)
 					lossHealth /= 5;
 				noTriggerKarma = true;
@@ -7648,6 +7677,8 @@ class PlayState extends MusicBeatState
 					lastHealth = Math.max(health - lossHealth, minHealth + minHealthOffset + 0.1);
 				else
 					health = Math.max(health - lossHealth, minHealth + minHealthOffset + 0.1);
+				if (mechanicsResult[9] != null)
+					mechanicsResult[9].value += lossHealth * 10;
 				noTriggerKarma = false;
 			}
 		}
@@ -7663,7 +7694,11 @@ class PlayState extends MusicBeatState
 		StrumPlayAnim(true, Std.int(Math.abs(note.noteData)) % 4, time);
 		note.hitByOpponent = true;
 
-		if (camDirectionMovement)
+		if (hudType == 'madness' && SONG.notes[Math.floor(curStep / 16)] != null && !SONG.notes[Math.floor(curStep / 16)].mustHitSection)
+		{
+			changeCameraOffset(note.noteData);
+		}
+		else if (camDirectionMovement)
 		{
 			if (!cameraFocus)
 			{
@@ -7850,7 +7885,11 @@ class PlayState extends MusicBeatState
 				pressedDirections[Math.floor(Math.abs(note.noteData))] = Math.floor(Math.abs(note.noteData));
 			}
 
-			if (camDirectionMovement)
+			if (hudType == 'madness' && SONG.notes[Math.floor(curStep / 16)] != null && SONG.notes[Math.floor(curStep / 16)].mustHitSection)
+			{
+				changeCameraOffset(note.noteData);
+			}
+			else if (camDirectionMovement)
 			{
 				if (playBothMode || cameraFocus)
 				{
@@ -8158,6 +8197,46 @@ class PlayState extends MusicBeatState
 		FlxG.mouse.load(new FlxSprite().loadGraphic(Paths.image('cursor')).pixels);
 
 		super.destroy();
+	}
+
+	public var cameraDirections:Array<FlxPoint> = [
+		FlxPoint.get(-25, 0),
+		FlxPoint.get(0, 25),
+		FlxPoint.get(0, -25),
+		FlxPoint.get(25, 0)
+	];
+
+	public var currentCameraTween:FlxTween;
+
+	public function changeCameraOffset(direction:Int = 0)
+	{
+		if (currentCameraTween != null)
+			currentCameraTween.cancel();
+
+		currentCameraTween = FlxTween.tween(FlxG.camera.targetOffset, {x: cameraDirections[direction].x, y: cameraDirections[direction].y}, 1.7, {
+			ease: FlxEase.quadOut,
+			onUpdate: function(twn:FlxTween)
+			{
+				camHUD.targetOffset.x = FlxG.camera.targetOffset.x / 2;
+				camHUD.targetOffset.y = FlxG.camera.targetOffset.y / 2;
+			},
+			onComplete: function(twn:FlxTween)
+			{
+				currentCameraTween = FlxTween.tween(FlxG.camera.targetOffset, {x: 0, y: 0}, 1.7, {
+					ease: FlxEase.quadOut,
+					onUpdate: function(twn:FlxTween)
+					{
+						camHUD.targetOffset.x = FlxG.camera.targetOffset.x / 2;
+						camHUD.targetOffset.y = FlxG.camera.targetOffset.y / 2;
+					},
+					onComplete: function(twn:FlxTween)
+					{
+						currentCameraTween.destroy();
+						currentCameraTween = null;
+					}
+				});
+			}
+		});
 	}
 
 	public static function cancelMusicFadeTween()
@@ -8684,6 +8763,8 @@ class PlayState extends MusicBeatState
 			karmaTmr = new FlxTimer().start(0.1, function(tmr:FlxTimer)
 			{
 				health -= difference;
+				if (mechanicsResult[23] != null)
+					mechanicsResult[23].value += difference * 10;
 			}, loop);
 
 			karmaBarTmr = new FlxTimer().start(0.1 * loop, function(tmr:FlxTimer)

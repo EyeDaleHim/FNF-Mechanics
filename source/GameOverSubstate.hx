@@ -66,7 +66,7 @@ class GameOverSubstate extends MusicBeatSubstate
 	}
 
 	override function create()
-	{	
+	{
 		instance = this;
 		PlayState.instance.callOnLuas('onGameOverStart', []);
 
@@ -221,6 +221,12 @@ class GameOverSubstate extends MusicBeatSubstate
 			{
 				FlxG.camera.fade(FlxColor.BLACK, 2, false, function()
 				{
+					if (PlayState.instance.permaDeath)
+						PlayState.storyPlaylist = PlayState.fullStoryPlaylist;
+
+					PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0] + '-' + CoolUtil.difficulties[PlayState.storyDifficulty],
+						PlayState.storyPlaylist[0]);
+
 					MusicBeatState.resetState();
 				});
 			});

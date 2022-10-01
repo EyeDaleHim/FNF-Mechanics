@@ -63,7 +63,8 @@ class ClientPrefs
 		'botplay' => false,
 		'opponentplay' => false,
 		'duetMode' => false,
-		'enemyMode' => false
+		'enemyMode' => false,
+		'permaDeath' => false
 	];
 
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
@@ -449,7 +450,6 @@ class ClientPrefs
 		pauseMusic = 'Outpost Alpha';
 		performanceCounter = 'fps-mem-peak';
 		channel = 'Stereo';
-		
 
 		comboOffset = [0, 0, 0, 0];
 		ratingOffset = 0;

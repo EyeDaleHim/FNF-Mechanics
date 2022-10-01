@@ -57,7 +57,7 @@ class VictorySubstate extends MusicBeatSubstate
 
 		this.finishCallback = finishCallback;
 
-		mechanicsEnabled = MechanicManager.multiplier > 1;
+		mechanicsEnabled = PlayState.instance.mechanicsResult.length > 0;
 
 		background = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		background.alpha = 0.2;
@@ -102,27 +102,39 @@ class VictorySubstate extends MusicBeatSubstate
 		leftArrow.antialiasing = true;
 		leftArrow.scrollFactor.set();
 		leftArrow.updateHitbox();
+		leftArrow.alpha = 0.0;
 		add(leftArrow);
 
 		rightArrow = new FlxSprite();
 		rightArrow.loadGraphic(Paths.image('mechanicArr', 'shared'));
 		rightArrow.scale.set(1.3, 1.3);
-		rightArrow.setPosition(1100, 510);
+		rightArrow.setPosition(1200, 510);
 		rightArrow.antialiasing = true;
 		rightArrow.scrollFactor.set();
 		rightArrow.updateHitbox();
 		rightArrow.flipX = true;
+		rightArrow.alpha = 0.0;
 		add(rightArrow);
 
 		var firstResult:PlayState.MechanicResults = {name: '', text: '', value: 0};
-		if (PlayState.instance.mechanicsResult[0] != null)
-			firstResult = PlayState.instance.mechanicsResult[0];
+		if (PlayState.instance.mechanicsResult.length > 0)
+		{
+			var firstAvailable:Int = 0;
+			do
+			{
+				firstAvailable = FlxMath.wrap(firstAvailable + 1, 0, PlayState.instance.mechanicsResult.length - 1);
+			}
+			while (PlayState.instance.mechanicsResult[firstAvailable] == null);
+
+			firstResult = PlayState.instance.mechanicsResult[firstAvailable];
+		}
 
 		titleText = new FlxText(0, 0, 0, firstResult.name, 24);
 		titleText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
 		titleText.borderSize = 1.75;
 		titleText.antialiasing = true;
 		titleText.setPosition(((leftArrow.x + rightArrow.x + rightArrow.width) * 0.5) - (titleText.width / 2), 460);
+		titleText.alpha = 0.0;
 		add(titleText);
 
 		damageText = new FlxText(0, 0, 0, CoolUtil.flattenNumber(firstResult.value), 56);
@@ -130,6 +142,7 @@ class VictorySubstate extends MusicBeatSubstate
 		damageText.borderSize = 1.75;
 		damageText.antialiasing = true;
 		damageText.setPosition(((leftArrow.x + rightArrow.x + rightArrow.width) * 0.5) - (damageText.width / 2), leftArrow.y);
+		damageText.alpha = 0.0;
 		add(damageText);
 
 		infoText = new FlxText(0, 0, 0, firstResult.text, 24);
@@ -137,6 +150,7 @@ class VictorySubstate extends MusicBeatSubstate
 		infoText.borderSize = 1.75;
 		infoText.antialiasing = true;
 		infoText.setPosition(((leftArrow.x + rightArrow.x + rightArrow.width) * 0.5) - (infoText.width / 2), leftArrow.y + leftArrow.height + 12);
+		infoText.alpha = 0.0;
 		add(infoText);
 
 		if (!mechanicsEnabled)
@@ -376,12 +390,12 @@ class VictorySubstate extends MusicBeatSubstate
 				}, function(v:Float)
 				{
 					if (mechanicsEnabled)
-						acceptButton.alpha = v;
-					else
 					{
-						acceptButton.alpha = v;
 						leftArrow.alpha = rightArrow.alpha = damageText.alpha = titleText.alpha = infoText.alpha = v * 0.6;
+						acceptButton.alpha = v;
 					}
+					else
+						acceptButton.alpha = v;
 				});
 			}
 
@@ -391,7 +405,7 @@ class VictorySubstate extends MusicBeatSubstate
 				{
 					if (finishedAnim)
 					{
-						if (controls.UI_UP_P || controls.UI_DOWN_P)
+						if (mechanicsEnabled && (controls.UI_UP_P || controls.UI_DOWN_P))
 						{
 							if (((selectAccept = !selectAccept)) == false)
 							{
