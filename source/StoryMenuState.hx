@@ -303,7 +303,9 @@ class StoryMenuState extends MusicBeatState
 			}
 
 			// Nevermind that's stupid lmao
-			PlayState.storyPlaylist = PlayState.fullStoryPlaylist = songArray;
+			PlayState.storyPlaylist = songArray;
+			if (ClientPrefs.getGameplaySetting('permaDeath', false))
+				PlayState.fullStoryPlaylist = cast songArray;
 
 			PlayState.isStoryMode = true;
 			selectedWeek = true;

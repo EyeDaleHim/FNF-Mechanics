@@ -110,9 +110,11 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 		if (PlayState.isStoryMode)
 		{
-			var option:GameplayOption = new GameplayOption('Permadeath', 'permadeath', 'bool', false);
+			var option:GameplayOption = new GameplayOption('Permadeath', 'permaDeath', 'bool', false);
 			optionsArray.push(option);
 		}
+		else
+			ClientPrefs.gameplaySettings['permaDeath'] = false;
 
 		/*option.onChange = function()
 			{

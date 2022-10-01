@@ -36,7 +36,7 @@ class VictorySubstate extends MusicBeatSubstate
 	public var infoText:FlxText;
 
 	public var curSelected:Int = 0;
-	public var selectAccept:Bool = false;
+	public var selectAccept:Bool = true;
 
 	private var finishCallback:Void->Void = null;
 

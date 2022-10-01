@@ -221,11 +221,19 @@ class GameOverSubstate extends MusicBeatSubstate
 			{
 				FlxG.camera.fade(FlxColor.BLACK, 2, false, function()
 				{
-					if (PlayState.instance.permaDeath)
+					if (ClientPrefs.getGameplaySetting('permaDeath', false))
+					{
+						trace(PlayState.storyPlaylist);
 						PlayState.storyPlaylist = PlayState.fullStoryPlaylist;
+						trace(PlayState.fullStoryPlaylist);
 
-					PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0] + '-' + CoolUtil.difficulties[PlayState.storyDifficulty],
-						PlayState.storyPlaylist[0]);
+						PlayState.firstSong = true;
+
+						PlayState.SONG = Song.loadFromJson(PlayState.fullStoryPlaylist[0] + '-' + CoolUtil.difficulties[PlayState.storyDifficulty],
+							PlayState.fullStoryPlaylist[0]);
+						PlayState.campaignScore = 0;
+						PlayState.campaignMisses = 0;
+					}
 
 					MusicBeatState.resetState();
 				});
