@@ -5578,6 +5578,9 @@ class PlayState extends MusicBeatState
 			&& !isDead
 			&& !isVictory)
 		{
+			if (Std.isOfType(FlxG.state.subState, VictorySubstate))
+				return false;
+
 			var ret:Dynamic = callOnLuas('onGameOver', []);
 			if (ret != FunkinLua.Function_Stop)
 			{
@@ -7775,8 +7778,6 @@ class PlayState extends MusicBeatState
 							mechanicsResult[0].value += note.missHealth * 10;
 					case 'Kill Note':
 						FlxG.sound.play(Paths.sound('explosion'));
-						if (mechanicsResult[1] != null)
-							mechanicsResult[1].value += 20;
 					case 'Burst Note':
 						burstNote();
 					case 'Sleep Note':
@@ -7808,6 +7809,9 @@ class PlayState extends MusicBeatState
 					health -= 400;
 					noTriggerKarma = false;
 					FlxG.sound.play(Paths.sound('explosion'));
+
+					if (mechanicsResult[1] != null)
+						mechanicsResult[1].value += 20;
 				case 'Restore Note':
 					if (restoreActivated)
 						restoreNoteHit();
@@ -8608,8 +8612,8 @@ class PlayState extends MusicBeatState
 				ratingFC = "FC";
 			if (songMisses > 0 && songMisses < 10)
 				ratingFC = "SDCB";
-			else if (songMisses >= 10)
-				ratingFC = "Clear";
+			if (songMisses > 10)
+				ratingFC = "";
 		}
 		if (luaUpdate)
 		{

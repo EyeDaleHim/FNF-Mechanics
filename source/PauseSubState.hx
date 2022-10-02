@@ -140,12 +140,12 @@ class PauseSubState extends MusicBeatSubstate
 		versionTxt = new FlxText(0, 0, 0, "Psych Engine v0.5.2h");
 		versionTxt.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.TRANSPARENT);
 		versionTxt.text += '\nFriday Night Funkin\' v0.2.8';
-		versionTxt.text += '\nMechanics Mod v' + '1.0.0';
+		versionTxt.text += '\nMechanics Mod v' + '1.2.0';
 		versionTxt.updateHitbox();
 		versionTxt.text += '\n';
 		versionTxt.x = FlxG.width - versionTxt.width - 4;
 		versionTxt.y = FlxG.height - versionTxt.height + 28;
-		versionTxt.alpha = 0.2;
+		versionTxt.alpha = 0.4;
 		add(versionTxt);
 
 		regenMenu();

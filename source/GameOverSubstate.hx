@@ -1,7 +1,9 @@
 package;
 
 import flixel.FlxG;
+import flixel.FlxSprite;
 import flixel.FlxObject;
+import flixel.FlxCamera;
 import flixel.text.FlxText;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
@@ -39,12 +41,20 @@ class GameOverSubstate extends MusicBeatSubstate
 		'Good lord! What the hell is your problem man?\n*burp* Just do it right, pleease!'
 	];
 
+	public var hudCamera:FlxCamera;
+
 	public var boyfriend:Boyfriend;
 
 	var camFollow:FlxPoint;
 	var camFollowPos:FlxObject;
 	var updateCamera:Bool = false;
 	var playingDeathSound:Bool = false;
+
+	public var leftArrow:FlxSprite;
+	public var rightArrow:FlxSprite;
+	public var damageText:FlxText;
+	public var titleText:FlxText;
+	public var infoText:FlxText;
 
 	var stageSuffix:String = "";
 
@@ -81,6 +91,10 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		Conductor.songPosition = 0;
 
+		hudCamera = new FlxCamera();
+		hudCamera.bgColor.alpha = 0;
+		FlxG.cameras.add(hudCamera, false);
+
 		boyfriend = new Boyfriend(x, y, characterName);
 		boyfriend.cameras = [PlayState.instance.camGame];
 		boyfriend.x += boyfriend.positionArray[0];
@@ -96,6 +110,69 @@ class GameOverSubstate extends MusicBeatSubstate
 		FlxG.camera.scroll.set();
 		FlxG.camera.target = null;
 
+		leftArrow = new FlxSprite();
+		leftArrow.loadGraphic(Paths.image('mechanicArr', 'shared'));
+		leftArrow.scale.set(1.3, 1.3);
+		leftArrow.setPosition(920, 510);
+		leftArrow.antialiasing = true;
+		leftArrow.scrollFactor.set();
+		leftArrow.updateHitbox();
+		leftArrow.alpha = 0.0;
+		leftArrow.cameras = [hudCamera];
+		add(leftArrow);
+
+		rightArrow = new FlxSprite();
+		rightArrow.loadGraphic(Paths.image('mechanicArr', 'shared'));
+		rightArrow.scale.set(1.3, 1.3);
+		rightArrow.setPosition(1200, 510);
+		rightArrow.antialiasing = true;
+		rightArrow.scrollFactor.set();
+		rightArrow.updateHitbox();
+		rightArrow.flipX = true;
+		rightArrow.alpha = 0.0;
+		rightArrow.cameras = [hudCamera];
+		add(rightArrow);
+
+		var firstResult:PlayState.MechanicResults = {name: '', text: '', value: 0};
+		if (PlayState.instance.mechanicsResult.length > 0)
+		{
+			var firstAvailable:Int = 0;
+			do
+			{
+				firstAvailable = FlxMath.wrap(firstAvailable + 1, 0, PlayState.instance.mechanicsResult.length - 1);
+			}
+			while (PlayState.instance.mechanicsResult[firstAvailable] == null);
+
+			firstResult = PlayState.instance.mechanicsResult[firstAvailable];
+		}
+
+		titleText = new FlxText(0, 0, 0, firstResult.name, 24);
+		titleText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+		titleText.borderSize = 1.75;
+		titleText.antialiasing = true;
+		titleText.setPosition(((leftArrow.x + rightArrow.x + rightArrow.width) * 0.5) - (titleText.width / 2), 460);
+		titleText.alpha = 0.0;
+		titleText.cameras = [hudCamera];
+		add(titleText);
+
+		damageText = new FlxText(0, 0, 0, CoolUtil.flattenNumber(firstResult.value), 56);
+		damageText.setFormat(Paths.font("vcr.ttf"), 56, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+		damageText.borderSize = 1.75;
+		damageText.antialiasing = true;
+		damageText.setPosition(((leftArrow.x + rightArrow.x + rightArrow.width) * 0.5) - (damageText.width / 2), leftArrow.y);
+		damageText.alpha = 0.0;
+		damageText.cameras = [hudCamera];
+		add(damageText);
+
+		infoText = new FlxText(0, 0, 0, firstResult.text, 24);
+		infoText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+		infoText.borderSize = 1.75;
+		infoText.antialiasing = true;
+		infoText.setPosition(((leftArrow.x + rightArrow.x + rightArrow.width) * 0.5) - (infoText.width / 2), leftArrow.y + leftArrow.height + 12);
+		infoText.alpha = 0.0;
+		infoText.cameras = [hudCamera];
+		add(infoText);
+
 		boyfriend.playAnim('firstDeath');
 
 		camFollowPos = new FlxObject(0, 0, 1, 1);
@@ -104,6 +181,7 @@ class GameOverSubstate extends MusicBeatSubstate
 	}
 
 	var isFollowingAlready:Bool = false;
+	var isOnLoop:Bool = false;
 
 	override function update(elapsed:Float)
 	{
@@ -118,7 +196,10 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		if (controls.ACCEPT)
 		{
-			endBullshit();
+			if (!isOnLoop)
+				skipBullshit();
+			else
+				endBullshit();
 		}
 
 		if (controls.BACK)
@@ -147,34 +228,16 @@ class GameOverSubstate extends MusicBeatSubstate
 
 			if (boyfriend.animation.curAnim.finished && !playingDeathSound)
 			{
-				if (PlayState.SONG.stage == 'tank')
-				{
-					playingDeathSound = true;
-					coolStartDeath(0.2);
-
-					var exclude:Array<Int> = [];
-					// if(!ClientPrefs.cursing) exclude = [1, 3, 8, 13, 17, 21];
-
-					var random:Int = FlxG.random.int(1, 25, exclude);
-
-					var tankSound = FlxG.sound.load(Paths.sound('jeffGameover/jeffGameover-' + random, 'week7'), 1, false, null, true, false, null, function()
-					{
-						if (!isEnding)
-						{
-							FlxG.sound.music.fadeIn(0.5, FlxG.sound.music.volume, ClientPrefs.musicVolume / 8);
-						}
-					});
-
-					tankSound.play(false);
-
-					SubtitleHandler.addSub(tankmanSubtitles[random - 1], (tankSound.length / 1000) + 2.5);
-				}
-				else
-				{
-					coolStartDeath();
-				}
-				boyfriend.startedDeath = true;
+				skipBullshit();
 			}
+		}
+
+		if (isOnLoop)
+		{
+			if (controls.UI_LEFT_P)
+				changeSelection(-1);
+			else if (controls.UI_RIGHT_P)
+				changeSelection(1);
 		}
 
 		if (FlxG.sound.music.playing)
@@ -202,14 +265,81 @@ class GameOverSubstate extends MusicBeatSubstate
 		// FlxG.log.add('beat');
 	}
 
+	private var curSelected:Int = 0;
+
+	public function changeSelection(select:Int = 0)
+	{
+		if (PlayState.instance.mechanicsResult.length > 1)
+		{
+			do
+			{
+				curSelected = FlxMath.wrap(curSelected + select, 0, PlayState.instance.mechanicsResult.length - 1);
+			}
+			while (PlayState.instance.mechanicsResult[curSelected] == null);
+
+			titleText.text = PlayState.instance.mechanicsResult[curSelected].name;
+			damageText.text = CoolUtil.flattenNumber(FlxMath.roundDecimal(PlayState.instance.mechanicsResult[curSelected].value, 2));
+			infoText.text = PlayState.instance.mechanicsResult[curSelected].text;
+
+			titleText.setPosition(((leftArrow.x + rightArrow.x + rightArrow.width) * 0.5) - (titleText.width / 2), 460);
+			damageText.setPosition(((leftArrow.x + rightArrow.x + rightArrow.width) * 0.5) - (damageText.width / 2), leftArrow.y);
+			infoText.setPosition(((leftArrow.x + rightArrow.x + rightArrow.width) * 0.5) - (infoText.width / 2), leftArrow.y + leftArrow.height + 12);
+
+			FlxG.sound.play(Paths.sound('scrollMenu'), 0.6);
+		}
+	}
+
 	var isEnding:Bool = false;
 
-	function coolStartDeath(?volume:Float = 1):Void
+	private function coolStartDeath(?volume:Float = 1):Void
 	{
 		FlxG.sound.playMusic(Paths.music(loopSoundName), volume * ClientPrefs.musicVolume / 10);
 	}
 
-	function endBullshit():Void
+	private function skipBullshit():Void
+	{
+		if (PlayState.SONG.stage == 'tank')
+		{
+			playingDeathSound = true;
+			coolStartDeath(0.2);
+
+			var exclude:Array<Int> = [];
+			// if(!ClientPrefs.cursing) exclude = [1, 3, 8, 13, 17, 21];
+
+			var random:Int = FlxG.random.int(1, 25, exclude);
+
+			var tankSound = FlxG.sound.load(Paths.sound('jeffGameover/jeffGameover-' + random, 'week7'), 1, false, null, true, false, null, function()
+			{
+				if (!isEnding)
+				{
+					FlxG.sound.music.fadeIn(0.5, FlxG.sound.music.volume, ClientPrefs.musicVolume / 8);
+				}
+			});
+
+			tankSound.play(false);
+
+			SubtitleHandler.addSub(tankmanSubtitles[random - 1], (tankSound.length / 1000) + 2.5);
+		}
+		else
+		{
+			coolStartDeath();
+		}
+
+		if (PlayState.instance.mechanicsResult.length > 0)
+		{
+			FlxTween.num(0, 1, 0.5, {ease: FlxEase.quadOut}, function(v:Float)
+			{
+				leftArrow.alpha = rightArrow.alpha = titleText.alpha = damageText.alpha = infoText.alpha = v;
+			});
+		}
+
+		boyfriend.playAnim('deathLoop', true);
+
+		isOnLoop = true;
+		boyfriend.startedDeath = true;
+	}
+
+	private function endBullshit():Void
 	{
 		if (!isEnding)
 		{
@@ -217,11 +347,20 @@ class GameOverSubstate extends MusicBeatSubstate
 			boyfriend.playAnim('deathConfirm', true);
 			FlxG.sound.music.stop();
 			FlxG.sound.play(Paths.music(endSoundName));
+
+			if (PlayState.instance.mechanicsResult.length > 0)
+			{
+				FlxTween.num(1, 0, 0.5, {ease: FlxEase.quadOut}, function(v:Float)
+				{
+					leftArrow.alpha = rightArrow.alpha = titleText.alpha = damageText.alpha = infoText.alpha = v;
+				});
+			}
+
 			new FlxTimer().start(0.7, function(tmr:FlxTimer)
 			{
 				FlxG.camera.fade(FlxColor.BLACK, 2, false, function()
 				{
-					if (ClientPrefs.getGameplaySetting('permaDeath', false))
+					if (PlayState.isStoryMode && ClientPrefs.getGameplaySetting('permaDeath', false))
 					{
 						trace(PlayState.storyPlaylist);
 						PlayState.storyPlaylist = PlayState.fullStoryPlaylist;
