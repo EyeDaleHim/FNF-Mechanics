@@ -28,7 +28,7 @@ class MechanicManager
 		'note_change' => new MechanicData('Note Changer', 'A note will change from it\'s original position. Affects all type of notes', null, 'random1', 12),
 		'strum_swap' => new MechanicData('Strum Swap', 'Your own strums will swap each other accordingly', null, 'noteswap', 13),
 		'mouse_follower' => new MechanicData('Mouse Follower', 'A green mouse will follow your own mouse, just don\'t let it overlap your own mouse',
-			'Duratiom', 'fakemouse', 14),
+			'Duration', 'fakemouse', 14),
 		'click_time' => new MechanicData('Time Click',
 			'A time will appear on your screen with a specific time, you should click whenever the song time matches the time', 'Attempts', 'clicktime', 15),
 		'flashlight' => new MechanicData('Flashlight', 'The notes get harder to see the closer they are to being hit', null, 'flashlight', 16),
