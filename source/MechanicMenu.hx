@@ -860,12 +860,11 @@ class MechanicMenu extends MusicBeatState
 		{
 			var multiplier:Float = 1.4;
 
-			if (socialTxt.visible = FlxMath.mouseInFlxRect(false,
-				new FlxRect(socialLogo.x, socialLogo.y, socialLogo.width, socialLogo.height)))
+			if (socialTxt.visible = FlxMath.mouseInFlxRect(false, new FlxRect(socialLogo.x, socialLogo.y, socialLogo.width, socialLogo.height)))
 			{
 				multiplier = 0;
 				if (FlxG.mouse.justPressed)
-					FlxG.openURL('https://discord.gg/Q88Xb3KM');
+					FlxG.openURL('https://discord.gg/p7PKBM72sw');
 			}
 
 			if (FlxG.mouse.getScreenPosition().y > FlxG.height * 0.8)
