@@ -108,7 +108,7 @@ class MusicBeatState extends FlxUIState
 			return;
 		}
 		else
-		{			
+		{
 			var text:FlxText = new FlxText(0, 0, 0, "Loading...", 48);
 			text.setFormat(Paths.font("vcr.ttf"), 48, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
 			text.scrollFactor.set();
@@ -125,7 +125,7 @@ class MusicBeatState extends FlxUIState
 	override public function destroy():Void
 	{
 		SubtitleHandler.destroy();
-		
+
 		#if web
 		FlxG.autoPause = ClientPrefs.autoPause;
 		#end

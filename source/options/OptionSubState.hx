@@ -27,7 +27,7 @@ import Controls;
 
 using StringTools;
 
-class OptionsState extends MusicBeatState
+class OptionSubState extends MusicBeatSubstate
 {
 	public static var options:Array<{name:String, callback:Void->Void}> = [
 		{
@@ -123,6 +123,8 @@ class OptionsState extends MusicBeatState
 		ClientPrefs.saveSettings();
 
 		super.create();
+
+		cameras = [PlayState.instance.camOther];
 	}
 
 	override function closeSubState()
@@ -147,7 +149,13 @@ class OptionsState extends MusicBeatState
 		if (controls.BACK)
 		{
 			FlxG.sound.play(Paths.sound('cancelMenu'));
-			MusicBeatState.switchState(new MechanicMenu());
+			if (PlayState.instance != null)
+			{
+				destroy();
+				openSubState(new PauseSubState(0, 0));
+			}
+			else
+				close();
 		}
 
 		if (controls.ACCEPT)

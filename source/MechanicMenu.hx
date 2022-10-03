@@ -78,7 +78,7 @@ class MechanicMenu extends MusicBeatState
 			name: 'OPTIONS',
 			callback: function()
 			{
-				MusicBeatState.switchState(new options.OptionsState());
+				LoadingState.loadAndSwitchState(new options.OptionsState());
 			}
 		}
 	];

@@ -5018,6 +5018,7 @@ class PlayState extends MusicBeatState
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
 			var ret:Dynamic = callOnLuas('onPause', []);
+			
 			if (ret != FunkinLua.Function_Stop)
 			{
 				persistentUpdate = false;
@@ -6487,6 +6488,8 @@ class PlayState extends MusicBeatState
 
 		if (ret != FunkinLua.Function_Stop && !transitioning)
 		{
+			persistentUpdate = false;
+
 			openSubState(new VictorySubstate(function()
 			{
 				if (SONG.validScore)

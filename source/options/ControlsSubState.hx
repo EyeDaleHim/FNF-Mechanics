@@ -98,6 +98,9 @@ class ControlsSubState extends MusicBeatSubstate
 			}
 		}
 		changeSelection();
+
+		if (PlayState.instance != null)
+			cameras = [PlayState.instance.camOther];
 	}
 
 	var leaving:Bool = false;
@@ -123,7 +126,10 @@ class ControlsSubState extends MusicBeatSubstate
 			if (controls.BACK)
 			{
 				ClientPrefs.reloadControls();
-				close();
+				if (PlayState.instance != null)
+					openSubState(new options.OptionSubState());
+				else
+					close();
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 			}
 

@@ -137,6 +137,9 @@ class BaseOptionsMenu extends MusicBeatSubstate
 
 		changeSelection();
 		reloadCheckboxes();
+
+		if (PlayState.instance != null)
+			cameras = [PlayState.instance.camOther];
 	}
 
 	public function addOption(option:Option)
@@ -163,7 +166,10 @@ class BaseOptionsMenu extends MusicBeatSubstate
 
 		if (controls.BACK)
 		{
-			close();
+			if (PlayState.instance != null)
+				openSubState(new options.OptionSubState());
+			else
+				close();
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 		}
 
