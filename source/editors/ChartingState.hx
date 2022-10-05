@@ -75,8 +75,6 @@ class ChartingState extends MusicBeatState
 
 	public var ignoreWarnings = false;
 
-	var undos = [];
-	var redos = [];
 	var eventStuff:Array<Dynamic> = [
 		['', "Nothing. Yep, that's right."],
 		[
@@ -127,18 +125,12 @@ class ChartingState extends MusicBeatState
 			'Change Scroll Speed',
 			"Value 1: Scroll Speed Multiplier (1 is default)\nValue 2: Time it takes to change fully in seconds."
 		],
-		[
-			'Subtitle',
-			"Value 1: Subtitle Text\nValue 2: Duration of Subtitle"
-		],
+		['Subtitle', "Value 1: Subtitle Text\nValue 2: Duration of Subtitle"],
 		[
 			'Advanced Camera Tween',
 			'Value 1: (X, Y, ANGLE, ZOOM)\nValue 2: (DURATION, EASE)'
 		],
-		[
-			'Persistent Draw',
-			'Toggle rendering the game'
-		],
+		['Persistent Draw', 'Toggle rendering the game'],
 		['Set Property', "Value 1: Variable name\nValue 2: New value"]
 	];
 
@@ -187,8 +179,6 @@ class ChartingState extends MusicBeatState
 
 	var daquantspot = 0;
 	var curEventSelected:Int = 0;
-	var curUndoIndex = 0;
-	var curRedoIndex = 0;
 	var _song:SwagSong;
 	/*
 	 * WILL BE THE CURRENT / LAST PLACED NOTE
@@ -1676,7 +1666,8 @@ class ChartingState extends MusicBeatState
 				offsetPos.y = FlxG.mouse.getScreenPosition().y - originalPos.y;
 			}
 
-			dragSprite.setGraphicSize(Std.int(Math.abs(FlxG.mouse.getScreenPosition().x - originalPos.x)), Std.int(Math.abs(FlxG.mouse.getScreenPosition().y - originalPos.y)));
+			dragSprite.setGraphicSize(Std.int(Math.abs(FlxG.mouse.getScreenPosition().x - originalPos.x)),
+				Std.int(Math.abs(FlxG.mouse.getScreenPosition().y - originalPos.y)));
 
 			dragSprite.updateHitbox();
 			dragSprite.setPosition(originalPos.x + offsetPos.x, originalPos.y + offsetPos.y);
@@ -1835,21 +1826,17 @@ class ChartingState extends MusicBeatState
 				return;
 			}
 
-			if (FlxG.keys.justPressed.Z && FlxG.keys.pressed.CONTROL)
-			{
-				undo();
-			}
-
 			if (FlxG.keys.justPressed.Z && curZoom > 0 && !FlxG.keys.pressed.CONTROL)
 			{
 				--curZoom;
 				updateZoom();
 			}
-			if (FlxG.keys.justPressed.X && curZoom < zoomList.length - 1)
-			{
-				curZoom++;
-				updateZoom();
-			}
+			else if ()
+				if (FlxG.keys.justPressed.X && curZoom < zoomList.length - 1)
+				{
+					curZoom++;
+					updateZoom();
+				}
 
 			if (FlxG.keys.justPressed.TAB)
 			{
@@ -2197,6 +2184,30 @@ class ChartingState extends MusicBeatState
 		}
 		lastConductorPos = Conductor.songPosition;
 		super.update(elapsed);
+	}
+
+	private var actionHistory:Array<ActionList> = [];
+	private var actionIndex:Int = 0;
+
+	public function addHistory(type:ActionType, data:Array<Dynamic>)
+	{
+		actionHistory.splice(actionIndex, actionHistory.length);
+	}
+
+	public function undoHistory()
+	{
+		if (actionHistory.length > 0)
+		{
+			actionIndex = Math.max(--actionIndex, 0);
+		}
+	}
+
+	public function redoHistory()
+	{
+		if (actionHistory.length > 0)
+		{
+			actionIndex = Math.min(++actionIndex, actionHistory.length);
+		}
 	}
 
 	function updateZoom()
@@ -3060,11 +3071,7 @@ class ChartingState extends MusicBeatState
 
 	private function addNote(strum:Null<Float> = null, data:Null<Int> = null, type:Null<Int> = null):Void
 	{
-		// curUndoIndex++;
-		// var newsong = _song.notes;
-		//	undos.push(newsong);
 		didAThing = true;
-		trace(undos);
 		var noteStrum = getStrumTime(dummyArrow.y, false) + sectionStartTime();
 		var noteData = Math.floor((FlxG.mouse.x - GRID_SIZE) / GRID_SIZE);
 		var noteSus = 0;
@@ -3104,21 +3111,6 @@ class ChartingState extends MusicBeatState
 
 		updateGrid();
 		updateNoteUI();
-	}
-
-	// will figure this out l8r
-	function redo()
-	{
-		// _song = redos[curRedoIndex];
-	}
-
-	function undo()
-	{
-		// redos.push(_song);
-		undos.pop();
-		// _song.notes = undos[undos.length - 1];
-		///trace(_song.notes);
-		// updateGrid();
 	}
 
 	function getStrumTime(yPos:Float, doZoomCalc:Bool = true):Float
@@ -3323,4 +3315,18 @@ class AttachedFlxText extends FlxText
 			alpha = sprTracker.alpha;
 		}
 	}
+}
+
+typedef ActionList =
+{
+	var type:ActionType;
+	var info:Array<Dynamic>;
+}
+
+enum ActionType
+{
+	ADDNOTE;
+	ADDEVENT;
+	REMOVENOTE;
+	REMOVEEVENT;
 }

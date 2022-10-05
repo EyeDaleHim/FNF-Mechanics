@@ -214,10 +214,7 @@ class NotesSubState extends MusicBeatSubstate
 		{
 			if (!changingNote)
 			{
-				if (PlayState.instance != null)
-					openSubState(new options.OptionSubState());
-				else
-					close();
+				close();
 			}
 			else
 			{

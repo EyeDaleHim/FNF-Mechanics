@@ -149,7 +149,7 @@ class PauseSubState extends MusicBeatSubstate
 		add(versionTxt);
 
 		regenMenu();
-		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+		cameras = [PlayState.instance.camOther];
 	}
 
 	private var noAction:Bool = false;
@@ -297,7 +297,13 @@ class PauseSubState extends MusicBeatSubstate
 						PlayState.instance.botplayTxt.alpha = 1;
 						PlayState.instance.botplaySine = 0;
 					case "Options":
-						FlxG.state.openSubState(new options.OptionSubState());
+						noAction = true;
+						persistentUpdate = false;
+						FlxG.state.openSubState(new options.OptionSubState(function()
+						{
+							noAction = false;
+							persistentUpdate = true;
+						}));
 					case "Exit to menu":
 						PlayState.deathCounter = 0;
 						PlayState.seenCutscene = false;

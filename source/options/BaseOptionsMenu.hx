@@ -166,10 +166,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 
 		if (controls.BACK)
 		{
-			if (PlayState.instance != null)
-				openSubState(new options.OptionSubState());
-			else
-				close();
+			close();
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 		}
 

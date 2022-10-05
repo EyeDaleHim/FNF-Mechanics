@@ -304,7 +304,7 @@ class VictorySubstate extends MusicBeatSubstate
 			}
 		}, groupAppear.length - 1);
 
-		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+		cameras = [PlayState.instance.camOther];
 
 		for (member in members)
 		{

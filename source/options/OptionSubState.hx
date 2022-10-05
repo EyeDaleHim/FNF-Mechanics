@@ -89,6 +89,15 @@ class OptionSubState extends MusicBeatSubstate
 	var selectorLeft:Alphabet;
 	var selectorRight:Alphabet;
 
+	private var callback:Void->Void = null;
+
+	override public function new(callback:Void->Void)
+	{
+		super();
+
+		this.callback = callback;
+	}
+
 	override function create()
 	{
 		#if desktop
@@ -149,13 +158,9 @@ class OptionSubState extends MusicBeatSubstate
 		if (controls.BACK)
 		{
 			FlxG.sound.play(Paths.sound('cancelMenu'));
-			if (PlayState.instance != null)
-			{
-				destroy();
-				openSubState(new PauseSubState(0, 0));
-			}
-			else
-				close();
+			if (callback != null)
+				callback();
+			close();
 		}
 
 		if (controls.ACCEPT)

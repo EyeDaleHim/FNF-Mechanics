@@ -315,7 +315,7 @@ class PlayState extends MusicBeatState
 
 	public var madnessTextList:Array<{text:FlxText, lifeTime:Float, updateTime:Float}> = [];
 
-	public var madnessCameraCopy:FlxSprite;
+	public var madnessCameraCopy:FlxCamera;
 
 	var staticSprite:FlxSprite;
 	var redBeatSprite:FlxSprite;
@@ -1476,12 +1476,6 @@ class PlayState extends MusicBeatState
 		healthBarBlock.cameras = minBarBlock.cameras = [camHUD];
 		barCursor.cameras = [camHUD];
 		doof.cameras = [camHUD];
-
-		madnessCameraCopy = new FlxSprite();
-		madnessCameraCopy.visible = false;
-		madnessCameraCopy.alpha = 0.1;
-		madnessCameraCopy.cameras = [camHUD];
-		add(madnessCameraCopy);
 
 		// if (SONG.song == 'South')
 		// FlxG.camera.alpha = 0.7;
@@ -4667,6 +4661,11 @@ class PlayState extends MusicBeatState
 				{
 					camHUD.alpha = 1.0;
 				}
+
+				if (madnessCameraCopy != null)
+				{
+					madnessCameraCopy.zoom = FlxMath.remapToRange(((FlxG.sound.music.amplitude / 1.5) + (vocals.amplitude / 2)), 0, 1, 0.9, 1.2);
+				}
 			case 'tank':
 				moveTank(elapsed);
 			case 'schoolEvil':
@@ -5018,7 +5017,7 @@ class PlayState extends MusicBeatState
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
 			var ret:Dynamic = callOnLuas('onPause', []);
-			
+
 			if (ret != FunkinLua.Function_Stop)
 			{
 				persistentUpdate = false;
@@ -6489,6 +6488,7 @@ class PlayState extends MusicBeatState
 		if (ret != FunkinLua.Function_Stop && !transitioning)
 		{
 			persistentUpdate = false;
+			madnessCameraCopy.visible = false;
 
 			openSubState(new VictorySubstate(function()
 			{
@@ -8471,6 +8471,26 @@ class PlayState extends MusicBeatState
 				if (curBeat % 8 == 0)
 				{
 					FlxTween.tween(redBeatSprite, {alpha: 0.3}, 0.4, {ease: FlxEase.quadOut, type: BACKWARD});
+				}
+
+				if (curStep >= 1536)
+				{
+					if (madnessCameraCopy == null)
+					{
+						madnessCameraCopy = new FlxCamera();
+						madnessCameraCopy.alpha = 0.10;
+						madnessCameraCopy.copyFrom(camHUD);
+
+						for (object in members)
+						{
+							if (object != null)
+							{
+								if (object.cameras.contains(camHUD))
+									object.cameras = [camHUD, madnessCameraCopy];
+							}
+						}
+						FlxG.cameras.add(madnessCameraCopy, false);
+					}
 				}
 		}
 
