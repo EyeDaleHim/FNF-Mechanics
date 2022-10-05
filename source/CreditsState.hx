@@ -184,6 +184,15 @@ class CreditsState extends MusicBeatState
 			'https://gamebanana.com/members/1908754',
 			'566ECE'
 		]);
+
+		creditsStuff.unshift([
+			'Murderous Yang',
+			'murderous',
+			'Composer of Comedown',
+			'https://www.youtube.com/channel/UCxjUIdTPoZPuhAxo-5Ebs-A',
+			'B6A3FF'
+		]);
+
 		creditsStuff.unshift([
 			'Raltyro',
 			'raltyro',
@@ -296,6 +305,8 @@ class CreditsState extends MusicBeatState
 	var holdTime:Float = 0;
 	var lookedAtMouse:Float = 0.0;
 
+	static var lookedMouse:Bool = false;
+
 	override function update(elapsed:Float)
 	{
 		if (FlxG.sound.music.volume < FlxMath.remapToRange(ClientPrefs.musicVolume / 10, 0, 1, 0, 0.8))
@@ -344,21 +355,21 @@ class CreditsState extends MusicBeatState
 				}
 			}
 
-			if (curSelected == 3)
+			if (curSelected == 4)
 			{
-				if (FlxG.save.data.encounteredMouse == null)
+				if (!lookedMouse)
 				{
 					if (FlxMath.mouseInFlxRect(false,
-						new FlxRect(iconArray[2].x + iconArray[2].width, iconArray[2].y, iconArray[2].width, iconArray[2].height)))
+						new FlxRect(iconArray[3].x + iconArray[3].width, iconArray[3].y, iconArray[3].width, iconArray[3].height)))
 					{
 						if ((lookedAtMouse += elapsed) > 7.5)
 						{
-							FlxG.save.data.encounteredMouse = true;
-							FlxTween.tween(iconArray[2].origin, {y: iconArray[2].origin.y - 20}, 0.2, {
+							lookedMouse = true;
+							FlxTween.tween(iconArray[3].offset, {y: iconArray[3].offset.y - 20}, 0.2, {
 								ease: FlxEase.quintIn,
 								onComplete: function(twn:FlxTween)
 								{
-									FlxTween.tween(iconArray[2].origin, {y: iconArray[2].origin.y + 20}, 0.2, {ease: FlxEase.quintOut});
+									FlxTween.tween(iconArray[3].offset, {y: iconArray[3].offset.y + 20}, 0.2, {ease: FlxEase.quintOut});
 								}
 							});
 
