@@ -1,5 +1,5 @@
-# Friday Night Funkin' - Psych Engine
-Engine originally used on [Mind Games Mod](https://gamebanana.com/mods/301107), intended to be a fix for the vanilla version's many issues while keeping the casual play aspect of it. Also aiming to be an easier alternative to newbie coders.
+# Friday Night Funkin' - Mechanics Mod
+This mod runs on Psych Engine, an engine originally used on [Mind Games Mod](https://gamebanana.com/mods/301107), intended to be a fix for the vanilla version's many issues while keeping the casual play aspect of it. This mod contains a mechanic selector similar to Ultimate Custom Night, along with some other features.
 
 ## Installation:
 You must have [the most up-to-date version of Haxe](https://haxe.org/download/), seriously, stop using 4.1.5, it misses some stuff.
@@ -17,20 +17,37 @@ If you want video support on your mod, simply do `haxelib git hxCodec https://gi
 
 otherwise, you can delete the "VIDEOS_ALLOWED" Line on Project.xml
 
-## Credits:
+## Credits (Mechanics Mod):
+* EyeDaleHim - Director and Coding
+* Raltyro - Coding
+* Unholywanderer - Winter Horrorland Subtitle Assistance
+
+### Special Thanks (Mechanics Mod)
+* Cherif 
+* Mark_Zer0 
+* BlueColorSin 
+* TheConcealedCow 
+* Maru
+* Tyler Blackbolt
+* stress
+* Kevin MacLeod
+* TeknoAXE
+
+## Credits (Psych Engine):
 * Shadow Mario - Coding
 * RiverOaken - Arts and Animations
-* bbpanzu - Assistant Coding
+* Yoshubs - Assistant Programmer
 
 ### Special Thanks
+* bbpanzu - Ex-Programmer
 * shubs - New Input System
-* SqirraRNG - Chart Editor's Sound Waveform base code
-* iFlicky - Delay/Combo Menu Song Composer + Dialogue Sounds
-* PolybiusProxy - .MP4 Loader Extension
+* SqirraRNG - Crash Handler and Base code for Chart Editor's Waveform
+* KadeDev - Fixed some cool stuff on Chart Editor and other PRs
+* iFlicky - Composer of Psync and Tea Time, also made the Dialogue Sounds
+* PolybiusProxy - .MP4 Video Loader Library (hxCodec)
 * Keoiki - Note Splash Animations
-* Smokey - Spritemap Texture Atlas support
-* Cary - OG Resolution code
-* Nebula_Zorua - VCR Shader code
+* Smokey - Sprite Atlas Support
+* Nebula the Zorua - LUA JIT Fork and some Lua reworks
 _____________________________________
 
 # Features
