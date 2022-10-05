@@ -20,23 +20,34 @@ otherwise, you can delete the "VIDEOS_ALLOWED" Line on Project.xml
 ## Credits (Mechanics Mod):
 * EyeDaleHim - Director and Coding
 * Raltyro - Coding
-* RealStr1ke - Assistant Coding
-* Unholywanderer - Assistant Coding
+* Unholywanderer - Winter Horrorland Subtitle Assistance
+
+### Special Thanks (Mechanics Mod)
+* Cherif 
+* Mark_Zer0 
+* BlueColorSin 
+* TheConcealedCow 
+* Maru
+* Tyler Blackbolt
+* stress
+* Kevin MacLeod
+* TeknoAXE
 
 ## Credits (Psych Engine):
 * Shadow Mario - Coding
 * RiverOaken - Arts and Animations
-* bbpanzu - Assistant Coding
+* Yoshubs - Assistant Programmer
 
 ### Special Thanks
+* bbpanzu - Ex-Programmer
 * shubs - New Input System
-* SqirraRNG - Chart Editor's Sound Waveform base code
-* iFlicky - Delay/Combo Menu Song Composer + Dialogue Sounds
-* PolybiusProxy - .MP4 Loader Extension
+* SqirraRNG - Crash Handler and Base code for Chart Editor's Waveform
+* KadeDev - Fixed some cool stuff on Chart Editor and other PRs
+* iFlicky - Composer of Psync and Tea Time, also made the Dialogue Sounds
+* PolybiusProxy - .MP4 Video Loader Library (hxCodec)
 * Keoiki - Note Splash Animations
-* Smokey - Spritemap Texture Atlas support
-* Cary - OG Resolution code
-* Nebula_Zorua - VCR Shader code
+* Smokey - Sprite Atlas Support
+* Nebula the Zorua - LUA JIT Fork and some Lua reworks
 _____________________________________
 
 # Features
