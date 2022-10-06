@@ -1,9 +1,5 @@
-package editors;
+package editors; #if desktop import Discord.DiscordClient; #end import Conductor.BPMChangeEvent;
 
-#if desktop
-import Discord.DiscordClient;
-#end
-import Conductor.BPMChangeEvent;
 import Section.SwagSection;
 import Song.SwagSong;
 import flixel.FlxG;
@@ -44,18 +40,11 @@ import openfl.utils.Assets as OpenFlAssets;
 import lime.media.AudioBuffer;
 import haxe.io.Bytes;
 import flash.geom.Rectangle;
-import flixel.util.FlxSort;
-#if MODS_ALLOWED
-import sys.io.File;
+import flixel.util.FlxSort; #if MODS_ALLOWED import sys.io.File;
 import sys.FileSystem;
-import flash.media.Sound;
-#end
+import flash.media.Sound; #end using StringTools;
 
-using StringTools;
-
-@:access(flixel.system.FlxSound._sound)
-@:access(openfl.media.Sound.__buffer)
-class ChartingState extends MusicBeatState
+@:access(flixel.system.FlxSound._sound) @:access(openfl.media.Sound.__buffer) class ChartingState extends MusicBeatState
 {
 	public static var noteTypeList:Array<String> = // Used for backwards compatibility with 0.1 - 0.3.2 charts, though, you should add your hardcoded custom note types here too.
 		[
@@ -1826,17 +1815,26 @@ class ChartingState extends MusicBeatState
 				return;
 			}
 
-			if (FlxG.keys.justPressed.Z && curZoom > 0 && !FlxG.keys.pressed.CONTROL)
+			if (FlxG.keys.pressed.CONTROL)
 			{
-				--curZoom;
-				updateZoom();
-			}
-			else if ()
-				if (FlxG.keys.justPressed.X && curZoom < zoomList.length - 1)
+				if (FlxG.keys.justPressed.Z)
 				{
-					curZoom++;
+					undoHistory();
+				}
+			}
+			else
+			{
+				if (FlxG.keys.justPressed.Z && curZoom > 0)
+				{
+					--curZoom;
 					updateZoom();
 				}
+			}
+			if (FlxG.keys.justPressed.X && curZoom < zoomList.length - 1)
+			{
+				curZoom++;
+				updateZoom();
+			}
 
 			if (FlxG.keys.justPressed.TAB)
 			{
@@ -2192,13 +2190,41 @@ class ChartingState extends MusicBeatState
 	public function addHistory(type:ActionType, data:Array<Dynamic>)
 	{
 		actionHistory.splice(actionIndex, actionHistory.length);
+
+		actionHistory.push({type: type, info: data});
+
+		actionIndex = actionHistory.length;
 	}
 
 	public function undoHistory()
 	{
 		if (actionHistory.length > 0)
 		{
-			actionIndex = Math.max(--actionIndex, 0);
+			actionIndex--;
+
+			if (actionIndex < 0)
+				actionIndex = 0;
+
+			FlxG.sound.music.stop();
+			if (vocals != null)
+				vocals.stop();
+
+			if (actionHistory[actionIndex] != null)
+			{
+				switch (actionHistory[actionIndex].type)
+				{
+					case ADDNOTE: // [section index] [note index in section]
+						{
+							var index:Int = actionHistory[actionIndex].info[0];
+
+							_song.notes[index].sectionNotes.remove(_song.notes[index].sectionNotes[actionHistory[actionIndex].info[1]]);
+						}
+					default:
+						{}
+				}
+			}
+
+			updateGrid();
 		}
 	}
 
@@ -2206,7 +2232,14 @@ class ChartingState extends MusicBeatState
 	{
 		if (actionHistory.length > 0)
 		{
-			actionIndex = Math.min(++actionIndex, actionHistory.length);
+			actionIndex++;
+
+			if (actionIndex > actionHistory.length)
+				actionIndex = actionHistory.length;
+
+			FlxG.sound.music.stop();
+			if (vocals != null)
+				vocals.stop();
 		}
 	}
 
@@ -3089,6 +3122,8 @@ class ChartingState extends MusicBeatState
 		{
 			_song.notes[curSection].sectionNotes.push([noteStrum, noteData, noteSus, noteTypeIntMap.get(daType)]);
 			curSelectedNote = _song.notes[curSection].sectionNotes[_song.notes[curSection].sectionNotes.length - 1];
+
+			addHistory(ADDNOTE, [curSection, _song.notes[curSection].sectionNotes.length - 1]);
 		}
 		else
 		{
