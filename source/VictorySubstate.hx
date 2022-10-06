@@ -302,7 +302,7 @@ class VictorySubstate extends MusicBeatSubstate
 					}
 				}));
 			}
-		}, groupAppear.length - 1);
+		}, groupAppear.length);
 
 		cameras = [PlayState.instance.camOther];
 
