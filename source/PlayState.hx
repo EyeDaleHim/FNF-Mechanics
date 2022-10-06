@@ -4983,7 +4983,7 @@ class PlayState extends MusicBeatState
 				else
 				{
 					dodgeTimer += elapsed;
-					if (canDodge = (dodgeTimer >= dodgeWant) && ((!cameraFocus || playBothMode)))
+					if (Conductor.songPosition >= 0 && (canDodge = (dodgeTimer >= dodgeWant)) && ((!cameraFocus || playBothMode)))
 					{
 						doDodge();
 					}
