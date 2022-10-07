@@ -2983,20 +2983,10 @@ class PlayState extends MusicBeatState
 
 		curSong = songData.song;
 
-		/*var AIPlayMap = AIPlayer.GeneratePlayMap(SONG, {
-			Accuracy_Tolerance: 2.553,
-
-			Minimum_Note_Density: 14.97,
-			Maximum_Note_Density: 48.8,
-
-			Random_Section_Tolerancy: FlxG.random.int(0, 32),
-
-			Tireness_Density_Before: 0.744,
-			Tireness_Density: 2.177,
-
-			Hand1: null,
-			Hand2: null
-		});*/
+		var AIPlayMap = AIPlayer.GeneratePlayMap(SONG, {
+			Humidity_Magnitude: FlxG.random.float(0.95, 2.45),
+			Best_Humidity: FlxG.random.float(2.5, 3.75)
+		});
 
 		if (SONG.needsVoices)
 			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
@@ -3074,8 +3064,13 @@ class PlayState extends MusicBeatState
 				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote);
 
 				swagNote.formerPress = swagNote.mustPress = gottaHitNote;
-				/*if (!swagNote.mustPress)
-				swagNote.AIStrumTime = AIPlayMap[noteData.indexOf(section)][section.sectionNotes.indexOf(songNotes)]; */
+				if (!swagNote.mustPress)
+				{
+					if (AIPlayMap[noteData.indexOf(section)] != null)
+					{
+						swagNote.AIStrumTime = AIPlayMap[noteData.indexOf(section)][section.sectionNotes.indexOf(songNotes)];
+					}
+				}
 				if (playBothMode)
 					swagNote.mustPress = true;
 				swagNote.sustainLength = songNotes[2];
