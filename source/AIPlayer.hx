@@ -7,6 +7,8 @@ import noisehx.Perlin;
 class AIPlayer
 {
 	public static var BadNoteTypes:Array<String> = ['Hurt Note', 'Kill Note', 'Burst Note', 'Sleep Note', 'Fake Note'];
+	public static var active:Bool = false;
+	public static var diff:Int = 1;
 
 	/*
 	 * make a humidity system type of shit by calculating how many notes there are
@@ -17,89 +19,173 @@ class AIPlayer
 	 * 
 	 * the fps will always be locked to 80 fps for the ai
 	 */
-	public static function GeneratePlayMap(map:Song.SwagSong, rules:AI_Rulesets):Array<Array<Float>>
+	public static function GeneratePlayMap(map:Song.SwagSong, diff:Int):Array<Array<Float>>
 	{
-		var perlin:Perlin = new Perlin();
-
-		var AI_FPS:Float = 1 / 80;
-		var Section_Humidity:Array<Float> = [];
-		var Lerping_Humidity:Float;
-
 		var strumList:Array<Array<Float>> = [];
 
-		for (section in map.notes)
+		switch (diff)
 		{
-			// > 4.0 is the limit, and we can go beyond
-			var countedNotes:Int = 0;
-
-			for (note in section.sectionNotes)
-			{
-				var gottaHitNote:Bool = section.mustHitSection;
-
-				if (note[1] > 3)
+			case 0:
 				{
-					gottaHitNote = !section.mustHitSection;
-				}
+					var ratingChance:Array<Float> = [93.43, 5.57, 3.3, 1.6];
+					var isolatedHits:Array<Array<Float>> = isolateHits(map);
 
-				if (!gottaHitNote)
-					countedNotes++;
-			}
-
-			strumList[map.notes.indexOf(section)] = [];
-
-			Section_Humidity[map.notes.indexOf(section)] = FlxMath.remapToRange(countedNotes, 0, section.lengthInSteps * rules.Humidity_Magnitude, -2.5, 4.0);
-		}
-
-		Lerping_Humidity = rules.Best_Humidity;
-
-		for (section in map.notes)
-		{
-			Lerping_Humidity = FlxMath.lerp(Lerping_Humidity, Section_Humidity[map.notes.indexOf(section)],
-				CoolUtil.boundTo(((Conductor.stepCrochet / 1000) * AI_FPS) * 10.25, 0, 1));
-
-			for (note in section.sectionNotes)
-			{
-				var gottaHitNote:Bool = section.mustHitSection;
-
-				if (note[1] > 3)
-				{
-					gottaHitNote = !section.mustHitSection;
-				}
-
-				if (!gottaHitNote)
-				{
-					var decreasePenalty:Float = 0.0;
-					if (Lerping_Humidity > 4.0)
-						decreasePenalty += Lerping_Humidity - 4.0 * 0.777;
-
-					if (Math.abs(Lerping_Humidity - Section_Humidity[map.notes.indexOf(section)]) > Math.abs(Lerping_Humidity - 4.0))
+					for (section in isolatedHits)
 					{
-						decreasePenalty -= Math.abs(Lerping_Humidity - Section_Humidity[map.notes.indexOf(section)]) * 0.1116;
-						decreasePenalty += (Math.abs(Lerping_Humidity - 4.0) * 0.43) / 2.33;
-					}
-					else
-					{
-						decreasePenalty += Math.abs(Lerping_Humidity - Section_Humidity[map.notes.indexOf(section)]) * 0.43;
-					}
+						strumList[isolatedHits.indexOf(section)] = [];
 
-					strumList[map.notes.indexOf(section)][section.sectionNotes.indexOf(note)] = FlxMath.roundDecimal((perlin.noise2d(note[0] / Conductor.stepCrochet,
-						(note[0] / Conductor.stepCrochet) * -1)) * decreasePenalty, 6);
-					trace(Std.string(strumList[map.notes.indexOf(section)][section.sectionNotes.indexOf(note)])
-						+ ' ms'
-						+ ' penalty: ${decreasePenalty}'
-						+ ' lerping humidity: ${Lerping_Humidity}');
+						for (note in section)
+						{
+							if (FlxG.random.bool(6.5))
+							{
+								strumList[isolatedHits.indexOf(section)][section.indexOf(note)] = PlayState.instance.noteKillOffset * 1.5;
+							}
+							else
+							{
+								var timingWindows:Array<Null<Float>> = [
+									ClientPrefs.sickWindow,
+									ClientPrefs.goodWindow,
+									ClientPrefs.badWindow,
+									Conductor.safeZoneOffset
+								];
+
+								var selectedRating:Int = FlxG.random.weightedPick(ratingChance);
+
+								if (selectedRating == 0)
+									strumList[isolatedHits.indexOf(section)][section.indexOf(note)] = FlxG.random.float(-ClientPrefs.sickWindow,
+										ClientPrefs.sickWindow);
+								else
+								{
+									if (timingWindows[Std.int(selectedRating + 1)] != null)
+										strumList[isolatedHits.indexOf(section)][section.indexOf(note)] = FlxG.random.float(timingWindows[selectedRating],
+											timingWindows[Std.int(selectedRating + 1)]);
+									else
+									{
+										strumList[isolatedHits.indexOf(section)][section.indexOf(note)] = FlxG.random.float(timingWindows[selectedRating - 1],
+											timingWindows[selectedRating]);
+									}
+									strumList[isolatedHits.indexOf(section)][section.indexOf(note)] *= FlxG.random.sign();
+								}
+							}
+
+							trace('section: ${isolatedHits.indexOf(section)}, id: ${section.indexOf(note)}, strum: ${strumList[isolatedHits.indexOf(section)][section.indexOf(note)]}ms');
+						}
+					}
 				}
-			}
+			case 1:
+				{
+					var ratingChance:Array<Float> = [95.43, 2.57, 1.3, 0.1];
+					var isolatedHits:Array<Array<Float>> = isolateHits(map);
+
+					for (section in isolatedHits)
+					{
+						strumList[isolatedHits.indexOf(section)] = [];
+
+						for (note in section)
+						{
+							if (FlxG.random.bool(3.5))
+							{
+								strumList[isolatedHits.indexOf(section)][section.indexOf(note)] = PlayState.instance.noteKillOffset * 1.5;
+							}
+							else
+							{
+								var timingWindows:Array<Null<Float>> = [
+									ClientPrefs.sickWindow,
+									ClientPrefs.goodWindow,
+									ClientPrefs.badWindow,
+									Conductor.safeZoneOffset
+								];
+
+								var selectedRating:Int = FlxG.random.weightedPick(ratingChance);
+
+								if (selectedRating == 0)
+									strumList[isolatedHits.indexOf(section)][section.indexOf(note)] = FlxG.random.float(-(ClientPrefs.sickWindow / FlxG.random.float(1.5)),
+										(ClientPrefs.sickWindow / 1.5));
+								else
+								{
+									if (timingWindows[Std.int(selectedRating + 1)] != null)
+										strumList[isolatedHits.indexOf(section)][section.indexOf(note)] = FlxG.random.float(timingWindows[selectedRating] / 1.35,
+											timingWindows[Std.int(selectedRating
+											+ 1)] / 1.35);
+									else
+									{
+										strumList[isolatedHits.indexOf(section)][section.indexOf(note)] = FlxG.random.float(timingWindows[selectedRating - 1] / 1.35,
+											timingWindows[selectedRating] / 1.35);
+									}
+									strumList[isolatedHits.indexOf(section)][section.indexOf(note)] *= FlxG.random.sign();
+								}
+							}
+
+							trace('section: ${isolatedHits.indexOf(section)}, id: ${section.indexOf(note)}, strum: ${strumList[isolatedHits.indexOf(section)][section.indexOf(note)]}ms');
+						}
+					}
+				}
+			case 2:
+				{
+					var ratingChance:Array<Float> = [97.5, 1, 0.5, 0.0];
+					var isolatedHits:Array<Array<Float>> = isolateHits(map);
+
+					for (section in isolatedHits)
+					{
+						strumList[isolatedHits.indexOf(section)] = [];
+
+						for (note in section)
+						{
+							var timingWindows:Array<Null<Float>> = [
+								ClientPrefs.sickWindow,
+								ClientPrefs.goodWindow,
+								ClientPrefs.badWindow,
+								Conductor.safeZoneOffset
+							];
+
+							var selectedRating:Int = FlxG.random.weightedPick(ratingChance);
+
+							if (selectedRating == 0)
+								strumList[isolatedHits.indexOf(section)][section.indexOf(note)] = FlxG.random.float(-(ClientPrefs.sickWindow / FlxG.random.float(2.5)),
+									(ClientPrefs.sickWindow / 2.5));
+							else
+							{
+								if (timingWindows[Std.int(selectedRating + 1)] != null)
+									strumList[isolatedHits.indexOf(section)][section.indexOf(note)] = FlxG.random.float(timingWindows[selectedRating] / 1.35,
+										timingWindows[Std.int(selectedRating + 1)] / 1.35);
+								else
+								{
+									strumList[isolatedHits.indexOf(section)][section.indexOf(note)] = FlxG.random.float(timingWindows[selectedRating - 1] / 1.35,
+										timingWindows[selectedRating] / 1.35);
+								}
+								strumList[isolatedHits.indexOf(section)][section.indexOf(note)] *= FlxG.random.sign();
+							}
+
+							trace('section: ${isolatedHits.indexOf(section)}, id: ${section.indexOf(note)}, strum: ${strumList[isolatedHits.indexOf(section)][section.indexOf(note)]}ms');
+						}
+					}
+				}
 		}
 
 		return strumList;
 	}
-}
 
-typedef AI_Rulesets =
-{
-	var Humidity_Magnitude:Float;
-	var Best_Humidity:Float;
+	private static function isolateHits(map:Song.SwagSong):Array<Array<Float>>
+	{
+		var opponentNotes:Array<Array<Float>> = [];
+		for (sect in map.notes)
+		{
+			opponentNotes[map.notes.indexOf(sect)] = [];
+			for (note in sect.sectionNotes)
+			{
+				var gottaHitNote:Bool = sect.mustHitSection;
+
+				if (note[1] > 3)
+				{
+					gottaHitNote = !sect.mustHitSection;
+				}
+
+				if (!gottaHitNote)
+					opponentNotes[map.notes.indexOf(sect)][sect.sectionNotes.indexOf(note)] = note[0];
+			}
+		}
+		return opponentNotes;
+	}
 }
 
 typedef Hand =

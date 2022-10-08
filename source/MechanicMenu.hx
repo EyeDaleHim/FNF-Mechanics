@@ -101,6 +101,13 @@ class MechanicMenu extends MusicBeatState
 	var multiplierDisplay:FlxText;
 	var multiplierBar:FlxBar;
 
+	public static var AIDiffs:Array<String> = ['Easy', 'Normal', 'Hard'];
+
+	public var aiArrowL:MechanicSprite;
+	public var aiArrowR:MechanicSprite;
+	public var aiCurrentText:FlxText;
+	public var aiTitleText:FlxText;
+
 	static var globalPoints:Int = 0;
 	public static var multiplierPoints:Float = 0;
 
@@ -814,10 +821,10 @@ class MechanicMenu extends MusicBeatState
 		buttonBG.scrollFactor.set();
 		add(buttonBG);
 
+		var center:FlxPoint = buttonBG.getGraphicMidpoint();
+
 		for (button in buttonList)
 		{
-			var center:FlxPoint = buttonBG.getGraphicMidpoint();
-
 			var buttonText:FlxText = new FlxText(center.x, center.y, Std.int(FlxG.width * 0.75) / buttonList.length, button.name, 20);
 			buttonText.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 			buttonText.scrollFactor.set();
@@ -838,6 +845,110 @@ class MechanicMenu extends MusicBeatState
 
 			buttonListGroup.push({box: buttonBox, text: buttonText});
 		}
+
+		center = rightBG.getGraphicMidpoint();
+
+		aiCurrentText = new FlxText(center.x, center.y, 0, 'Normal', 24);
+		aiCurrentText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		aiCurrentText.scrollFactor.set();
+		aiCurrentText.borderSize = 2;
+		aiCurrentText.setPosition(center.x - (aiCurrentText.width / 2), center.y - (aiCurrentText.height / 2));
+		aiCurrentText.y += 125;
+		aiCurrentText.antialiasing = ClientPrefs.globalAntialiasing;
+		add(aiCurrentText);
+
+		aiTitleText = new FlxText(center.x, center.y, 0, 'AI Difficulty', 28);
+		aiTitleText.setFormat(Paths.font("vcr.ttf"), 28, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		aiTitleText.scrollFactor.set();
+		aiTitleText.borderSize = 2;
+		aiTitleText.setPosition(center.x - (aiTitleText.width / 2), center.y - (aiTitleText.height / 2));
+		aiTitleText.y += 75;
+		aiTitleText.antialiasing = ClientPrefs.globalAntialiasing;
+		add(aiTitleText);
+
+		(aiArrowL = new MechanicSprite()).loadGraphic(Paths.image('mechanicArr', 'shared'));
+		aiArrowL.scrollFactor.set();
+		aiArrowL.setPosition(aiCurrentText.x - aiArrowL.width - 4, aiCurrentText.y - 12);
+		aiArrowL.antialiasing = ClientPrefs.globalAntialiasing;
+		add(aiArrowL);
+
+		(aiArrowR = new MechanicSprite()).loadGraphic(Paths.image('mechanicArr', 'shared'));
+		aiArrowR.scrollFactor.set();
+		aiArrowR.setPosition(aiCurrentText.x + aiCurrentText.width + 4, aiCurrentText.y - 12);
+		aiArrowR.antialiasing = ClientPrefs.globalAntialiasing;
+		aiArrowR.flipX = true;
+		add(aiArrowR);
+
+		aiArrowL.unselectedScale = 1.0;
+		aiArrowL.selectedScale = 0.9;
+		aiArrowL.selectedColor = 0.8;
+		aiArrowL.unselectedColor = 1;
+
+		aiArrowR.unselectedScale = 1.0;
+		aiArrowR.selectedScale = 0.9;
+		aiArrowR.selectedColor = 0.8;
+		aiArrowR.unselectedColor = 1;
+
+		FlxMouseEventManager.add(aiArrowL, function(spr:MechanicSprite)
+		{
+			if (!AIPlayer.active || AIPlayer.diff - 1 < 0)
+			{
+				return;
+			}
+			AIPlayer.diff = Std.int(CoolUtil.boundTo(AIPlayer.diff - 1, 0, 2));
+			aiCurrentText.text = AIDiffs[AIPlayer.diff];
+			FlxG.sound.play(Paths.sound('mechanicSel'), 0.6);
+
+			aiCurrentText.setPosition(center.x - (aiCurrentText.width / 2), center.y - (aiCurrentText.height / 2));
+			aiCurrentText.y += 125;
+		}, null, function(spr:MechanicSprite)
+		{
+			if (AIPlayer.active)
+				spr.isSelected = true;
+		}, function(spr:MechanicSprite)
+		{
+			if (AIPlayer.active)
+				spr.isSelected = false;
+		}, true);
+
+		FlxMouseEventManager.add(aiArrowR, function(spr:MechanicSprite)
+		{
+			if (!AIPlayer.active || AIPlayer.diff + 1 > 2)
+			{
+				return;
+			}
+			AIPlayer.diff = Std.int(CoolUtil.boundTo(AIPlayer.diff + 1, 0, 2));
+			aiCurrentText.text = AIDiffs[AIPlayer.diff];
+			FlxG.sound.play(Paths.sound('mechanicSel'), 0.6);
+
+			aiCurrentText.setPosition(center.x - (aiCurrentText.width / 2), center.y - (aiCurrentText.height / 2));
+			aiCurrentText.y += 125;
+		}, null, function(spr:MechanicSprite)
+		{
+			if (AIPlayer.active)
+				spr.isSelected = true;
+		}, function(spr:MechanicSprite)
+		{
+			if (AIPlayer.active)
+				spr.isSelected = false;
+		}, true);
+
+		aiCurrentText.text = AIDiffs[AIPlayer.diff];
+		aiCurrentText.setPosition(center.x - (aiCurrentText.width / 2), center.y - (aiCurrentText.height / 2) + 125);
+
+		FlxMouseEventManager.add(aiTitleText, function(txt:FlxText)
+		{
+			AIPlayer.active = !AIPlayer.active;
+
+			var AIAlpha:Float = 1.0;
+
+			if (!AIPlayer.active)
+				AIAlpha = 0.7;
+
+			aiCurrentText.alpha = aiTitleText.alpha = aiArrowL.alpha = aiArrowR.alpha = AIAlpha;
+
+			FlxG.sound.play(Paths.sound('mechanicSel'), 0.6);
+		});
 	}
 
 	var moveBG:Bool = true;
@@ -853,6 +964,11 @@ class MechanicMenu extends MusicBeatState
 				FlxG.sound.music.volume += 0.5 * elapsed;
 			}
 		}
+
+		#if debug
+		if (FlxG.keys.justPressed.EIGHT)
+			MusicBeatState.switchState(new ostvideo.OSTVideo());
+		#end
 
 		gridShader.hue += elapsed * 0.1;
 
