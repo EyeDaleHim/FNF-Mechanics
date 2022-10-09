@@ -5899,7 +5899,7 @@ class PlayState extends MusicBeatState
 					case 0:
 						if (phillyGlowGradient.visible)
 						{
-							FlxG.camera.flash(FlxColor.WHITE, 0.15, null, true);
+							FlxG.camera.flash(ClientPrefs.flashing ? FlxColor.WHITE : FlxColor.BLACK, 0.15, null, true);
 							FlxG.camera.zoom += 0.5;
 							if (ClientPrefs.camZooms)
 								camHUD.zoom += 0.1;
@@ -5910,7 +5910,6 @@ class PlayState extends MusicBeatState
 							phillyWindowEvent.visible = false;
 							phillyGlowGradient.visible = false;
 							phillyGlowParticles.visible = false;
-							phillyWall.visible = true;
 							curLightEvent = -1;
 
 							for (who in chars)
@@ -5918,6 +5917,8 @@ class PlayState extends MusicBeatState
 								who.color = FlxColor.WHITE;
 							}
 							phillyStreet.color = FlxColor.WHITE;
+
+							FlxG.camera.setFilters([]);
 						}
 
 					case 1: // turn on
@@ -5939,6 +5940,8 @@ class PlayState extends MusicBeatState
 							phillyGlowGradient.visible = true;
 							phillyGlowParticles.visible = true;
 							phillyWall.visible = false;
+
+							FlxG.camera.setFilters([new ShaderFilter(phillyWindow.shader)]);
 						}
 						else if (ClientPrefs.flashing)
 						{
@@ -6898,10 +6901,17 @@ class PlayState extends MusicBeatState
 			changeMorale(moraleFactor);
 		}
 
-		if ((AIPlayer.active && daRating == 'sick' && !note.noteSplashDisabled)
-			|| (!AIPlayer.active && daRating == 'sick' && !note.noteSplashDisabled && !note.mustPress))
+		if (daRating == 'sick' && !note.noteSplashDisabled)
 		{
-			spawnNoteSplashOnNote(note);
+			if (!note.mustPress)
+			{
+				if (AIPlayer.active)
+					spawnNoteSplashOnNote(note);
+			}
+			else
+			{
+				spawnNoteSplashOnNote(note);
+			}
 		}
 
 		if (!practiceMode /* && !cpuControlled */)

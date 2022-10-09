@@ -140,6 +140,8 @@ class BaseOptionsMenu extends MusicBeatSubstate
 
 		if (PlayState.instance != null)
 			cameras = [PlayState.instance.camOther];
+		else
+			cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 	}
 
 	public function addOption(option:Option)
