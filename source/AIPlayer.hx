@@ -38,7 +38,7 @@ class AIPlayer
 						{
 							if (FlxG.random.bool(6.5))
 							{
-								strumList[isolatedHits.indexOf(section)][section.indexOf(note)] = PlayState.instance.noteKillOffset * 1.5;
+								strumList[isolatedHits.indexOf(section)][section.indexOf(note)] = -FlxMath.MAX_VALUE_FLOAT;
 							}
 							else
 							{
@@ -85,7 +85,7 @@ class AIPlayer
 						{
 							if (FlxG.random.bool(3.5))
 							{
-								strumList[isolatedHits.indexOf(section)][section.indexOf(note)] = PlayState.instance.noteKillOffset * 1.5;
+								strumList[isolatedHits.indexOf(section)][section.indexOf(note)] = -FlxMath.MAX_VALUE_FLOAT;
 							}
 							else
 							{

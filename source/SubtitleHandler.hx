@@ -52,7 +52,17 @@ class SubtitleHandler
 			}
 		}
 
-		FlxG.state.add(subSprite);
+		if (FlxG.state.subState != null)
+		{
+			if (Std.isOfType(FlxG.state.subState, GameOverSubstate))
+				FlxG.state.subState.add(subSprite);
+			else
+				FlxG.state.add(subSprite);
+		}
+		else
+		{
+			FlxG.state.add(subSprite);
+		}
 	}
 
 	// Called if the state is destroyed
@@ -98,11 +108,15 @@ class SubtitleSprite extends FlxTypedGroup<FlxSprite>
 			PlayState.instance.dad.healthColorArray[1], PlayState.instance.dad.healthColorArray[2]),
 			false, false, 0x00000000);
 
-		var gfFormat:FlxTextFormat = new FlxTextFormat(FlxColor.fromRGB(PlayState.instance.gf.healthColorArray[0],
-			PlayState.instance.gf.healthColorArray[1], PlayState.instance.gf.healthColorArray[2]),
+		var gfFormat:FlxTextFormat = new FlxTextFormat(FlxColor.fromRGB(PlayState.instance.gf.healthColorArray[0], PlayState.instance.gf.healthColorArray[1],
+			PlayState.instance.gf.healthColorArray[2]),
 			false, false, 0x00000000);
 
-		subText.applyMarkup(text, [new FlxTextFormatMarkerPair(bfFormat, '<bf>'), new FlxTextFormatMarkerPair(gfFormat, '<gf>'), new FlxTextFormatMarkerPair(dadFormat, '<dad>')]);
+		subText.applyMarkup(text, [
+			new FlxTextFormatMarkerPair(bfFormat, '<bf>'),
+			new FlxTextFormatMarkerPair(gfFormat, '<gf>'),
+			new FlxTextFormatMarkerPair(dadFormat, '<dad>')
+		]);
 
 		subBG = new FlxSprite().makeGraphic(Math.floor(subText.width + 8), Math.floor(subText.height + 8), FlxColor.BLACK);
 		subBG.alpha = 0.0;

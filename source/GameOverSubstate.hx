@@ -245,17 +245,6 @@ class GameOverSubstate extends MusicBeatSubstate
 			Conductor.songPosition = FlxG.sound.music.time;
 		}
 		PlayState.instance.callOnLuas('onUpdatePost', [elapsed]);
-
-		for (sub in SubtitleHandler.subtitleList)
-		{
-			if (sub != null)
-			{
-				sub.subBG.draw();
-				sub.subText.draw();
-
-				sub.update(elapsed);
-			}
-		}
 	}
 
 	override function beatHit()
@@ -318,7 +307,7 @@ class GameOverSubstate extends MusicBeatSubstate
 
 			tankSound.play(false);
 
-			SubtitleHandler.addSub(tankmanSubtitles[random - 1], (tankSound.length / 1000) + 2.5);
+			SubtitleHandler.addSub(tankmanSubtitles[random + 1], (tankSound.length / 1000) + 1.5);
 		}
 		else
 		{

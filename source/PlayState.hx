@@ -3073,6 +3073,8 @@ class PlayState extends MusicBeatState
 					if (AIPlayMap.length != 0 && [noteData.indexOf(section)] != null)
 					{
 						swagNote.AIStrumTime = AIPlayMap[noteData.indexOf(section)][section.sectionNotes.indexOf(songNotes)];
+						if (Math.abs(swagNote.AIStrumTime) > Conductor.safeZoneOffset)
+							swagNote.AIMiss = true;
 					}
 				}
 				if (playBothMode)
@@ -4687,7 +4689,6 @@ class PlayState extends MusicBeatState
 	var canPause:Bool = true;
 	var limoSpeed:Float = 0;
 	var ignoreFrame:Bool = true;
-
 	private var _oldText:String = '';
 
 	override public function update(elapsed:Float)
@@ -5578,7 +5579,7 @@ class PlayState extends MusicBeatState
 					}
 				}
 
-				if (daNote.AIStrumTime != 0)
+				if (daNote.AIStrumTime != 0 && !daNote.AIMiss)
 				{
 					if (Math.abs(daNote.strumTime - daNote.AIStrumTime) > Conductor.safeZoneOffset)
 					{
@@ -5648,10 +5649,10 @@ class PlayState extends MusicBeatState
 				{
 					if (!cpuControlled && !daNote.ignoreNote && !endingSong && (daNote.tooLate || !daNote.wasGoodHit))
 					{
-						if (daNote.mustPress)
-							noteMiss(daNote);
-						else
+						if (daNote.AIMiss && !daNote.mustPress)
 							opponentMiss(daNote);
+						else
+							noteMiss(daNote);
 					}
 
 					daNote.active = false;
