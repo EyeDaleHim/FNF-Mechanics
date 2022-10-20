@@ -15,10 +15,10 @@ class MultiplayerHandler
 
 	public static function initialize():Void
 	{
-		CLIENT_HANDLER = new FNFClient("127.0.0.1", 9000);
-		SERVER_HANDLER = new FNFServer("0.0.0.0", 9000, FNFClient);
+		// CLIENT_HANDLER = new FNFClient("127.0.0.1", 9000);
+		// SERVER_HANDLER = new FNFServer("0.0.0.0", 9000, FNFClient);
 
-		SERVER_HANDLER.start();
+		// SERVER_HANDLER.start();
 	}
 
 	private static var __IS_PLAYSTATE:Bool = false;

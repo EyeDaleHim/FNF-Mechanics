@@ -95,12 +95,19 @@ class Main extends Sprite
 		}
 		#end
 
+		MultiplayerHandler.initialize();
+
 		FlxG.console.registerClass(MechanicManager);
 		FlxG.console.registerClass(Paths);
 		FlxG.console.registerClass(CoolUtil);
 		FlxG.console.registerClass(KeyboardMechanic);
 		FlxG.console.registerClass(ScoreHandler);
 		FlxG.console.registerClass(SubtitleHandler);
+
+		/*FlxG.console.registerFunction("sendMessage", function(msg:String)
+			{
+				MultiplayerHandler.
+		});*/
 
 		#if html5
 		FlxG.autoPause = false;

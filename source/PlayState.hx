@@ -3074,7 +3074,7 @@ class PlayState extends MusicBeatState
 					{
 						swagNote.AIStrumTime = AIPlayMap[noteData.indexOf(section)][section.sectionNotes.indexOf(songNotes)];
 						if (Math.abs(swagNote.AIStrumTime) > Conductor.safeZoneOffset)
-							swagNote.AIMiss = true;
+							swagNote.ignoreNote = swagNote.AIMiss = true;
 					}
 				}
 				if (playBothMode)
@@ -5647,9 +5647,9 @@ class PlayState extends MusicBeatState
 				// Kill extremely late notes and cause misses
 				if (Conductor.songPosition > noteKillOffset + daNote.strumTime)
 				{
-					if (!cpuControlled && !daNote.ignoreNote && !endingSong && (daNote.tooLate || !daNote.wasGoodHit))
+					if (!cpuControlled && ((daNote.AIMiss && daNote.ignoreNote) || !daNote.ignoreNote) && !endingSong && (daNote.tooLate || !daNote.wasGoodHit))
 					{
-						if (daNote.AIMiss && !daNote.mustPress)
+						if (!daNote.mustPress)
 							opponentMiss(daNote);
 						else
 							noteMiss(daNote);

@@ -74,7 +74,7 @@ class FunkinLua
 		// trace('Lua version: ' + Lua.version());
 		// trace("LuaJIT version: " + Lua.versionJIT());
 
-		// LuaL.dostring(lua, CLENSE);
+		LuaL.dostring(lua, CLENSE);
 		try
 		{
 			var result:Dynamic = LuaL.dofile(lua, script);
